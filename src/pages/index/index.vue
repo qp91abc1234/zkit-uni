@@ -1,28 +1,23 @@
 <template>
   <view class="content">
-    <Record></Record>
+    <Record class="record"></Record>
   </view>
 </template>
 
 <script setup lang="ts">
-import { onLoad, onReady, onShow } from '@dcloudio/uni-app'
 import Record from '@/components/record/record.vue'
-
-onLoad(() => {
-  console.log('page onload')
-})
-
-onShow(() => {
-  console.log('page onShow')
-})
-
-onReady(() => {
-  console.log('page onReady')
-})
 </script>
 
 <style scoped lang="scss">
 .content {
-  display: flex;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  .record {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 </style>
