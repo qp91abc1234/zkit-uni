@@ -1,5 +1,6 @@
 <template>
   <view class="content">
+    <Tst></Tst>
     <image class="logo" src="/static/logo.png" />
     <view class="text-area">
       <text class="title">{{ title }}</text>
@@ -8,9 +9,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onInit, onLoad, onReady, onShow } from '@dcloudio/uni-app'
+import { onBeforeMount, onMounted, ref } from 'vue'
+import Tst from '@/components/tst/tst.vue'
+
+onLoad(() => {
+  console.log('page onload')
+})
+
+onShow(() => {
+  console.log('page onShow')
+})
+
+onReady(() => {
+  console.log('page onReady')
+})
+
+onBeforeMount(() => {
+  console.log('page onBeforeMount')
+})
+
+onMounted(() => {
+  console.log('page onMounted')
+})
 
 const title = ref('Hello')
+
+console.log('page setup')
 </script>
 
 <style scoped lang="scss">
