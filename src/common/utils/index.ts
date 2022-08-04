@@ -10,9 +10,9 @@ export const getBoundingInfo = (id: string, com) => {
   })
 }
 
-export const getWxAuth = (scope: string) => {
+export const getAuthInfo = (scope: string) => {
   return new Promise((resolve) => {
-    wx.getSetting({
+    uni.getSetting({
       success(res) {
         resolve(res.authSetting[scope])
       },
@@ -23,9 +23,9 @@ export const getWxAuth = (scope: string) => {
   })
 }
 
-export const setWxAuth = (scope: string) => {
+export const setAuthInfo = (scope: string) => {
   return new Promise((resolve) => {
-    wx.authorize({
+    uni.authorize({
       scope,
       success() {
         resolve(true)

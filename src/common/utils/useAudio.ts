@@ -1,9 +1,9 @@
-let audioContext: WechatMiniprogram.InnerAudioContext | null =
-  wx.createInnerAudioContext()
+let audioContext: UniApp.InnerAudioContext | null =
+  uni.createInnerAudioContext()
 
 export const useAudio = () => {
   const play = (path, skip = 0) => {
-    audioContext = audioContext || wx.createInnerAudioContext()
+    audioContext = audioContext || uni.createInnerAudioContext()
     audioContext.src = path
     audioContext.startTime = Math.floor(skip / 1000)
     audioContext.play()

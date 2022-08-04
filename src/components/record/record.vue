@@ -4,6 +4,7 @@
     @touchstart="recordStart"
     @touchmove="touchmove"
     @touchend="recordEnd"
+    @touchcancel="recordCancel"
   >
     <slot :scope="status"></slot>
   </view>
@@ -11,7 +12,7 @@
 
 <script setup lang="ts">
 import { ref, getCurrentInstance } from 'vue'
-import { getBoundingInfo, getWxAuth, setWxAuth } from '@/common/utils/index'
+import { getBoundingInfo, getAuthInfo, setAuthInfo } from '@/common/utils/index'
 import { useAudio } from '@/common/utils/useAudio'
 
 const props = withDefaults(
@@ -29,15 +30,15 @@ const emits = defineEmits<{
 
 const options: any = {
   duration: 10000,
-  sampleRate: 44100,
+  sampleRate: 16000,
   numberOfChannels: 1,
-  encodeBitRate: 192000,
+  encodeBitRate: 96000,
   format: 'mp3',
   frameSize: 50
 }
 const status = ref<'idle' | 'record' | 'start' | 'stop' | 'cancel'>('idle')
 const instance = getCurrentInstance()
-const recorderManager = wx.getRecorderManager()
+const recorderManager = uni.getRecorderManager()
 const audioCtx = useAudio()
 let emptyTime = 0
 
@@ -57,9 +58,9 @@ const touchmove = async (e: TouchEvent) => {
 }
 
 const recordStart = async () => {
-  const authRet = await getWxAuth('scope.record')
+  const authRet = await getAuthInfo('scope.record')
   if (authRet !== true) {
-    setWxAuth('scope.record')
+    setAuthInfo('scope.record')
     return
   }
 
@@ -98,8 +99,6 @@ recorderManager.onStop((res) => {
 
   status.value = 'idle'
 })
-
-recorderManager.onInterruptionEnd(recordCancel)
 </script>
 
 <style scoped lang="scss"></style>
