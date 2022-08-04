@@ -1,22 +1,18 @@
 <template>
-  <view class="record">
-    <view
-      id="record-btn"
-      class="record-btn"
-      @touchstart="recordStart"
-      @touchmove="recordCancel"
-      @touchend="recordEnd"
-    >
-      <view class="center" :class="{ 'is-record': status === 'start' }">
-        record
-      </view>
-    </view>
+  <view
+    id="record"
+    @touchstart="recordStart"
+    @touchmove="touchmove"
+    @touchend="recordEnd"
+  >
+    <slot :scope="status"></slot>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, getCurrentInstance } from 'vue'
 import { getBoundingInfo, getWxAuth, setWxAuth } from '@/common/utils/index'
+import { useAudio } from '@/common/utils/useAudio'
 
 const props = withDefaults(
   defineProps<{
@@ -27,44 +23,26 @@ const props = withDefaults(
   }
 )
 
+const emits = defineEmits<{
+  (event: 'record-end', src: string, emptyTime: number): void
+}>()
+
 const options: any = {
   duration: 10000,
-  format: 'mp3'
+  sampleRate: 44100,
+  numberOfChannels: 1,
+  encodeBitRate: 192000,
+  format: 'mp3',
+  frameSize: 50
 }
-const status = ref<'idle' | 'start' | 'stop' | 'cancel'>('idle')
-const opeDelay = 100
+const status = ref<'idle' | 'record' | 'start' | 'stop' | 'cancel'>('idle')
 const instance = getCurrentInstance()
 const recorderManager = wx.getRecorderManager()
-let audioContext: WechatMiniprogram.InnerAudioContext | null =
-  wx.createInnerAudioContext()
+const audioCtx = useAudio()
+let emptyTime = 0
 
-recorderManager.onStop((res) => {
-  if (status.value === 'stop') {
-    setTimeout(() => {
-      play(res.tempFilePath)
-    }, 1000)
-  }
-
-  status.value = 'idle'
-})
-
-const recordStart = async () => {
-  const authRet = await getWxAuth('scope.record')
-  if (authRet !== true) {
-    setWxAuth('scope.record')
-    return
-  }
-
-  status.value = 'start'
-  setTimeout(() => {
-    options.durantion = props.duration
-    recorderManager.start(options)
-  }, opeDelay)
-}
-
-const recordCancel = async (e: TouchEvent) => {
-  if (status.value !== 'start') return
-  const boundingInfo: any = await getBoundingInfo('record-btn', instance)
+const touchmove = async (e: TouchEvent) => {
+  const boundingInfo: any = await getBoundingInfo('record', instance)
   const offsetX = e.touches[0].clientX - boundingInfo.left
   const offsetY = e.touches[0].clientY - boundingInfo.top
 
@@ -74,63 +52,54 @@ const recordCancel = async (e: TouchEvent) => {
     offsetY < 0 ||
     offsetY > boundingInfo.height
   ) {
-    status.value = 'cancel'
-    setTimeout(() => {
-      recorderManager.stop()
-    }, opeDelay)
+    recordCancel()
   }
+}
+
+const recordStart = async () => {
+  const authRet = await getWxAuth('scope.record')
+  if (authRet !== true) {
+    setWxAuth('scope.record')
+    return
+  }
+
+  status.value = 'record'
+  audioCtx.stop()
+  emptyTime = new Date().getTime()
+  options.durantion = props.duration
+  setTimeout(() => {
+    // 录音开启会卡线程，因此做延时处理，让渲染先执行
+    recorderManager.start(options)
+  }, 500)
 }
 
 const recordEnd = () => {
   if (status.value !== 'start') return
   status.value = 'stop'
-  setTimeout(() => {
-    recorderManager.stop()
-  }, opeDelay)
+  recorderManager.stop()
 }
 
-const play = (path) => {
-  audioContext = audioContext || wx.createInnerAudioContext()
-  audioContext.onStop(() => {
-    audioContext!.destroy()
-    audioContext = null
-  })
-  audioContext.onEnded(() => {
-    audioContext!.destroy()
-    audioContext = null
-  })
-  audioContext.src = path
-  if (audioContext.paused) {
-    audioContext.play()
-  } else {
-    audioContext.stop()
-  }
+const recordCancel = () => {
+  if (status.value !== 'start') return
+  status.value = 'cancel'
+  recorderManager.stop()
 }
+
+recorderManager.onStart(() => {
+  // 从开始录音到录音开启有一段延时
+  status.value = 'start'
+  emptyTime = new Date().getTime() - emptyTime
+})
+
+recorderManager.onStop((res) => {
+  if (status.value === 'stop') {
+    emits('record-end', res.tempFilePath, emptyTime)
+  }
+
+  status.value = 'idle'
+})
+
+recorderManager.onInterruptionEnd(recordCancel)
 </script>
 
-<style scoped lang="scss">
-.record {
-  display: flex;
-  .record-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 170rpx;
-    height: 170rpx;
-    border-radius: 50%;
-    background-color: rgb(238 175 175);
-    .center {
-      width: 150rpx;
-      height: 150rpx;
-      border-radius: 50%;
-      text-align: center;
-      color: antiquewhite;
-      background-color: palevioletred;
-      line-height: 150rpx;
-      &.is-record {
-        background-color: purple;
-      }
-    }
-  }
-}
-</style>
+<style scoped lang="scss"></style>
