@@ -12,7 +12,11 @@
 
 <script setup lang="ts">
 import { ref, getCurrentInstance } from 'vue'
-import { getBoundingInfo, getAuthInfo, setAuthInfo } from '@/common/utils/index'
+import {
+  getBoundingInfo,
+  getAuthInfo,
+  setAuthInfo
+} from '@/common/utils/uniUtils'
 import { useAudio } from '@/common/utils/useAudio'
 
 const props = withDefaults(

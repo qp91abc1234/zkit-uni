@@ -1,38 +1,17 @@
-export const getBoundingInfo = (id: string, com) => {
-  return new Promise((resolve, reject) => {
-    const query = uni.createSelectorQuery().in(com)
-    query
-      .select(`#${id}`)
-      .boundingClientRect((data) => {
-        resolve(data)
-      })
-      .exec()
-  })
-}
-
-export const getAuthInfo = (scope: string) => {
-  return new Promise((resolve) => {
-    uni.getSetting({
-      success(res) {
-        resolve(res.authSetting[scope])
-      },
-      fail(e) {
-        resolve(e)
+/**
+ * 是否json字符串
+ */
+export function isJsonStr(value) {
+  if (typeof value === 'string') {
+    try {
+      const obj = JSON.parse(value)
+      if (typeof obj === 'object') {
+        return true
       }
-    })
-  })
-}
-
-export const setAuthInfo = (scope: string) => {
-  return new Promise((resolve) => {
-    uni.authorize({
-      scope,
-      success() {
-        resolve(true)
-      },
-      fail(e) {
-        resolve(e)
-      }
-    })
-  })
+      return false
+    } catch (e) {
+      return false
+    }
+  }
+  return false
 }
