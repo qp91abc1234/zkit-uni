@@ -21,13 +21,23 @@
 <script setup lang="ts">
 import Record from '@/components/record/record.vue'
 import { useAudio } from '@/common/utils/useAudio'
+import { useUpload } from '@/common/utils/useUpload'
 
 const audioCtx = useAudio()
+const uploadCtx = useUpload()
 
-const recordEnd = (src, emptyTime) => {
-  setTimeout(() => {
-    audioCtx.play(src, emptyTime)
-  }, 1000)
+const recordEnd = async (src: string, emptyTime) => {
+  const ret = await uploadCtx.getUploadUrl(
+    'https://api-my-creation.beta.101.com/route/gate/s3Handler/getUploadUrl',
+    src.substring(9)
+  )
+  if (ret) {
+    uploadCtx.upload(src, ret)
+  }
+
+  // setTimeout(() => {
+  //   audioCtx.play(src, emptyTime)
+  // }, 1000)
 }
 </script>
 
