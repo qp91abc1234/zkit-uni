@@ -28,16 +28,16 @@ const uploadCtx = useUpload()
 
 const recordEnd = async (src: string, emptyTime) => {
   const ret = await uploadCtx.getUploadUrl(
-    'https://api-my-creation.beta.101.com/route/gate/s3Handler/getUploadUrl',
+    'https://pre-api-drx.99.com/route/gate/s3Handler/getUploadUrl',
     src.substring(9)
   )
   if (ret) {
-    uploadCtx.upload(src, ret)
-  }
+    const url = await uploadCtx.upload(src, ret)
 
-  // setTimeout(() => {
-  //   audioCtx.play(src, emptyTime)
-  // }, 1000)
+    setTimeout(() => {
+      audioCtx.play(url, emptyTime)
+    }, 1000)
+  }
 }
 </script>
 

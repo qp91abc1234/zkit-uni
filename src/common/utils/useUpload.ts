@@ -8,7 +8,7 @@ export const useUpload = () => {
           url: `${url}?file_name=${filename}`,
           method: 'GET',
           header: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRfaWQiOjIwMDEsInBsYXllcl9pZCI6IjVmNGRlOTFmNDBmZDE5Y2JkNzEzNzhhZCIsInBsYXRmb3JtX2lkIjoiMTEwIiwidXNlcl9kYXRhIjoiIiwiaWF0IjoxNjU5NTk3MjUyLCJleHAiOjE2NTk2MDQ0NTIsImp0aSI6InB5bmdtdGN5bzJuZW1qbHI5bnF3dWtvdXY1bHplemVhIn0.JPicugnaHTYH1xnvo8N_845oVsCwdakzVChOLWdphhE`
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRfaWQiOjIwMDEsInBsYXllcl9pZCI6IjVmNGRlOTFmNDBmZDE5Y2JkNzEzNzhhZCIsInBsYXRmb3JtX2lkIjoiMTEwIiwidXNlcl9kYXRhIjoiIiwiaWF0IjoxNjU5NjA1NzU3LCJleHAiOjE2NTk2MTI5NTcsImp0aSI6InB5bmdtdGN5bzJuZW1qbHI5bnF3dWtvdXY1bHplemVhIn0.9iawB933BqRSvheTez3YjY65bPPoczsOIuVWS0Zapg4`
           },
           data: {
             seq: 1,
@@ -31,7 +31,7 @@ export const useUpload = () => {
       if (![200, 201, 204].includes(ret.code)) {
         uni.showToast({ title: '获取上传地址失败~' })
       } else {
-        return ret
+        return ret.data
       }
     } catch (e) {
       console.log(e)
@@ -42,18 +42,16 @@ export const useUpload = () => {
   }
 
   const upload = async (filepath, data) => {
-    console.log('zcc data = ', data)
-    const url = data.url.replace('https://s3-gjzc.my.99.com', '')
     const buf = uni.getFileSystemManager().readFileSync(filepath)
     const ret: any = await new Promise((resolve, reject) => {
       uni.request({
-        url,
+        url: data.url,
         method: 'PUT',
         header: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRfaWQiOjIwMDEsInBsYXllcl9pZCI6IjVmNGRlOTFmNDBmZDE5Y2JkNzEzNzhhZCIsInBsYXRmb3JtX2lkIjoiMTEwIiwidXNlcl9kYXRhIjoiIiwiaWF0IjoxNjU5NTk3MjUyLCJleHAiOjE2NTk2MDQ0NTIsImp0aSI6InB5bmdtdGN5bzJuZW1qbHI5bnF3dWtvdXY1bHplemVhIn0.JPicugnaHTYH1xnvo8N_845oVsCwdakzVChOLWdphhE`,
-          'Content-Type': 'audio/mp3',
+          'Content-Type': 'audio/mpeg',
           'x-amz-acl': 'public-read'
         },
+        timeout: 30000,
         data: buf,
         success: (res) => {
           resolve(res)
@@ -64,7 +62,11 @@ export const useUpload = () => {
       })
     })
 
-    console.log('zcc ret = ', ret)
+    if (ret.statusCode === 200) {
+      return data.url.split('?')[0]
+    }
+
+    return null
   }
 
   return {
