@@ -54,6 +54,7 @@ const touchStart = async () => {
   const authRet = await getAuthInfo('scope.record')
   if (authRet !== true) {
     setAuthInfo('scope.record')
+    status.value = 'idle'
     return
   }
 
