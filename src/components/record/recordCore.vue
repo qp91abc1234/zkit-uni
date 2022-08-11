@@ -1,8 +1,9 @@
 <template>
   <view
     id="record"
+    @click="click"
     @touchstart="touchStart"
-    @touchmove="touchmove"
+    @touchmove="touchMove"
     @touchend="touchEnd"
     @touchcancel="touchCancel"
   >
@@ -21,9 +22,11 @@ import { useAudio } from '@/common/utils/useAudio'
 
 const props = withDefaults(
   defineProps<{
+    mode?: 'click' | 'touch'
     duration?: number
   }>(),
   {
+    mode: 'click',
     duration: 10000
   }
 )
@@ -47,7 +50,52 @@ const instance = getCurrentInstance()
 const recorderManager = uni.getRecorderManager()
 const audioCtx = useAudio()
 
-const touchStart = async () => {
+const click = () => {
+  if (props.mode !== 'click') return
+  if (status.value === 'idle') {
+    recordStart()
+  } else {
+    recordEnd()
+  }
+}
+
+const touchStart = async (e: TouchEvent) => {
+  if (props.mode !== 'touch') return
+  recordStart()
+}
+
+const touchMove = async (e: TouchEvent) => {
+  if (props.mode !== 'touch') return
+  if (
+    status.value === 'auth' ||
+    status.value === 'wakeup' ||
+    status.value === 'start'
+  ) {
+    const boundingInfo: any = await getBoundingInfo('record', instance)
+    const offsetX = e.touches[0].clientX - boundingInfo.left
+    const offsetY = e.touches[0].clientY - boundingInfo.top
+    if (
+      offsetX < 0 ||
+      offsetX > boundingInfo.width ||
+      offsetY < 0 ||
+      offsetY > boundingInfo.height
+    ) {
+      recordCancel()
+    }
+  }
+}
+
+const touchEnd = async (e: TouchEvent) => {
+  if (props.mode !== 'touch') return
+  recordEnd()
+}
+
+const touchCancel = () => {
+  if (props.mode !== 'touch') return
+  recordCancel()
+}
+
+const recordStart = async () => {
   if (status.value !== 'idle') return
 
   status.value = 'auth'
@@ -72,27 +120,7 @@ const touchStart = async () => {
   }
 }
 
-const touchmove = async (e: TouchEvent) => {
-  if (
-    status.value === 'auth' ||
-    status.value === 'wakeup' ||
-    status.value === 'start'
-  ) {
-    const boundingInfo: any = await getBoundingInfo('record', instance)
-    const offsetX = e.touches[0].clientX - boundingInfo.left
-    const offsetY = e.touches[0].clientY - boundingInfo.top
-    if (
-      offsetX < 0 ||
-      offsetX > boundingInfo.width ||
-      offsetY < 0 ||
-      offsetY > boundingInfo.height
-    ) {
-      touchCancel()
-    }
-  }
-}
-
-const touchEnd = () => {
+const recordEnd = () => {
   if (status.value === 'auth' || status.value === 'wakeup') {
     status.value = 'stop'
   }
@@ -102,7 +130,7 @@ const touchEnd = () => {
   }
 }
 
-const touchCancel = () => {
+const recordCancel = () => {
   if (status.value === 'auth' || status.value === 'wakeup') {
     status.value = 'cancel'
   }
