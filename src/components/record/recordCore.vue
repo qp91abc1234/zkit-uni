@@ -37,11 +37,9 @@ const emits = defineEmits<{
 
 const options: any = {
   duration: 10000,
-  sampleRate: 16000,
+  sampleRate: 8000,
   numberOfChannels: 1,
-  encodeBitRate: 96000,
-  format: 'mp3',
-  frameSize: 50
+  format: 'wav'
 }
 const status = ref<'idle' | 'auth' | 'wakeup' | 'start' | 'stop' | 'cancel'>(
   'idle'
@@ -49,6 +47,7 @@ const status = ref<'idle' | 'auth' | 'wakeup' | 'start' | 'stop' | 'cancel'>(
 const instance = getCurrentInstance()
 const recorderManager = uni.getRecorderManager()
 const audioCtx = useAudio()
+let authRet
 
 const click = () => {
   if (props.mode !== 'click') return
@@ -99,7 +98,7 @@ const recordStart = async () => {
   if (status.value !== 'idle') return
 
   status.value = 'auth'
-  const authRet = await getAuthInfo('scope.record')
+  authRet = authRet === undefined ? await getAuthInfo('scope.record') : authRet
   if (authRet !== true) {
     setAuthInfo('scope.record')
     status.value = 'idle'
