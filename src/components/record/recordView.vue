@@ -6,7 +6,6 @@
           <view
             class="center"
             :class="{
-              ready: scope === 'auth' || scope === 'wakeup',
               start: scope === 'start'
             }"
           >
@@ -56,9 +55,6 @@ const recordEnd = async (src: string) => {
         color: antiquewhite;
         background-color: palevioletred;
         line-height: 150rpx;
-        &.ready {
-          background-color: beige;
-        }
         &.start {
           background-color: brown;
         }

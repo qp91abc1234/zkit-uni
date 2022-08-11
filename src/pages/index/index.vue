@@ -11,9 +11,9 @@ import { useAudio } from '@/common/utils/useAudio'
 const audioCtx = useAudio()
 
 const recordEnd = (src: string) => {
-  setTimeout(() => {
-    audioCtx.play(src)
-  }, 1000)
+  // setTimeout(() => {
+  //   audioCtx.play(src)
+  // }, 1000)
 }
 </script>
 

@@ -47,7 +47,6 @@ const status = ref<'idle' | 'auth' | 'wakeup' | 'start' | 'stop' | 'cancel'>(
 const instance = getCurrentInstance()
 const recorderManager = uni.getRecorderManager()
 const audioCtx = useAudio()
-let authRet
 
 const click = () => {
   if (props.mode !== 'click') return
@@ -98,7 +97,7 @@ const recordStart = async () => {
   if (status.value !== 'idle') return
 
   status.value = 'auth'
-  authRet = authRet === undefined ? await getAuthInfo('scope.record') : authRet
+  const authRet = await getAuthInfo('scope.record')
   if (authRet !== true) {
     setAuthInfo('scope.record')
     status.value = 'idle'
