@@ -1,12 +1,12 @@
 <template>
   <view class="zkit-com-record-view">
-    <RecordCore class="record" @record-end="recordEnd" @auth-deny="authDeny">
+    <RecordCore class="record" @record-end="recordEnd" @error="handleError">
       <template #default="{ scope }">
         <view class="record-btn">
           <view
             class="center"
             :class="{
-              start: scope === 'start'
+              start: scope === 'record'
             }"
           >
             record
@@ -28,12 +28,17 @@ const recordEnd = async (src: string) => {
   emits('record-end', src)
 }
 
-const authDeny = (e) => {
-  uni.showModal({
-    title: '提示',
-    content: '请通过右上角胶囊按钮，进入设置开启授权~',
-    showCancel: false
-  })
+const handleError = (msg, e) => {
+  if (msg === 'auth-deny') {
+    uni.showModal({
+      title: '提示',
+      content: '请通过右上角胶囊按钮，进入设置开启授权~',
+      showCancel: false
+    })
+  }
+  if (msg === 'time-not-enough') {
+    uni.showToast({ title: '时长太短' })
+  }
 }
 </script>
 

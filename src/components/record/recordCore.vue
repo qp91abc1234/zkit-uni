@@ -24,7 +24,7 @@ const props = withDefaults(
     duration?: number
   }>(),
   {
-    mode: 'click',
+    mode: 'touch',
     minTime: 1000,
     duration: 10000
   }
@@ -32,7 +32,7 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   (event: 'record-end', src: string): void
-  (event: 'auth-deny', res): void
+  (event: 'error', msg, err?): void
 }>()
 
 const options: any = {
@@ -43,14 +43,11 @@ const options: any = {
   format: 'mp3',
   frameSize: 50
 }
-const status = ref<'idle' | 'ready' | 'wakeup' | 'start' | 'stop' | 'cancel'>(
-  'idle'
-)
+const status = ref<'idle' | 'ready' | 'record' | 'stop' | 'cancel'>('idle')
 const instance = getCurrentInstance()
 const recorderManager = uni.getRecorderManager()
 const authStore = useAuthStore()
 const audioCtx = useAudio()
-let startTime
 
 const click = () => {
   if (props.mode !== 'click') return
@@ -68,11 +65,7 @@ const touchStart = async (e: TouchEvent) => {
 
 const touchMove = async (e: TouchEvent) => {
   if (props.mode !== 'touch') return
-  if (
-    status.value === 'ready' ||
-    status.value === 'wakeup' ||
-    status.value === 'start'
-  ) {
+  if (status.value === 'ready' || status.value === 'record') {
     const boundingInfo: any = await getBoundingInfo('record', instance)
     const offsetX = e.touches[0].clientX - boundingInfo.left
     const offsetY = e.touches[0].clientY - boundingInfo.top
@@ -117,14 +110,14 @@ const recordStart = async () => {
       authRet = await authStore.setAuthInfo('scope.record')
     } else {
       // 授权被拒绝
-      emits('auth-deny', authRet)
+      emits('error', 'auth-deny', authRet)
     }
     status.value = 'idle'
     return
   }
 
   if (status.value === 'ready') {
-    status.value = 'wakeup'
+    status.value = 'record'
     options.durantion = props.duration
     // 唤醒录音
     // 1、start 后一段延时唤醒录音设备
@@ -137,10 +130,7 @@ const recordEnd = () => {
   if (status.value === 'ready') {
     status.value = 'idle'
   }
-  if (status.value === 'wakeup') {
-    status.value = 'stop'
-  }
-  if (status.value === 'start') {
+  if (status.value === 'record') {
     status.value = 'stop'
     recorderManager.stop()
   }
@@ -150,33 +140,25 @@ const recordCancel = () => {
   if (status.value === 'ready') {
     status.value = 'idle'
   }
-  if (status.value === 'wakeup') {
-    status.value = 'cancel'
-  }
-  if (status.value === 'start') {
+  if (status.value === 'record') {
     status.value = 'cancel'
     recorderManager.stop()
   }
 }
 
 recorderManager.onStart(() => {
-  if (status.value === 'wakeup') {
-    status.value = 'start'
-    startTime = new Date().getTime()
-  } else {
+  if (status.value !== 'record') {
     // 唤醒录音阶段取消录音
     recorderManager.stop()
   }
 })
 
 recorderManager.onStop((res) => {
-  // status === stop: 松手后录音结束
-  // status === record: 超时后录音结束
-  if (
-    (new Date().getTime() - startTime > props.minTime &&
-      status.value === 'stop') ||
-    status.value === 'start'
-  ) {
+  if (res.duration <= props.minTime) {
+    emits('error', 'time-not-enough')
+  } else if (status.value === 'stop' || status.value === 'record') {
+    // status === stop: 松手后录音结束
+    // status === record: 超时后录音结束
     emits('record-end', res.tempFilePath)
   }
   status.value = 'idle'
