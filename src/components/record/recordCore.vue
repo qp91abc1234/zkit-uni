@@ -24,7 +24,7 @@ const props = withDefaults(
     duration?: number
   }>(),
   {
-    mode: 'touch',
+    mode: 'click',
     minTime: 1000,
     duration: 10000
   }
