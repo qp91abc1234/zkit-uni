@@ -6,7 +6,8 @@
           <view
             class="center"
             :class="{
-              start: scope === 'wakeup' || scope === 'start'
+              ready: scope === 'ready',
+              start: scope === 'record'
             }"
           >
             record
@@ -63,6 +64,9 @@ const authDeny = (e) => {
         color: antiquewhite;
         background-color: palevioletred;
         line-height: 150rpx;
+        &.ready {
+          background-color: navy;
+        }
         &.start {
           background-color: brown;
         }
