@@ -35,9 +35,11 @@ const emits = defineEmits<{
 
 const options: any = {
   duration: 10000,
-  sampleRate: 8000,
+  sampleRate: 16000,
   numberOfChannels: 1,
-  format: 'wav'
+  encodeBitRate: 96000,
+  format: 'mp3',
+  frameSize: 50
 }
 const status = ref<'idle' | 'auth' | 'wakeup' | 'start' | 'stop' | 'cancel'>(
   'idle'
@@ -95,6 +97,14 @@ const touchCancel = () => {
 const recordStart = async () => {
   if (status.value !== 'idle') return
 
+  // 停止音频，否则会延时录音设备唤醒
+  audioCtx.stop()
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(null)
+    }, 100)
+  })
+
   status.value = 'auth'
   let authRet: any = await authStore.getAuthInfo('scope.record')
   if (authRet !== true) {
@@ -111,7 +121,6 @@ const recordStart = async () => {
 
   if (status.value === 'auth') {
     status.value = 'wakeup'
-    audioCtx.stop()
     options.durantion = props.duration
     // 唤醒录音
     // 1、start 后一段延时唤醒录音设备

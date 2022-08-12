@@ -6,7 +6,7 @@
           <view
             class="center"
             :class="{
-              start: scope === 'start'
+              start: scope === 'wakeup'
             }"
           >
             record
