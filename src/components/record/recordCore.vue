@@ -97,6 +97,8 @@ const touchCancel = () => {
 const recordStart = async () => {
   if (status.value !== 'idle') return
 
+  status.value = 'auth'
+
   // 停止音频，否则会延时录音设备唤醒
   audioCtx.stop()
   await new Promise((resolve) => {
@@ -105,7 +107,6 @@ const recordStart = async () => {
     }, 100)
   })
 
-  status.value = 'auth'
   let authRet: any = await authStore.getAuthInfo('scope.record')
   if (authRet !== true) {
     if (authRet === undefined) {
@@ -126,15 +127,15 @@ const recordStart = async () => {
     // 1、start 后一段延时唤醒录音设备
     // 2、唤醒录音设备后一段延时触发 onStart 回调
     recorderManager.start(options)
-  } else {
-    // 授权判断期间录音取消
-    status.value = 'idle'
   }
 }
 
 const recordEnd = () => {
-  if (status.value === 'auth' || status.value === 'wakeup') {
-    status.value = 'stop'
+  if (status.value === 'auth') {
+    status.value = 'idle'
+  }
+  if (status.value === 'wakeup') {
+    status.value = 'cancel'
   }
   if (status.value === 'start') {
     status.value = 'stop'
@@ -143,7 +144,10 @@ const recordEnd = () => {
 }
 
 const recordCancel = () => {
-  if (status.value === 'auth' || status.value === 'wakeup') {
+  if (status.value === 'auth') {
+    status.value = 'idle'
+  }
+  if (status.value === 'wakeup') {
     status.value = 'cancel'
   }
   if (status.value === 'start') {
@@ -157,7 +161,6 @@ recorderManager.onStart(() => {
     status.value = 'start'
   } else {
     // 唤醒录音阶段取消录音
-    status.value = 'cancel'
     recorderManager.stop()
   }
 })
