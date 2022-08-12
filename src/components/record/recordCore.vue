@@ -24,7 +24,7 @@ const props = withDefaults(
     duration?: number
   }>(),
   {
-    mode: 'touch',
+    mode: 'click',
     minTime: 1000,
     duration: 10000
   }
@@ -43,7 +43,9 @@ const options: any = {
   format: 'mp3',
   frameSize: 50
 }
-const status = ref<'idle' | 'ready' | 'record' | 'stop' | 'cancel'>('idle')
+const status = ref<'idle' | 'ready' | 'wakeup' | 'start' | 'stop' | 'cancel'>(
+  'idle'
+)
 const instance = getCurrentInstance()
 const recorderManager = uni.getRecorderManager()
 const authStore = useAuthStore()
@@ -66,7 +68,11 @@ const touchStart = async (e: TouchEvent) => {
 
 const touchMove = async (e: TouchEvent) => {
   if (props.mode !== 'touch') return
-  if (status.value === 'ready' || status.value === 'record') {
+  if (
+    status.value === 'ready' ||
+    status.value === 'wakeup' ||
+    status.value === 'start'
+  ) {
     const boundingInfo: any = await getBoundingInfo('record', instance)
     const offsetX = e.touches[0].clientX - boundingInfo.left
     const offsetY = e.touches[0].clientY - boundingInfo.top
@@ -118,8 +124,7 @@ const recordStart = async () => {
   }
 
   if (status.value === 'ready') {
-    status.value = 'record'
-    startTime = new Date().getTime()
+    status.value = 'wakeup'
     options.durantion = props.duration
     // 唤醒录音
     // 1、start 后一段延时唤醒录音设备
@@ -132,7 +137,10 @@ const recordEnd = () => {
   if (status.value === 'ready') {
     status.value = 'idle'
   }
-  if (status.value === 'record') {
+  if (status.value === 'wakeup') {
+    status.value = 'stop'
+  }
+  if (status.value === 'start') {
     status.value = 'stop'
     recorderManager.stop()
   }
@@ -142,14 +150,20 @@ const recordCancel = () => {
   if (status.value === 'ready') {
     status.value = 'idle'
   }
-  if (status.value === 'record') {
+  if (status.value === 'wakeup') {
+    status.value = 'cancel'
+  }
+  if (status.value === 'start') {
     status.value = 'cancel'
     recorderManager.stop()
   }
 }
 
 recorderManager.onStart(() => {
-  if (status.value !== 'record') {
+  if (status.value === 'wakeup') {
+    status.value = 'start'
+    startTime = new Date().getTime()
+  } else {
     // 唤醒录音阶段取消录音
     recorderManager.stop()
   }
@@ -161,7 +175,7 @@ recorderManager.onStop((res) => {
   if (
     (new Date().getTime() - startTime > props.minTime &&
       status.value === 'stop') ||
-    status.value === 'record'
+    status.value === 'start'
   ) {
     emits('record-end', res.tempFilePath)
   }
