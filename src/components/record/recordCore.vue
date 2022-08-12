@@ -12,8 +12,11 @@
 </template>
 <script setup lang="ts">
 import { ref, getCurrentInstance } from 'vue'
-import { useAuthStore } from '@/pinia/authStore'
-import { getBoundingInfo } from '@/common/utils/uniUtils'
+import {
+  getBoundingInfo,
+  getAuthInfo,
+  setAuthInfo
+} from '@/common/utils/uniUtils'
 import { useAudio } from '@/common/utils/useAudio'
 import { RECORD_SCOPE, RECORD_STATUS, ERR_MSG } from './recordConstant'
 
@@ -46,8 +49,8 @@ const options: any = {
 const status = ref<RECORD_STATUS>(RECORD_STATUS.IDLE)
 const instance = getCurrentInstance()
 const recorderManager = uni.getRecorderManager()
-const authStore = useAuthStore()
 const audioCtx = useAudio()
+let authRet
 
 const click = () => {
   if (props.mode !== 'click') return
@@ -106,11 +109,11 @@ const recordStart = async () => {
     }, 100)
   })
 
-  let authRet: any = await authStore.getAuthInfo(RECORD_SCOPE)
+  authRet = await getAuthInfo(RECORD_SCOPE)
   if (authRet !== true) {
     if (authRet === undefined) {
       // 未进行授权判断
-      authRet = await authStore.setAuthInfo(RECORD_SCOPE)
+      authRet = await setAuthInfo(RECORD_SCOPE)
     } else {
       // 授权被拒绝
       emits('error', ERR_MSG.AUTH_DENY, authRet)
