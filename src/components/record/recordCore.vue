@@ -15,7 +15,7 @@ import { ref, getCurrentInstance } from 'vue'
 import { useAuthStore } from '@/pinia/authStore'
 import { getBoundingInfo } from '@/common/utils/uniUtils'
 import { useAudio } from '@/common/utils/useAudio'
-import { RECORD_STATUS, ERR_MSG } from './recordConstant'
+import { RECORD_SCOPE, RECORD_STATUS, ERR_MSG } from './recordConstant'
 
 const props = withDefaults(
   defineProps<{
@@ -106,11 +106,11 @@ const recordStart = async () => {
     }, 100)
   })
 
-  let authRet: any = await authStore.getAuthInfo('scope.record')
+  let authRet: any = await authStore.getAuthInfo(RECORD_SCOPE)
   if (authRet !== true) {
     if (authRet === undefined) {
       // 未进行授权判断
-      authRet = await authStore.setAuthInfo('scope.record')
+      authRet = await authStore.setAuthInfo(RECORD_SCOPE)
     } else {
       // 授权被拒绝
       emits('error', ERR_MSG.AUTH_DENY, authRet)

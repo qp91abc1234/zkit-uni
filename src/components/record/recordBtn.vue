@@ -6,8 +6,7 @@
           <view
             class="center"
             :class="{
-              start:
-                scope >= RECORD_STATUS.READY && scope <= RECORD_STATUS.RECORD
+              start: scope === RECORD_STATUS.RECORD
             }"
           >
             record
