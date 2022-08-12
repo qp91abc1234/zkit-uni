@@ -10,12 +10,12 @@
     <slot :scope="status"></slot>
   </view>
 </template>
-
 <script setup lang="ts">
 import { ref, getCurrentInstance } from 'vue'
 import { useAuthStore } from '@/pinia/authStore'
 import { getBoundingInfo } from '@/common/utils/uniUtils'
 import { useAudio } from '@/common/utils/useAudio'
+import { RECORD_STATUS, ERR_MSG } from './recordConstant'
 
 const props = withDefaults(
   defineProps<{
@@ -43,7 +43,7 @@ const options: any = {
   format: 'mp3',
   frameSize: 50
 }
-const status = ref<'idle' | 'ready' | 'record' | 'stop' | 'cancel'>('idle')
+const status = ref<RECORD_STATUS>(RECORD_STATUS.IDLE)
 const instance = getCurrentInstance()
 const recorderManager = uni.getRecorderManager()
 const authStore = useAuthStore()
@@ -51,7 +51,7 @@ const audioCtx = useAudio()
 
 const click = () => {
   if (props.mode !== 'click') return
-  if (status.value === 'idle') {
+  if (status.value === RECORD_STATUS.IDLE) {
     recordStart()
   } else {
     recordEnd()
@@ -65,7 +65,10 @@ const touchStart = async (e: TouchEvent) => {
 
 const touchMove = async (e: TouchEvent) => {
   if (props.mode !== 'touch') return
-  if (status.value === 'ready' || status.value === 'record') {
+  if (
+    status.value === RECORD_STATUS.READY ||
+    status.value === RECORD_STATUS.RECORD
+  ) {
     const boundingInfo: any = await getBoundingInfo('record', instance)
     const offsetX = e.touches[0].clientX - boundingInfo.left
     const offsetY = e.touches[0].clientY - boundingInfo.top
@@ -91,9 +94,9 @@ const touchCancel = () => {
 }
 
 const recordStart = async () => {
-  if (status.value !== 'idle') return
+  if (status.value !== RECORD_STATUS.IDLE) return
 
-  status.value = 'ready'
+  status.value = RECORD_STATUS.READY
 
   // 停止音频，否则会延时录音设备唤醒
   audioCtx.stop()
@@ -110,14 +113,14 @@ const recordStart = async () => {
       authRet = await authStore.setAuthInfo('scope.record')
     } else {
       // 授权被拒绝
-      emits('error', 'auth-deny', authRet)
+      emits('error', ERR_MSG.AUTH_DENY, authRet)
     }
-    status.value = 'idle'
+    status.value = RECORD_STATUS.IDLE
     return
   }
 
-  if (status.value === 'ready') {
-    status.value = 'record'
+  if (status.value === RECORD_STATUS.READY) {
+    status.value = RECORD_STATUS.RECORD
     options.durantion = props.duration
     // 唤醒录音
     // 1、start 后一段延时唤醒录音设备
@@ -127,27 +130,27 @@ const recordStart = async () => {
 }
 
 const recordEnd = () => {
-  if (status.value === 'ready') {
-    status.value = 'idle'
+  if (status.value === RECORD_STATUS.READY) {
+    status.value = RECORD_STATUS.IDLE
   }
-  if (status.value === 'record') {
-    status.value = 'stop'
+  if (status.value === RECORD_STATUS.RECORD) {
+    status.value = RECORD_STATUS.STOP
     recorderManager.stop()
   }
 }
 
 const recordCancel = () => {
-  if (status.value === 'ready') {
-    status.value = 'idle'
+  if (status.value === RECORD_STATUS.READY) {
+    status.value = RECORD_STATUS.IDLE
   }
-  if (status.value === 'record') {
-    status.value = 'cancel'
+  if (status.value === RECORD_STATUS.RECORD) {
+    status.value = RECORD_STATUS.CANCEL
     recorderManager.stop()
   }
 }
 
 recorderManager.onStart(() => {
-  if (status.value !== 'record') {
+  if (status.value !== RECORD_STATUS.RECORD) {
     // 唤醒录音阶段取消录音
     recorderManager.stop()
   }
@@ -155,13 +158,16 @@ recorderManager.onStart(() => {
 
 recorderManager.onStop((res) => {
   if (res.duration <= props.minTime) {
-    emits('error', 'time-not-enough')
-  } else if (status.value === 'stop' || status.value === 'record') {
+    emits('error', ERR_MSG.TIME_NOT_ENOUGH)
+  } else if (
+    status.value === RECORD_STATUS.STOP ||
+    status.value === RECORD_STATUS.RECORD
+  ) {
     // status === stop: 松手后录音结束
     // status === record: 超时后录音结束
     emits('record-end', res.tempFilePath)
   }
-  status.value = 'idle'
+  status.value = RECORD_STATUS.IDLE
 })
 </script>
 

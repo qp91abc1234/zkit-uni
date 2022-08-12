@@ -6,7 +6,7 @@
           <view
             class="center"
             :class="{
-              start: scope === 'record'
+              start: scope === RECORD_STATUS.RECORD
             }"
           >
             record
@@ -19,6 +19,7 @@
 
 <script setup lang="ts">
 import RecordCore from '@/components/record/recordCore.vue'
+import { RECORD_STATUS, ERR_MSG } from './recordConstant'
 
 const emits = defineEmits<{
   (event: 'record-end', src: string): void
@@ -29,14 +30,14 @@ const recordEnd = async (src: string) => {
 }
 
 const handleError = (msg, e) => {
-  if (msg === 'auth-deny') {
+  if (msg === ERR_MSG.AUTH_DENY) {
     uni.showModal({
       title: '提示',
       content: '请通过右上角胶囊按钮，进入设置开启授权~',
       showCancel: false
     })
   }
-  if (msg === 'time-not-enough') {
+  if (msg === ERR_MSG.TIME_NOT_ENOUGH) {
     uni.showToast({ title: '时长太短' })
   }
 }
