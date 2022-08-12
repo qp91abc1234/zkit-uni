@@ -13,11 +13,8 @@
 
 <script setup lang="ts">
 import { ref, getCurrentInstance } from 'vue'
-import {
-  getBoundingInfo,
-  getAuthInfo,
-  setAuthInfo
-} from '@/common/utils/uniUtils'
+import { useAuthStore } from '@/pinia/authStore'
+import { getBoundingInfo } from '@/common/utils/uniUtils'
 import { useAudio } from '@/common/utils/useAudio'
 
 const props = withDefaults(
@@ -26,13 +23,14 @@ const props = withDefaults(
     duration?: number
   }>(),
   {
-    mode: 'click',
+    mode: 'touch',
     duration: 10000
   }
 )
 
 const emits = defineEmits<{
   (event: 'record-end', src: string): void
+  (event: 'auth-deny', res): void
 }>()
 
 const options: any = {
@@ -46,6 +44,7 @@ const status = ref<'idle' | 'auth' | 'wakeup' | 'start' | 'stop' | 'cancel'>(
 )
 const instance = getCurrentInstance()
 const recorderManager = uni.getRecorderManager()
+const authStore = useAuthStore()
 const audioCtx = useAudio()
 
 const click = () => {
@@ -97,9 +96,15 @@ const recordStart = async () => {
   if (status.value !== 'idle') return
 
   status.value = 'auth'
-  const authRet = await getAuthInfo('scope.record')
+  let authRet: any = await authStore.getAuthInfo('scope.record')
   if (authRet !== true) {
-    setAuthInfo('scope.record')
+    if (authRet === undefined) {
+      // 未进行授权判断
+      authRet = await authStore.setAuthInfo('scope.record')
+    } else {
+      // 授权被拒绝
+      emits('auth-deny', authRet)
+    }
     status.value = 'idle'
     return
   }

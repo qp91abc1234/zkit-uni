@@ -18,7 +18,6 @@ const recordEnd = (src: string) => {
 
 const click = () => {
   // 语音播放结束需调用 stop，否则下次录音会卡
-  // 录音授权逻辑调整
   // 录音样式修改
   audioCtx.play(path)
 }

@@ -1,6 +1,6 @@
 <template>
   <view class="zkit-com-record-view">
-    <RecordCore class="record" @record-end="recordEnd">
+    <RecordCore class="record" @record-end="recordEnd" @auth-deny="authDeny">
       <template #default="{ scope }">
         <view class="record-btn">
           <view
@@ -26,6 +26,14 @@ const emits = defineEmits<{
 
 const recordEnd = async (src: string) => {
   emits('record-end', src)
+}
+
+const authDeny = (e) => {
+  uni.showModal({
+    title: '提示',
+    content: '请通过右上角胶囊按钮，进入设置开启授权~',
+    showCancel: false
+  })
 }
 </script>
 
