@@ -9,7 +9,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-console.log('zcc = ', uni.getRecorderManager())
 const title = ref('Hello')
 </script>
 

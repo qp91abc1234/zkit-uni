@@ -1,5 +1,5 @@
 {
-  "name": "@mono/demo",
+  "name": "@mono/comlib",
   "version": "0.0.0",
   "scripts": {
     "dev:app": "uni -p app",

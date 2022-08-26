@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
-onLaunch(() => {  
+onLaunch(() => {
   console.log("App Launch");
 });
 onShow(() => {
