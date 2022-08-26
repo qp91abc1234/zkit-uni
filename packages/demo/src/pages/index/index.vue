@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import xxx from '@mono/comlib'
+import xxx from '@mono/commonlib'
 
 const title = ref('Hello')
 </script>

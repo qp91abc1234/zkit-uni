@@ -124,7 +124,7 @@ importers:
       '@dcloudio/uni-quickapp-webview': 3.0.0-alpha-3050320220729001
       '@dcloudio/uni-stacktracey': 3.0.0-alpha-3050320220729001
       '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3050320220729001
-      '@mono/comlib': workspace:*
+      '@mono/commonlib': workspace:*
       typescript: ^4.7.4
       vite: ^2.9.14
       vue: ^3.2.37
@@ -143,7 +143,7 @@ importers:
       '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3050320220729001_vue@3.2.37
       '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3050320220729001_vue@3.2.37
       '@dcloudio/uni-quickapp-webview': 3.0.0-alpha-3050320220729001_vue@3.2.37
-      '@mono/comlib': link:../comlib
+      '@mono/commonlib': link:../commonlib
       vue: 3.2.37
       vue-i18n: 9.2.2_vue@3.2.37
       vuex: 4.0.2_vue@3.2.37
