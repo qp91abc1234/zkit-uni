@@ -1,6 +1,6 @@
 <template>
   <view class="content">
-    <navigator :url="'/pages/videoPlayer/index'">videoPlayer</navigator>
+    <navigator :url="'/pages/record/index'">record</navigator>
   </view>
 </template>
 

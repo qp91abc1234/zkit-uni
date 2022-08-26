@@ -7,9 +7,9 @@
 			}
 		},
     {
-			"path": "pages/videoPlayer/index",
+			"path": "pages/record/index",
 			"style": {
-				"navigationBarTitleText": "video-player"
+				"navigationBarTitleText": "record"
 			}
 		}
 	],

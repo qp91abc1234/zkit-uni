@@ -1,3 +1,7 @@
-import xxx from './components/index.vue'
+import RecordBtn from './components/record/recordBtn.vue'
+import { useAudio } from './common/utils/useAudio'
+import { ERR_MSG } from './components/record/recordConstant'
 
-export default xxx
+export const cRecordBtn = RecordBtn
+export const cUseAudio = useAudio
+export const cERR_MSG = ERR_MSG

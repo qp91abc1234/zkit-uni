@@ -1,18 +1,20 @@
 <template>
   <view class="content">
-    <cRecordBtn
+    <RecordBtn
       class="record-btn"
       @record-end="recordEnd"
       @error="handleError"
-    ></cRecordBtn>
+    ></RecordBtn>
     <view class="play-btn" @click="click">play</view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { cRecordBtn, cUseAudio, cERR_MSG } from '@mono/commonlib'
+import RecordBtn from '../../components/record/recordBtn.vue'
+import { useAudio } from '../../common/utils/useAudio'
+import { ERR_MSG } from '../../components/record/recordConstant'
 
-const audioCtx = cUseAudio()
+const audioCtx = useAudio()
 let path = ''
 
 const recordEnd = (src: string) => {
@@ -20,14 +22,14 @@ const recordEnd = (src: string) => {
 }
 
 const handleError = (msg, e) => {
-  if (msg === cERR_MSG.AUTH_DENY) {
+  if (msg === ERR_MSG.AUTH_DENY) {
     uni.showModal({
       title: '提示',
       content: '请通过右上角胶囊按钮，进入设置开启授权~',
       showCancel: false
     })
   }
-  if (msg === cERR_MSG.TIME_NOT_ENOUGH) {
+  if (msg === ERR_MSG.TIME_NOT_ENOUGH) {
     uni.showToast({ title: '时长太短' })
   }
 }
