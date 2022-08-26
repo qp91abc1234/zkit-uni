@@ -1,5 +1,6 @@
 {
-  "name": "@mono/comlib",
+  "name": "@mono/commonlib",
+  "main": "src/index.ts",
   "version": "0.0.0",
   "scripts": {
     "dev:app": "uni -p app",
