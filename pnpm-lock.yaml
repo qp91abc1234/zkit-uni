@@ -173,7 +173,7 @@ importers:
       '@dcloudio/uni-quickapp-webview': 3.0.0-alpha-3050320220729001
       '@dcloudio/uni-stacktracey': 3.0.0-alpha-3050320220729001
       '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3050320220729001
-      '@mono/commonlib': workspace:*
+      '@mono/commonlib': workspace:0.0.0
       typescript: ^4.7.4
       vite: ^2.9.14
       vue: ^3.2.37
