@@ -102,7 +102,8 @@ const recordStart = async () => {
   status.value = RECORD_STATUS.READY
 
   // 停止音频，否则会延时录音设备唤醒
-  audioCtx.stop()
+  audioCtx.pauseMusic()
+  audioCtx.stopAllEffect()
   await new Promise((resolve) => {
     setTimeout(() => {
       resolve(null)

@@ -17,6 +17,10 @@ const demoCfg = ref([
   {
     title: 'record',
     url: '/pages/record/record'
+  },
+  {
+    title: 'audio',
+    url: '/pages/audio/audio'
   }
 ])
 
