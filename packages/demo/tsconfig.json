@@ -15,6 +15,7 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"],
+      "@lib/*": ["./node_modules/@mono/commonlib/src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
