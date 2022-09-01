@@ -1,11 +1,14 @@
 <template>
-  <view class="content">
-    <xxx></xxx>
-  </view>
+  <xxx class="main"></xxx>
 </template>
 
 <script setup lang="ts">
-import xxx from '@lib/components/tst/tst.vue'
+import xxx from '@lib/pages/record/index.vue'
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  .main {
+    width:100%;
+    height: 100%;
+  }
+</style>

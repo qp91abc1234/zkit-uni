@@ -1,4 +1,4 @@
-import { isJsonStr } from '@/common/utils'
+import { isJsonStr } from '@lib/common/utils'
 
 export const useUpload = () => {
   const getUploadUrl = async (url, filename) => {

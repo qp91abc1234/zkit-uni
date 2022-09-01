@@ -10,9 +10,9 @@
 </template>
 
 <script setup lang="ts">
-import RecordBtn from '../../components/record/recordBtn.vue'
-import { useAudio } from '../../common/utils/useAudio'
-import { ERR_MSG } from '../../components/record/recordConstant'
+import RecordBtn from '@lib/components/record/recordBtn.vue'
+import { useAudio } from '@lib/common/utils/useAudio'
+import { ERR_MSG } from '@lib/components/record/recordConstant'
 
 const audioCtx = useAudio()
 let path = ''

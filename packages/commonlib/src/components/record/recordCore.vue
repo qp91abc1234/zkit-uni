@@ -16,8 +16,8 @@ import {
   getBoundingInfo,
   getAuthInfo,
   setAuthInfo
-} from '../../common/utils/uniUtils'
-import { useAudio } from '../../common/utils/useAudio'
+} from '@lib/common/utils/uniUtils'
+import { useAudio } from '@lib/common/utils/useAudio'
 import { RECORD_SCOPE, RECORD_STATUS, ERR_MSG } from './recordConstant'
 
 const props = withDefaults(
