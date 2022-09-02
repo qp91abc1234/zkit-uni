@@ -1,9 +1,13 @@
 <template>
-  <xxx class="main"></xxx>
+  <xxx class="main">
+    {{ hello }}
+  </xxx>
 </template>
 
 <script setup lang="ts">
-import xxx from '@lib/pages/record/record.vue'
+import { ref } from 'vue'
+
+const hello = ref('hello world~')
 </script>
 
 <style scoped lang="scss">

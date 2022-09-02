@@ -10,36 +10,35 @@ const semver = require('semver')
 const { prompt } = require('enquirer')
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const pkgsPath = path.resolve(__dirname, '../packages');
+const pkgsPath = path.resolve(__dirname, '../packages')
 
-const copyFolder = (path, targetPath, filename)=>{
-  let packages = fs.readdirSync(path);
-  targetPath = targetPath + (filename ? '\\' + filename : '');
+const copyFolder = (fromPath, toPath)=>{
+  let packages = fs.readdirSync(fromPath)
   if (Array.isArray(packages) && packages.length > 0) {
-    packages = packages.filter(item => !item.endsWith('map') && item !== 'stats.json');
+    packages = packages.filter(item => !item.endsWith('map') && item !== 'stats.json')
   } else {
-    console.log(chalk.red('\nFiles is not exist'));
-    return;
+    console.log(chalk.red('\nFiles is not exist'))
+    return
   }
 
-  if (!fs.existsSync(targetPath)) {
-    fs.mkdirSync(targetPath);
+  if (!fs.existsSync(toPath)) {
+    fs.mkdirSync(toPath)
   }
 
   // 遍历原目录下的文件名
   packages.forEach((item, index) => {
-    var originPath = path + '\\' + item; // 获取原文件路径
-    var _targetPath = targetPath + '\\' + item;
-    var file = fs.statSync(originPath); // 获取原目录下文件的文件信息
+    var originPath = fromPath + '\\' + item // 获取原文件路径
+    var targetPath = toPath + '\\' + item
+    var file = fs.statSync(originPath) // 获取原目录下文件的文件信息
     if (file.isFile()) {
       // 文件
-      fs.copyFileSync(originPath, _targetPath);
+      fs.copyFileSync(originPath, targetPath)
     } else if (file.isDirectory()) {
       // 目录
-      if (!fs.existsSync(_targetPath)) {
-        fs.mkdirSync(_targetPath);
+      if (!fs.existsSync(targetPath)) {
+        fs.mkdirSync(targetPath);
       }
-      copyFolder(originPath, _targetPath);
+      copyFolder(originPath, targetPath);
     }
   });
 }
@@ -48,7 +47,7 @@ const inputProjName = async ()=>{
   const { projName } = await prompt({
     type: 'input',
     name: 'projName',
-    message: 'Input version'
+    message: 'Input Project Name'
   })
 
   return projName
@@ -58,7 +57,7 @@ const inputAppId = async ()=>{
   const { appId } = await prompt({
     type: 'input',
     name: 'appId',
-    message: 'Input version'
+    message: 'Input AppId'
   })
 
   return appId
@@ -68,8 +67,11 @@ const main = async ()=>{
   const projName = await inputProjName()
   const appId = await inputAppId()
   
-  const projPath = path.resolve(pkgsPath, `./${projName}`);
-  const pkgJsonPath = path.resolve(projPath, `./package.json`);
+  const templatePath = path.resolve(pkgsPath, `./template`)
+  const projPath = path.resolve(pkgsPath, `./${projName}`)
+  copyFolder(templatePath, projPath)
+
+  const pkgJsonPath = path.resolve(projPath, `./package.json`)
   const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'))
 }
 
