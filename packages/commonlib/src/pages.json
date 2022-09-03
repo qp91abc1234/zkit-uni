@@ -1,19 +1,19 @@
 {
-	"pages": [
+  "pages": [
     {
       "path": "pages/home/home"
     },
     {
-			"path": "pages/record/record"
-		},
+      "path": "pages/record/record"
+    },
     {
-			"path": "pages/audio/audio"
-		}
-	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	}
+      "path": "pages/audio/audio"
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  }
 }
