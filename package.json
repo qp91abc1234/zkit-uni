@@ -1,7 +1,9 @@
 {
   "name": "zkit-uni",
   "version": "0.0.0",
-  "scripts": {},
+  "scripts": {
+    "add-proj": "node ./scripts/addProj.mjs"
+  },
   "devDependencies": {
     "@dcloudio/types": "^3.0.13",
     "@types/node": "^18.6.3",

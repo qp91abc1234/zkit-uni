@@ -3,31 +3,14 @@ import chalk from "chalk";
 import { fileURLToPath } from 'url'
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-const args = require('minimist')(process.argv.slice(2))
 const fs = require('fs')
 const path = require('path')
-const semver = require('semver')
 const { prompt } = require('enquirer')
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pkgsPath = path.resolve(__dirname, '../packages')
 
-function deleteFolder(path) {
-  if (!fs.existsSync(path)) return
-  var files = [];
-  files = fs.readdirSync(path);
-  files.forEach(function(file) {
-    var curPath = path + '\\' + file;
-    if (fs.statSync(curPath).isDirectory()) {
-      deleteFolder(curPath);
-    } else {
-      fs.unlinkSync(curPath);
-    }
-  });
-  fs.rmdirSync(path)
-}
-
-const copyFolder = (fromPath, toPath)=>{
+const copyFolder = (fromPath, toPath)=>{  
   let packages = fs.readdirSync(fromPath)
   if (Array.isArray(packages) && packages.length > 0) {
     packages = packages.filter(item => item !== 'dist' && item !== 'node_modules')
@@ -72,13 +55,10 @@ const inputAppId = async ()=>{
   return appId
 }
 
-const main = async ()=>{
-  const projName = await inputProjName()
-  const appId = await inputAppId()
-  
+const createProj = (projName, appId)=>{
   const templatePath = path.resolve(pkgsPath, `./template`)
   const projPath = path.resolve(pkgsPath, `./${projName}`)
-  deleteFolder(projPath)
+  fs.rmSync(projPath, {force: true, recursive: true})
   copyFolder(templatePath, projPath)
 
   const pkgJsonPath = path.resolve(projPath, `./package.json`)
@@ -90,6 +70,28 @@ const main = async ()=>{
   const manifestJson = JSON.parse(fs.readFileSync(manifestJsonPath, 'utf-8'))
   manifestJson['mp-weixin'].appid = appId
   fs.writeFileSync(manifestJsonPath, JSON.stringify(manifestJson, null, 2) + '\n')
+}
+
+const installDeps = async (projName)=>{
+  const { yes } = await prompt({
+    type: 'confirm',
+    name: 'yes',
+    initial: 'true',
+    message: `Install Deps?`
+  })
+
+  if(yes) {
+    await execa('pnpm', ['install', '-F', `${projName}`], { stdio: 'inherit' })
+  }
+}
+
+const main = async ()=>{
+  const projName = await inputProjName()
+  const appId = await inputAppId()
+  createProj(projName, appId)  
+  await installDeps(projName)  
+
+  console.log(chalk.green('\nProject create success~'))
 }
 
 main()

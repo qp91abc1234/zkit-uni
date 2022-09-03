@@ -166,6 +166,57 @@ importers:
       typescript: registry.npmmirror.com/typescript/4.8.2
       vite: registry.npmmirror.com/vite/2.9.15
 
+  packages/xxx:
+    specifiers:
+      '@dcloudio/types': ^3.0.13
+      '@dcloudio/uni-app': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-app-plus': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-automator': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-cli-shared': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-components': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-h5': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-mp-alipay': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-mp-baidu': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-mp-kuaishou': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-mp-lark': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-mp-qq': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-quickapp-webview': 3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-stacktracey': 3.0.0-alpha-3050520220824001
+      '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3050520220824001
+      '@mono/commonlib': workspace:*
+      typescript: ^4.7.4
+      vite: ^2.9.14
+      vue: ^3.2.37
+      vue-i18n: ^9.1.9
+      vuex: ^4.0.2
+    dependencies:
+      '@dcloudio/uni-app': registry.npmmirror.com/@dcloudio/uni-app/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@dcloudio/uni-app-plus': registry.npmmirror.com/@dcloudio/uni-app-plus/3.0.0-alpha-3050520220824001_vite@2.9.15+vue@3.2.38
+      '@dcloudio/uni-components': registry.npmmirror.com/@dcloudio/uni-components/3.0.0-alpha-3050520220824001
+      '@dcloudio/uni-h5': registry.npmmirror.com/@dcloudio/uni-h5/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@dcloudio/uni-mp-alipay': registry.npmmirror.com/@dcloudio/uni-mp-alipay/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@dcloudio/uni-mp-baidu': registry.npmmirror.com/@dcloudio/uni-mp-baidu/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@dcloudio/uni-mp-kuaishou': registry.npmmirror.com/@dcloudio/uni-mp-kuaishou/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@dcloudio/uni-mp-lark': registry.npmmirror.com/@dcloudio/uni-mp-lark/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@dcloudio/uni-mp-qq': registry.npmmirror.com/@dcloudio/uni-mp-qq/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@dcloudio/uni-mp-toutiao': registry.npmmirror.com/@dcloudio/uni-mp-toutiao/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@dcloudio/uni-mp-weixin': registry.npmmirror.com/@dcloudio/uni-mp-weixin/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@dcloudio/uni-quickapp-webview': registry.npmmirror.com/@dcloudio/uni-quickapp-webview/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@mono/commonlib': link:../commonlib
+      vue: registry.npmmirror.com/vue/3.2.38
+      vue-i18n: registry.npmmirror.com/vue-i18n/9.2.2_vue@3.2.38
+      vuex: registry.npmmirror.com/vuex/4.0.2_vue@3.2.38
+    devDependencies:
+      '@dcloudio/types': registry.npmmirror.com/@dcloudio/types/3.0.13
+      '@dcloudio/uni-automator': registry.npmmirror.com/@dcloudio/uni-automator/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@dcloudio/uni-cli-shared': registry.npmmirror.com/@dcloudio/uni-cli-shared/3.0.0-alpha-3050520220824001_vue@3.2.38
+      '@dcloudio/uni-stacktracey': registry.npmmirror.com/@dcloudio/uni-stacktracey/3.0.0-alpha-3050520220824001
+      '@dcloudio/vite-plugin-uni': registry.npmmirror.com/@dcloudio/vite-plugin-uni/3.0.0-alpha-3050520220824001_vite@2.9.15+vue@3.2.38
+      typescript: registry.npmmirror.com/typescript/4.8.2
+      vite: registry.npmmirror.com/vite/2.9.15
+
 packages:
 
   /@ampproject/remapping/2.2.0:
