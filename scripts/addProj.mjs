@@ -55,18 +55,33 @@ const inputAppId = async ()=>{
   return appId
 }
 
-const createProj = (projName, appId)=>{
+const selTemplate = async ()=>{
   const templatePath = path.resolve(pkgsPath, `./template`)
-  const projPath = path.resolve(pkgsPath, `./${projName}`)
-  fs.rmSync(projPath, {force: true, recursive: true})
-  copyFolder(templatePath, projPath)
+  if (!fs.existsSync(templatePath)) return ''
 
-  const pkgJsonPath = path.resolve(projPath, `./package.json`)
+  const templateNameArr = fs.readdirSync(templatePath);
+  const { templateName } = await prompt({
+    type: 'select',
+    name: 'templateName',
+    message: 'Select Template Name',
+    choices: templateNameArr
+  })
+
+  return templateName
+}
+
+const createProj = (templateName, projName, appId)=>{
+  const fromPath = path.resolve(pkgsPath, `./template/${templateName}`)
+  const targetPath = path.resolve(pkgsPath, `./${projName}`)
+  fs.rmSync(targetPath, {force: true, recursive: true})
+  copyFolder(fromPath, targetPath)
+
+  const pkgJsonPath = path.resolve(targetPath, `./package.json`)
   const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'))
   pkgJson.name = projName
   fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2) + '\n')
 
-  const manifestJsonPath = path.resolve(projPath, `./src/manifest.json`)
+  const manifestJsonPath = path.resolve(targetPath, `./src/manifest.json`)
   const manifestJson = JSON.parse(fs.readFileSync(manifestJsonPath, 'utf-8'))
   manifestJson['mp-weixin'].appid = appId
   fs.writeFileSync(manifestJsonPath, JSON.stringify(manifestJson, null, 2) + '\n')
@@ -86,12 +101,21 @@ const installDeps = async (projName)=>{
 }
 
 const main = async ()=>{
-  const projName = await inputProjName()
-  const appId = await inputAppId()
-  createProj(projName, appId)  
-  await installDeps(projName)  
+  try {
+    const projName = await inputProjName()
+    const appId = await inputAppId()
+    const templateName = await selTemplate()
+    if(!templateName) {
+      console.log(chalk.red('\nNo Template!!!'))
+      return 
+    }
+    createProj(templateName, projName, appId)  
+    await installDeps(projName)  
 
-  console.log(chalk.green('\nProject create success~'))
+    console.log(chalk.green('\nProject create success~'))
+  } catch(err) {
+    console.log(chalk.red(`\n${err}`))
+  }
 }
 
 main()

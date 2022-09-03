@@ -115,7 +115,7 @@ importers:
       typescript: 4.8.2
       vite: 2.9.15
 
-  packages/template:
+  packages/template/default:
     specifiers:
       '@dcloudio/types': ^3.0.13
       '@dcloudio/uni-app': 3.0.0-alpha-3050520220824001
@@ -153,7 +153,7 @@ importers:
       '@dcloudio/uni-mp-toutiao': registry.npmmirror.com/@dcloudio/uni-mp-toutiao/3.0.0-alpha-3050520220824001_vue@3.2.38
       '@dcloudio/uni-mp-weixin': registry.npmmirror.com/@dcloudio/uni-mp-weixin/3.0.0-alpha-3050520220824001_vue@3.2.38
       '@dcloudio/uni-quickapp-webview': registry.npmmirror.com/@dcloudio/uni-quickapp-webview/3.0.0-alpha-3050520220824001_vue@3.2.38
-      '@mono/commonlib': link:../commonlib
+      '@mono/commonlib': link:../../commonlib
       vue: registry.npmmirror.com/vue/3.2.38
       vue-i18n: registry.npmmirror.com/vue-i18n/9.2.2_vue@3.2.38
       vuex: registry.npmmirror.com/vuex/4.0.2_vue@3.2.38
