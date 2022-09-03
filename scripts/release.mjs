@@ -12,10 +12,25 @@ const { prompt } = require('enquirer')
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pkgsPath = path.resolve(__dirname, '../packages')
 
+function deleteFolder(path) {
+  if (!fs.existsSync(path)) return
+  var files = [];
+  files = fs.readdirSync(path);
+  files.forEach(function(file) {
+    var curPath = path + '\\' + file;
+    if (fs.statSync(curPath).isDirectory()) {
+      deleteFolder(curPath);
+    } else {
+      fs.unlinkSync(curPath);
+    }
+  });
+  fs.rmdirSync(path)
+}
+
 const copyFolder = (fromPath, toPath)=>{
   let packages = fs.readdirSync(fromPath)
   if (Array.isArray(packages) && packages.length > 0) {
-    packages = packages.filter(item => !item.endsWith('map') && item !== 'stats.json')
+    packages = packages.filter(item => item !== 'dist' && item !== 'node_modules')
   } else {
     console.log(chalk.red('\nFiles is not exist'))
     return
@@ -25,19 +40,13 @@ const copyFolder = (fromPath, toPath)=>{
     fs.mkdirSync(toPath)
   }
 
-  // 遍历原目录下的文件名
-  packages.forEach((item, index) => {
-    var originPath = fromPath + '\\' + item // 获取原文件路径
+  packages.forEach((item) => {
+    var originPath = fromPath + '\\' + item
     var targetPath = toPath + '\\' + item
-    var file = fs.statSync(originPath) // 获取原目录下文件的文件信息
+    var file = fs.statSync(originPath)
     if (file.isFile()) {
-      // 文件
       fs.copyFileSync(originPath, targetPath)
     } else if (file.isDirectory()) {
-      // 目录
-      if (!fs.existsSync(targetPath)) {
-        fs.mkdirSync(targetPath);
-      }
       copyFolder(originPath, targetPath);
     }
   });
@@ -69,10 +78,18 @@ const main = async ()=>{
   
   const templatePath = path.resolve(pkgsPath, `./template`)
   const projPath = path.resolve(pkgsPath, `./${projName}`)
+  deleteFolder(projPath)
   copyFolder(templatePath, projPath)
 
   const pkgJsonPath = path.resolve(projPath, `./package.json`)
   const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'))
+  pkgJson.name = projName
+  fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2) + '\n')
+
+  const manifestJsonPath = path.resolve(projPath, `./src/manifest.json`)
+  const manifestJson = JSON.parse(fs.readFileSync(manifestJsonPath, 'utf-8'))
+  manifestJson['mp-weixin'].appid = appId
+  fs.writeFileSync(manifestJsonPath, JSON.stringify(manifestJson, null, 2) + '\n')
 }
 
 main()
