@@ -8,7 +8,7 @@ const path = require('path')
 const { prompt } = require('enquirer')
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const pkgsPath = path.resolve(__dirname, '../packages')
+const pkgsPath = path.resolve(__dirname, '../projects')
 
 const copyFolder = (fromPath, toPath)=>{  
   let packages = fs.readdirSync(fromPath)
@@ -56,7 +56,7 @@ const inputAppId = async ()=>{
 }
 
 const selTemplate = async ()=>{
-  const templatePath = path.resolve(pkgsPath, `./template`)
+  const templatePath = path.resolve(__dirname, `../template`)
   if (!fs.existsSync(templatePath)) return ''
 
   const templateNameArr = fs.readdirSync(templatePath);
@@ -71,7 +71,7 @@ const selTemplate = async ()=>{
 }
 
 const createProj = (templateName, projName, appId)=>{
-  const fromPath = path.resolve(pkgsPath, `./template/${templateName}`)
+  const fromPath = path.resolve(__dirname, `../template/${templateName}`)
   const targetPath = path.resolve(pkgsPath, `./${projName}`)
   fs.rmSync(targetPath, {force: true, recursive: true})
   copyFolder(fromPath, targetPath)
