@@ -2,12 +2,6 @@
   "pages": [
     {
       "path": "pages/home/home"
-    },
-    {
-      "path": "pages/record/record"
-    },
-    {
-      "path": "pages/audio/audio"
     }
   ],
   "globalStyle": {
