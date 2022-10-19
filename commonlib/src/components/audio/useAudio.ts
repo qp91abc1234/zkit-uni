@@ -59,11 +59,11 @@ export const useEffect = () => {
     audioContext[path].src = path
     audioContext[path].play()
     audioContext[path].onEnded(() => {
+      audioContext[path].destroy()
+      delete audioContext[path]
       if (cb) {
         cb()
       }
-      audioContext[path].destroy()
-      delete audioContext[path]
     })
   }
 
