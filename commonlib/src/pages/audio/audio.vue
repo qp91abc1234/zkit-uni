@@ -1,7 +1,7 @@
 <template>
-  <div class="page">
+  <view class="page">
     <Audio v-model:is-mute="isMute" :bg-music="bgMusic"></Audio>
-  </div>
+  </view>
 </template>
 
 <script setup lang="ts">

@@ -8,6 +8,9 @@
     },
     {
       "path": "pages/anim/anim"
+    },
+    {
+      "path": "pages/load/load"
     }
   ],
   "globalStyle": {

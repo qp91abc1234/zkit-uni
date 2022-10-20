@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <view class="page">
     <button
       class="item"
       v-for="item in cfg"
@@ -8,7 +8,7 @@
     >
       {{ item.name }}
     </button>
-  </div>
+  </view>
 </template>
 
 <script setup lang="ts">

@@ -1,7 +1,7 @@
 <template>
-  <div class="page">
+  <view class="page">
     <canvas id="canvas" canvas-id="canvas" type="2d" class="canvas"></canvas>
-  </div>
+  </view>
 </template>
 
 <script setup lang="ts">
