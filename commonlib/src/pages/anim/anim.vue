@@ -76,7 +76,7 @@ onUnload(() => {
 </script>
 
 <style scoped lang="scss">
-.home {
+.anim {
   position: absolute;
   width: 100%;
   height: 100%;
