@@ -49,12 +49,9 @@ onUnload(() => {
 })
 
 const errored = (event: object, item: string) => {
-  loadedNum++
-  console.log(`[load.vue][errored] progress = ${loadedNum}/${allNum.value}`)
   console.error('[load][errored]: file load error ', item)
-  if (loadedNum === allNum.value && progress === 99) {
-    emits('end')
-  }
+  loadedNum++
+  loadedJudge('errored')
 }
 
 const loadImg = () => {
@@ -122,9 +119,13 @@ const loadedJudge = (name) => {
   }
 }
 
-loadAudio()
-loadCanvas()
-setTimeout(updateProgress, props.time / 100)
+const init = () => {
+  loadAudio()
+  loadCanvas()
+  setTimeout(updateProgress, props.time / 100)
+}
+
+init()
 </script>
 
 <style lang="scss" scoped>
