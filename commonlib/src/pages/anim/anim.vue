@@ -1,5 +1,5 @@
 <template>
-  <div class="anim">
+  <div class="page">
     <canvas id="canvas" canvas-id="canvas" type="2d" class="canvas"></canvas>
   </div>
 </template>
@@ -76,7 +76,7 @@ onUnload(() => {
 </script>
 
 <style scoped lang="scss">
-.anim {
+.page {
   position: absolute;
   width: 100%;
   height: 100%;

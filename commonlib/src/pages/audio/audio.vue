@@ -1,5 +1,5 @@
 <template>
-  <div class="audio">
+  <div class="page">
     <Audio v-model:is-mute="isMute" :bg-music="bgMusic"></Audio>
   </div>
 </template>
@@ -15,7 +15,7 @@ const bgMusic = ref(
 </script>
 
 <style scoped lang="scss">
-.home {
+.page {
   position: absolute;
   width: 100%;
   height: 100%;

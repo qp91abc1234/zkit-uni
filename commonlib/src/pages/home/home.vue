@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="page">
     <button
       class="item"
       v-for="item in cfg"
@@ -39,7 +39,7 @@ initCfg()
 </script>
 
 <style scoped lang="scss">
-.home {
+.page {
   position: absolute;
   display: flex;
   flex-direction: column;
