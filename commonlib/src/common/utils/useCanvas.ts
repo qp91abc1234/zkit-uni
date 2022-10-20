@@ -85,8 +85,10 @@ export const useCanvas = (id = 'canvas', frameNum = 40) => {
   }
 
   async function drawImg(src: string, x: number, y: number, w = 0, h = 0) {
+    if (!resObj[src] || !resObj[src].loaded) {
+      await preloadRes([src])
+    }
     const res = resObj[src]
-    if (!res.loaded) return
     w = w === 0 ? res.w : w
     h = h === 0 ? res.h : h
     ctx.drawImage(res.img, rpx2px(x), rpx2px(y), rpx2px(w), rpx2px(h))
