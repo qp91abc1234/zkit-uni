@@ -5,6 +5,9 @@
     },
     {
       "path": "pages/audio/audio"
+    },
+    {
+      "path": "pages/anim/anim"
     }
   ],
   "globalStyle": {

@@ -35,6 +35,8 @@ module.exports = {
     camelcase: 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
-    'vue/multi-word-component-names': 'off'
+    'vue/multi-word-component-names': 'off',
+    'no-loop-func': 'off',
+    'no-unused-expressions': 'off'
   }
 }

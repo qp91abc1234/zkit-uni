@@ -61,9 +61,7 @@ export const useEffect = () => {
     audioContext[path].onEnded(() => {
       audioContext[path].destroy()
       delete audioContext[path]
-      if (cb) {
-        cb()
-      }
+      cb && cb()
     })
   }
 
