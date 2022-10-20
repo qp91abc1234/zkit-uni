@@ -10,7 +10,7 @@ import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { useCanvas } from '@lib/common/utils/useCanvas'
 
 const bossStatus = ref(0)
-const canvas = useCanvas('canvas', 20)
+const canvas = useCanvas()
 
 const getAnims = () => {
   function getResWebpArr(name, num) {
@@ -67,7 +67,7 @@ onLoad(async () => {
         }
       }
     )
-  })
+  }, 20)
 })
 
 onUnload(() => {

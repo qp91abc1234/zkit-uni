@@ -1,11 +1,5 @@
 <template>
   <view class="page">
-    <canvas
-      id="canvas"
-      canvas-id="canvas"
-      type="2d"
-      class="load-canvas"
-    ></canvas>
     <Load
       :res-img="resImg"
       :res-canvas="resCanvas"
@@ -50,9 +44,5 @@ const end = () => {
   position: absolute;
   width: 100%;
   height: 100%;
-  .load-canvas {
-    position: absolute;
-    height: 0;
-  }
 }
 </style>

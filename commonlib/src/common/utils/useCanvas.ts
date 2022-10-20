@@ -4,7 +4,7 @@ const resObj: {
 const animObj: { [key: string]: { cur: number; total: number } } = {}
 let loopId = 0
 
-export const useCanvas = (id = 'canvas', frameNum = 40) => {
+export const useCanvas = () => {
   const screenW = uni.getSystemInfoSync().screenWidth
   const dpr = uni.getSystemInfoSync().pixelRatio
   let canvasW: number
@@ -17,9 +17,13 @@ export const useCanvas = (id = 'canvas', frameNum = 40) => {
     return (screenW / 750) * val
   }
 
-  function setup() {
+  function setup(id = 'canvas', inst: any = null) {
     return new Promise((resolve) => {
-      wx.createSelectorQuery()
+      let query = wx.createSelectorQuery()
+      if (inst) {
+        query = query.in(inst)
+      }
+      query
         .select(`#${id}`)
         .fields({
           node: true,
@@ -71,7 +75,7 @@ export const useCanvas = (id = 'canvas', frameNum = 40) => {
     return Promise.all(arr)
   }
 
-  function render(renderCore?: () => void) {
+  function render(renderCore?: () => void, frameNum = 40) {
     const renderLoop = () => {
       const timestamp = new Date().getTime()
       if (timestamp - t > 1000 / frameNum) {

@@ -1,5 +1,6 @@
 <template>
   <view class="load">
+    <canvas id="load-canvas" type="2d"></canvas>
     <image
       v-for="item in resImg"
       :key="item"
@@ -11,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, getCurrentInstance } from 'vue'
 import { onUnload } from '@dcloudio/uni-app'
 import { useCanvas } from '@lib/common/utils/useCanvas'
 
@@ -35,6 +36,7 @@ const emits = defineEmits<{
   (event: 'end'): void
 }>()
 
+const inst = getCurrentInstance()
 const canvas = useCanvas()
 let progress = 0
 let loadedNum = 0
@@ -61,7 +63,7 @@ const loadImg = () => {
 
 const loadCanvas = async () => {
   if (props.resCanvas.length <= 0) return
-  await canvas.setup()
+  await canvas.setup('load-canvas', inst)
   await canvas.preloadRes(props.resCanvas)
 
   loadedNum += props.resCanvas.length
