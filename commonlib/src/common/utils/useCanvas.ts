@@ -20,7 +20,7 @@ export const useCanvas = (id = 'canvas', frameNum = 40) => {
   function setup() {
     return new Promise((resolve) => {
       wx.createSelectorQuery()
-        .select('#canvas')
+        .select(`#${id}`)
         .fields({
           node: true,
           size: true
