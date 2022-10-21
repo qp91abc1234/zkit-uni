@@ -7,7 +7,7 @@
       "path": "pages/audio/audio"
     },
     {
-      "path": "pages/anim/anim"
+      "path": "pages/render/render"
     },
     {
       "path": "pages/load/load"
