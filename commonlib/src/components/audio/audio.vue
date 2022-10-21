@@ -13,7 +13,7 @@
 import { onBeforeUnmount } from 'vue'
 import { onHide, onShow } from '@dcloudio/uni-app'
 import { useLibStore } from '@lib/pinia/libStore'
-import { MUSIC_STATUS, useMusic, useEffect } from './useAudio'
+import { MUSIC_STATUS, useMusic, useEffect } from '@lib/common/utils/useAudio'
 
 const props = withDefaults(
   defineProps<{
