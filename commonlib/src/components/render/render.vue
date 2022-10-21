@@ -1,7 +1,5 @@
 <template>
-  <view class="anim">
-    <canvas class="anim-canvas" id="anim-canvas" type="2d"></canvas>
-  </view>
+  <canvas class="anim-canvas" id="anim-canvas" type="2d"></canvas>
 </template>
 
 <script setup lang="ts">
@@ -44,13 +42,9 @@ onUnload(() => {
 </script>
 
 <style lang="scss" scoped>
-.anim {
+.anim-canvas {
   position: absolute;
   width: 100%;
   height: 100%;
-  .anim-canvas {
-    width: 100%;
-    height: 100%;
-  }
 }
 </style>
