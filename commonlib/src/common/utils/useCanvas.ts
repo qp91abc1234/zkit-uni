@@ -1,9 +1,18 @@
 import { useLibStore } from '@lib/pinia/libStore'
 
+enum LOAD_STATUS {
+  UNLOAD,
+  LOADING,
+  SUCC,
+  FAIL
+}
+
 const resObj: {
-  [key: string]: { img: any; w: number; h: number; loaded: boolean }
+  [key: string]: { img: any; w: number; h: number; loaded: LOAD_STATUS }
 } = {}
-const animObj: { [key: string]: { cur: number; total: number } } = {}
+const animObj: {
+  [key: string]: { cur: number; total: number }
+} = {}
 let loopId = 0
 
 export const useCanvas = () => {
@@ -48,29 +57,39 @@ export const useCanvas = () => {
     for (let i = 0; i < res.length; i++) {
       arr[i] = new Promise((resolve) => {
         const src = res[i]
-        if (resObj[src]) {
-          resolve(resObj[src])
-          return
-        }
-        resObj[src] = {
+        resObj[src] = resObj[src] || {
           img: canvas.createImage(),
           w: 0,
           h: 0,
-          loaded: false
+          loaded: LOAD_STATUS.UNLOAD
         }
+
+        if (
+          resObj[src].loaded === LOAD_STATUS.LOADING ||
+          resObj[src].loaded === LOAD_STATUS.SUCC
+        ) {
+          resolve(resObj[src])
+          return
+        }
+
+        if (resObj[src].loaded === LOAD_STATUS.FAIL) {
+          resObj[src].img = canvas.createImage()
+        }
+
         resObj[src].img.onload = () => {
           resObj[src].w = resObj[src].img.width
           resObj[src].h = resObj[src].img.height
-          resObj[src].loaded = true
+          resObj[src].loaded = LOAD_STATUS.SUCC
           resolve(resObj[src])
         }
         resObj[src].img.onerror = () => {
           resObj[src].w = -1
           resObj[src].h = -1
-          resObj[src].loaded = false
+          resObj[src].loaded = LOAD_STATUS.FAIL
           resolve(resObj[src])
         }
         resObj[src].img.src = src
+        resObj[src].loaded = LOAD_STATUS.LOADING
       })
     }
     return Promise.all(arr)
@@ -90,9 +109,11 @@ export const useCanvas = () => {
   }
 
   async function drawImg(src: string, x: number, y: number, w = 0, h = 0) {
-    if (!resObj[src] || !resObj[src].loaded) {
-      await preloadRes([src])
+    const ret = await preloadRes([src])
+    if (ret[0].loaded !== LOAD_STATUS.SUCC) {
+      return
     }
+
     const res = resObj[src]
     w = w === 0 ? res.w : w
     h = h === 0 ? res.h : h
@@ -108,9 +129,19 @@ export const useCanvas = () => {
     h = 0,
     cb: any = undefined
   ) {
+    const ret = await preloadRes(src)
+    const isFail = ret.some((val) => {
+      return val.loaded !== LOAD_STATUS.SUCC
+    })
+
+    if (isFail) {
+      return
+    }
+
     if (!animObj[key]) {
       animObj[key] = { cur: 0, total: src.length }
     }
+
     drawImg(src[animObj[key].cur++], x, y, w, h)
     if (animObj[key].cur === animObj[key].total) {
       cb && cb()
