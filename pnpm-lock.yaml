@@ -82,6 +82,7 @@ importers:
       '@dcloudio/uni-stacktracey': 3.0.0-alpha-3060420220922009
       '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3060420220922009
       miniprogram-api-typings: ^3.3.2
+      pinia: ^2.0.23
       typescript: ^4.8.3
       vite: ^3.1.7
       vue: ^3.2.40
@@ -98,6 +99,7 @@ importers:
       '@dcloudio/uni-mp-toutiao': 3.0.0-alpha-3060420220922009_vue@3.2.41
       '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3060420220922009_vue@3.2.41
       '@dcloudio/uni-quickapp-webview': 3.0.0-alpha-3060420220922009_vue@3.2.41
+      pinia: 2.0.23_l7r24p6nevbtlimqmqcwa3ouhu
       vue: 3.2.41
     devDependencies:
       '@dcloudio/types': 3.0.16
@@ -129,6 +131,7 @@ importers:
       '@dcloudio/uni-stacktracey': 3.0.0-alpha-3060420220922009
       '@dcloudio/vite-plugin-uni': 3.0.0-alpha-3060420220922009
       '@mono/commonlib': workspace:*
+      pinia: ^2.0.23
       typescript: ^4.8.3
       vite: ^3.1.7
       vue: ^3.2.40
@@ -146,6 +149,7 @@ importers:
       '@dcloudio/uni-mp-weixin': 3.0.0-alpha-3060420220922009_vue@3.2.41
       '@dcloudio/uni-quickapp-webview': 3.0.0-alpha-3060420220922009_vue@3.2.41
       '@mono/commonlib': link:../../commonlib
+      pinia: 2.0.23_l7r24p6nevbtlimqmqcwa3ouhu
       vue: 3.2.41
     devDependencies:
       '@dcloudio/types': 3.0.16
@@ -1480,8 +1484,8 @@ packages:
       '@vue/compiler-dom': 3.2.41
       '@vue/shared': 3.2.41
 
-  /@vue/devtools-api/6.2.1:
-    resolution: {integrity: sha512-OEgAMeQXvCoJ+1x8WyQuVZzFo0wcyCmUR3baRVLmKBo1LmYZWMlRiXlux5jd0fqVJu6PfDbOrZItVqUEzLobeQ==}
+  /@vue/devtools-api/6.4.5:
+    resolution: {integrity: sha512-JD5fcdIuFxU4fQyXUu3w2KpAJHzTVdN+p4iOX2lMWSHMOoQdMAcpFLZzm9Z/2nmsoZ1a96QEhZ26e50xLBsgOQ==}
     dev: false
 
   /@vue/reactivity-transform/3.2.40:
@@ -3781,6 +3785,24 @@ packages:
     resolution: {integrity: sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==}
     engines: {node: '>=0.10.0'}
 
+  /pinia/2.0.23_l7r24p6nevbtlimqmqcwa3ouhu:
+    resolution: {integrity: sha512-N15hFf4o5STrxpNrib1IEb1GOArvPYf1zPvQVRGOO1G1d74Ak0J0lVyalX/SmrzdT4Q0nlEFjbURsmBmIGUR5Q==}
+    peerDependencies:
+      '@vue/composition-api': ^1.4.0
+      typescript: '>=4.4.4'
+      vue: ^2.6.14 || ^3.2.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@vue/devtools-api': 6.4.5
+      typescript: 4.8.4
+      vue: 3.2.41
+      vue-demi: 0.13.11_vue@3.2.41
+    dev: false
+
   /postcss-html/1.5.0:
     resolution: {integrity: sha512-kCMRWJRHKicpA166kc2lAVUGxDZL324bkj/pVOb6RhjB0Z5Krl7mN0AsVkBhVIRZZirY0lyQXG38HCVaoKVNoA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npm.taobao.org/postcss-html/-/postcss-html-1.5.0.tgz}
     engines: {node: ^12 || >=14}
@@ -4621,7 +4643,6 @@ packages:
     resolution: {integrity: sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /unbox-primitive/1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
@@ -4711,6 +4732,21 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
 
+  /vue-demi/0.13.11_vue@3.2.41:
+    resolution: {integrity: sha512-IR8HoEEGM65YY3ZJYAjMlKygDQn25D5ajNFNoKh9RSDMQtlzCxtfQjdQgv9jjK+m3377SsJXY8ysq8kLCZL25A==}
+    engines: {node: '>=12'}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      vue: 3.2.41
+    dev: false
+
   /vue-eslint-parser/9.0.3_eslint@8.23.0:
     resolution: {integrity: sha512-yL+ZDb+9T0ELG4VIFo/2anAOz8SvBdlqEnQnvJ3M7Scq56DvtjY0VY88bByRZB0D4J0u8olBcfrXTVONXsh4og==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npm.taobao.org/vue-eslint-parser/-/vue-eslint-parser-9.0.3.tgz}
     engines: {node: ^14.17.0 || >=16.0.0}
@@ -4734,7 +4770,7 @@ packages:
     peerDependencies:
       vue: ^3.2.0
     dependencies:
-      '@vue/devtools-api': 6.2.1
+      '@vue/devtools-api': 6.4.5
       vue: 3.2.41
     dev: false
 
