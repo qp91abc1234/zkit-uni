@@ -1,3 +1,5 @@
+import { useLibStore } from '@lib/pinia/libStore'
+
 const resObj: {
   [key: string]: { img: any; w: number; h: number; loaded: boolean }
 } = {}
@@ -5,8 +7,7 @@ const animObj: { [key: string]: { cur: number; total: number } } = {}
 let loopId = 0
 
 export const useCanvas = () => {
-  const screenW = uni.getSystemInfoSync().screenWidth
-  const dpr = uni.getSystemInfoSync().pixelRatio
+  const libStore = useLibStore()
   let canvasW: number
   let canvasH: number
   let canvas: any
@@ -14,7 +15,7 @@ export const useCanvas = () => {
   let t = 0
 
   function rpx2px(val: number) {
-    return (screenW / 750) * val
+    return (libStore.screenW / 750) * val
   }
 
   function setup(id = 'canvas', inst: any = null) {
@@ -34,9 +35,9 @@ export const useCanvas = () => {
           canvasH = res[0].height
           canvas = res[0].node
           ctx = canvas.getContext('2d')
-          canvas.width = canvasW * dpr
-          canvas.height = canvasH * dpr
-          ctx.scale(dpr, dpr)
+          canvas.width = canvasW * libStore.dpr
+          canvas.height = canvasH * libStore.dpr
+          ctx.scale(libStore.dpr, libStore.dpr)
           resolve(null)
         })
     })

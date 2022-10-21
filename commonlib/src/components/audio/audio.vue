@@ -1,6 +1,10 @@
 <template>
   <view class="audio">
-    <view v-if="isMute" class="btn mute" @click="changeStatus(true)"></view>
+    <view
+      v-if="libStore.isMute"
+      class="btn mute"
+      @click="changeStatus(true)"
+    ></view>
     <view v-else class="btn play" @click="changeStatus(false)"></view>
   </view>
 </template>
@@ -8,18 +12,17 @@
 <script setup lang="ts">
 import { onBeforeUnmount } from 'vue'
 import { onHide, onShow } from '@dcloudio/uni-app'
+import { useLibStore } from '@lib/pinia/libStore'
 import { MUSIC_STATUS, useMusic, useEffect } from './useAudio'
 
 const props = withDefaults(
   defineProps<{
-    isMute: boolean
     bgMusic: string
     isDestroy?: boolean
     isLoop?: boolean
     clickEffect?: string
   }>(),
   {
-    isMute: false,
     bgMusic: '',
     isDestroy: true,
     isLoop: true,
@@ -28,15 +31,12 @@ const props = withDefaults(
   }
 )
 
-const emits = defineEmits<{
-  (event: 'update:isMute', val: boolean): void
-}>()
-
+const libStore = useLibStore()
 const music = useMusic()
 const effect = useEffect()
 
 const changeStatus = (isPlay) => {
-  emits('update:isMute', !isPlay)
+  libStore.isMute = !isPlay
   if (!isPlay) {
     effect.play(props.clickEffect, () => {
       effect.mute(!isPlay)
@@ -55,7 +55,7 @@ const changeStatus = (isPlay) => {
 }
 
 onShow(() => {
-  if (props.isMute) return
+  if (libStore.isMute) return
   if (music.getStatus() === MUSIC_STATUS.STOP) {
     music.play(props.bgMusic, props.isLoop)
   }
@@ -65,7 +65,7 @@ onShow(() => {
 })
 
 onHide(() => {
-  if (props.isMute) return
+  if (libStore.isMute) return
   music.pause()
   effect.stop()
 })
@@ -77,8 +77,8 @@ onBeforeUnmount(() => {
 })
 
 const init = () => {
-  effect.mute(props.isMute)
-  if (!props.isMute) {
+  effect.mute(libStore.isMute)
+  if (!libStore.isMute) {
     music.play(props.bgMusic, props.isLoop)
   }
 }
