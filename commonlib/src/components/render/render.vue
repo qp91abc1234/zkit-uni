@@ -9,16 +9,15 @@ import { useCanvas } from '@lib/common/utils/useCanvas'
 
 const props = withDefaults(
   defineProps<{
-    res?: string[]
     frameNum?: number
   }>(),
   {
-    res: () => [],
     frameNum: 20
   }
 )
 
 const emits = defineEmits<{
+  (event: 'init', val: { preloadRes: typeof canvas.preloadRes }): void
   (
     event: 'render',
     val: { drawImg: typeof canvas.drawImg; drawAnim: typeof canvas.drawAnim }
@@ -30,7 +29,7 @@ const canvas = useCanvas()
 
 onLoad(async () => {
   await canvas.setup('anim-canvas', inst)
-  await canvas.preloadRes(props.res)
+  emits('init', { preloadRes: canvas.preloadRes })
   canvas.render(() => {
     emits('render', { drawImg: canvas.drawImg, drawAnim: canvas.drawAnim })
   }, props.frameNum)

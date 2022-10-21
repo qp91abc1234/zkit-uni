@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <Render class="render" :res="res" @render="render"></Render>
+    <Render class="render" @init="init" @render="render"></Render>
   </view>
 </template>
 
@@ -8,13 +8,8 @@
 import { ref } from 'vue'
 import Render from '@lib/components/render/render.vue'
 
-const bossStatus = ref(0)
-const animArr = getAnims()
-const res = ref([
-  ...animArr[0].resArr,
-  ...animArr[1].resArr,
-  ...animArr[2].resArr
-])
+const bossStatus = ref('bossIdleAnim')
+const anims = getAnims()
 
 function getAnims() {
   function getResWebpArr(name, num) {
@@ -30,39 +25,57 @@ function getAnims() {
   const bossIdleAnim = {
     width: 350,
     height: 543,
-    resArr: getResWebpArr('boss-idle', 26)
+    resArr: getResWebpArr('boss-idle', 26),
+    load: false
   }
 
   const bossInjureAnim = {
     width: 350,
     height: 543,
-    resArr: getResWebpArr('boss-injure', 25)
+    resArr: getResWebpArr('boss-injure', 25),
+    load: false
   }
 
   const bossDeadAnim = {
     width: 350,
     height: 543,
-    resArr: getResWebpArr('boss-dead', 26)
+    resArr: getResWebpArr('boss-dead', 26),
+    load: false
   }
 
-  return [bossIdleAnim, bossInjureAnim, bossDeadAnim]
+  return { bossIdleAnim, bossInjureAnim, bossDeadAnim }
 }
 
-const render = (canvas) => {
-  canvas.drawAnim(
-    `${bossStatus.value}`,
-    animArr[bossStatus.value].resArr,
-    0,
-    0,
-    animArr[bossStatus.value].width,
-    animArr[bossStatus.value].height,
-    () => {
-      bossStatus.value++
-      if (bossStatus.value === animArr.length) {
-        bossStatus.value = 0
+const init = async (val) => {
+  const { preloadRes } = val
+  await preloadRes(anims.bossIdleAnim.resArr)
+  anims.bossIdleAnim.load = true
+  await preloadRes(anims.bossInjureAnim.resArr)
+  anims.bossInjureAnim.load = true
+  await preloadRes(anims.bossDeadAnim.resArr)
+  anims.bossDeadAnim.load = true
+}
+
+const render = (val) => {
+  const { drawAnim } = val
+  anims[bossStatus.value].load &&
+    drawAnim(
+      `${bossStatus.value}`,
+      anims[bossStatus.value].resArr,
+      0,
+      0,
+      anims[bossStatus.value].width,
+      anims[bossStatus.value].height,
+      () => {
+        if (bossStatus.value === 'bossIdleAnim') {
+          bossStatus.value = 'bossInjureAnim'
+        } else if (bossStatus.value === 'bossInjureAnim') {
+          bossStatus.value = 'bossDeadAnim'
+        } else if (bossStatus.value === 'bossDeadAnim') {
+          bossStatus.value = 'bossIdleAnim'
+        }
       }
-    }
-  )
+    )
 }
 </script>
 
