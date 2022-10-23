@@ -1,5 +1,10 @@
 <template>
-  <canvas class="anim-canvas" id="anim-canvas" type="2d"></canvas>
+  <canvas
+    class="anim-canvas"
+    canvas-id="anim-canvas"
+    id="anim-canvas"
+    type="2d"
+  ></canvas>
 </template>
 
 <script setup lang="ts">

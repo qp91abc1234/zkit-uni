@@ -1,6 +1,6 @@
 <template>
   <view class="load">
-    <canvas id="load-canvas" type="2d"></canvas>
+    <canvas canvas-id="load-canvas" id="load-canvas" type="2d"></canvas>
     <image
       v-for="item in resImg"
       :key="item"

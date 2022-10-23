@@ -26,6 +26,11 @@ export const useCanvas = () => {
 
   function setup(id = 'canvas', inst: any = null) {
     return new Promise((resolve) => {
+      // #ifdef H5
+      ctx = uni.createCanvasContext(id, inst)
+      resolve(null)
+      // #endif
+      // #ifdef MP-WEIXIN
       let query = uni.createSelectorQuery()
       if (inst) {
         query = query.in(inst)
@@ -49,6 +54,7 @@ export const useCanvas = () => {
           ctx.scale(libStore.dpr, libStore.dpr)
           resolve(null)
         })
+      // #endif
     })
   }
 
@@ -57,12 +63,22 @@ export const useCanvas = () => {
     for (let i = 0; i < res.length; i++) {
       arr[i] = new Promise((resolve) => {
         const src = res[i]
+        // #ifdef H5
+        resObj[src] = resObj[src] || {
+          img: new Image(),
+          w: 0,
+          h: 0,
+          loaded: LOAD_STATUS.UNLOAD
+        }
+        // #endif
+        // #ifdef MP-WEIXIN
         resObj[src] = resObj[src] || {
           img: canvas.createImage(),
           w: 0,
           h: 0,
           loaded: LOAD_STATUS.UNLOAD
         }
+        // #endif
 
         if (
           resObj[src].loaded === LOAD_STATUS.LOADING ||
@@ -73,7 +89,12 @@ export const useCanvas = () => {
         }
 
         if (resObj[src].loaded === LOAD_STATUS.FAIL) {
+          // #ifdef H5
+          resObj[src].img = new Image()
+          // #endif
+          // #ifdef MP-WEIXIN
           resObj[src].img = canvas.createImage()
+          // #endif
         }
 
         resObj[src].img.onload = () => {
@@ -122,21 +143,41 @@ export const useCanvas = () => {
         ctx.clearRect(0, 0, canvasW, canvasH)
         renderCore && renderCore()
       }
+      // #ifdef H5
+      loopId = requestAnimationFrame(renderLoop)
+      // #endif
+      // #ifdef MP-WEIXIN
       loopId = canvas.requestAnimationFrame(renderLoop)
+      // #endif
     }
+    // #ifdef H5
+    loopId = requestAnimationFrame(renderLoop)
+    // #endif
+    // #ifdef MP-WEIXIN
     loopId = canvas.requestAnimationFrame(renderLoop)
+    // #endif
   }
 
   function drawImg(src: string, x: number, y: number, w = 0, h = 0) {
     const res = resObj[src]
     w = w === 0 ? res.w : w
     h = h === 0 ? res.h : h
+    // #ifdef H5
+    ctx.drawImage(src, rpx2px(x), rpx2px(y), rpx2px(w), rpx2px(h))
+    // #endif
+    // #ifdef MP-WEIXIN
     ctx.drawImage(res.img, rpx2px(x), rpx2px(y), rpx2px(w), rpx2px(h))
+    // #endif
   }
 
   function destroy() {
     if (loopId) {
+      // #ifdef H5
+      cancelAnimationFrame(loopId)
+      // #endif
+      // #ifdef MP-WEIXIN
       canvas.cancelAnimationFrame(loopId)
+      // #endif
       loopId = 0
     }
   }
