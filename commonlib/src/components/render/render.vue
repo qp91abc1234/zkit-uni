@@ -87,6 +87,7 @@ function addAnim(src: string[]) {
     cur: 0,
     total: src.length,
     count: -1,
+    pause: false,
     loopCb: () => {},
     ...defaultParams
   }
@@ -114,6 +115,9 @@ async function drawImg(val: IObj) {
 async function drawAnim(val: IObj) {
   if (val.type !== RENDER_TYPE.ANIM) return
   const item = val as IAnimObj
+  const cur = item.cur
+  const count = item.count
+
   if (item.cur === item.total) {
     item.count > 0 && item.count--
     if (item.count !== 0) {
@@ -125,6 +129,11 @@ async function drawAnim(val: IObj) {
     }
   } else {
     canvas.drawImg(item.src[item.cur++], item.x, item.y, item.w, item.h)
+  }
+
+  if (item.pause) {
+    item.cur = cur
+    item.count = count
   }
 }
 

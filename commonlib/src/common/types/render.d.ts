@@ -23,5 +23,6 @@ export interface IAnimObj extends IObj {
   cur: number
   total: number
   count: number
+  pause: boolean
   loopCb: () => void
 }
