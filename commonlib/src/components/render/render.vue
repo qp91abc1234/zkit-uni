@@ -8,6 +8,7 @@ import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { LOAD_STATUS, useCanvas } from '@lib/common/utils/useCanvas'
 import {
   RENDER_TYPE,
+  CB_TYPE,
   IObj,
   IImgObj,
   IAnimObj
@@ -62,6 +63,19 @@ onUnload(() => {
   canvas.destroy()
 })
 
+function preloadRes(src: string[], cb: () => void) {
+  Promise.resolve(canvas.preloadRes(src)).then((ret) => {
+    const isSucc = ret.every((res) => {
+      return res.loaded === LOAD_STATUS.SUCC
+    })
+    if (isSucc) {
+      cb()
+    } else {
+      console.error('[render.vue][preloadRes] preloadRes Fail~')
+    }
+  })
+}
+
 function addImg(src: string) {
   const imgObj: IImgObj = {
     type: RENDER_TYPE.IMG,
@@ -69,12 +83,8 @@ function addImg(src: string) {
     ...defaultParams
   }
 
-  Promise.resolve(canvas.preloadRes([imgObj.src])).then((ret) => {
-    if (ret[0].loaded === LOAD_STATUS.SUCC) {
-      queue.push(imgObj)
-    } else {
-      console.error('[render.vue][addImg] preloadRes Fail~')
-    }
+  preloadRes([imgObj.src], () => {
+    queue.push(imgObj)
   })
 
   return imgObj
@@ -88,31 +98,49 @@ function addAnim(src: string[]) {
     total: src.length,
     count: -1,
     pause: false,
-    loopCb: () => {},
+    cb: {},
+    changeAnim: (newSrc: string[]) => {
+      preloadRes(newSrc, () => {
+        animObj.src = newSrc
+        animObj.cur = 0
+        animObj.total = newSrc.length
+        animObj.count = -1
+        animObj.pause = false
+        animObj.cb[CB_TYPE.CHANGE_ANIM] &&
+          animObj.cb[CB_TYPE.CHANGE_ANIM].forEach((cb) => {
+            cb(animObj)
+          })
+      })
+    },
+    addCb: (key: CB_TYPE, val: Function) => {
+      animObj.cb[key] = animObj.cb[key] || []
+      animObj.cb[key].push(val)
+    },
+    removeCb: (key: CB_TYPE, val: Function) => {
+      if (animObj.cb[key]) {
+        const index = animObj.cb[key].indexOf(val)
+        if (index > 0) {
+          animObj.cb[key].splice(index, 1)
+        }
+      }
+    },
     ...defaultParams
   }
 
-  Promise.resolve(canvas.preloadRes(animObj.src)).then((ret) => {
-    const isSucc = ret.every((res) => {
-      return res.loaded === LOAD_STATUS.SUCC
-    })
-    if (isSucc) {
-      queue.push(animObj)
-    } else {
-      console.error('[render.vue][addAnim] preloadRes Fail~')
-    }
+  preloadRes(animObj.src, () => {
+    queue.push(animObj)
   })
 
   return animObj
 }
 
-async function drawImg(val: IObj) {
+function drawImg(val: IObj) {
   if (val.type !== RENDER_TYPE.IMG) return
   const item = val as IImgObj
   canvas.drawImg(item.src, item.x, item.y, item.w, item.h)
 }
 
-async function drawAnim(val: IObj) {
+function drawAnim(val: IObj) {
   if (val.type !== RENDER_TYPE.ANIM) return
   const item = val as IAnimObj
   const cur = item.cur
@@ -123,7 +151,10 @@ async function drawAnim(val: IObj) {
     if (item.count !== 0) {
       item.cur = 0
       canvas.drawImg(item.src[item.cur], item.x, item.y, item.w, item.h)
-      typeof item.loopCb === 'function' && item.loopCb()
+      item.cb[CB_TYPE.LOOP] &&
+        item.cb[CB_TYPE.LOOP].forEach((cb) => {
+          cb(item)
+        })
     } else {
       canvas.drawImg(item.src[item.total - 1], item.x, item.y, item.w, item.h)
     }

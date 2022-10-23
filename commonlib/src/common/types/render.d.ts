@@ -3,6 +3,11 @@ export enum RENDER_TYPE {
   ANIM
 }
 
+export enum CB_TYPE {
+  CHANGE_ANIM,
+  LOOP
+}
+
 export interface IObj {
   type: RENDER_TYPE
   x: number
@@ -24,5 +29,8 @@ export interface IAnimObj extends IObj {
   total: number
   count: number
   pause: boolean
-  loopCb: () => void
+  cb: { [key: string]: Function[] }
+  changeAnim: (newSrc: string[]) => void
+  addCb: (key: CB_TYPE, val: Function) => void
+  removeCb: (key: CB_TYPE, val: Function) => void
 }

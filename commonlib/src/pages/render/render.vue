@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Render from '@lib/components/render/render.vue'
-import { IImgObj, IAnimObj } from '@lib/common/types/render'
+import { CB_TYPE, IImgObj, IAnimObj } from '@lib/common/types/render.d'
 
 const bossStatus = ref('bossIdleAnim')
 const anims = getAnims()
@@ -46,9 +46,6 @@ function getAnims() {
 
 const init = async (val) => {
   const { preloadRes, clearRes, addImg, addAnim } = val
-  await preloadRes(anims.bossIdleAnim.resArr)
-  await preloadRes(anims.bossInjureAnim.resArr)
-  await preloadRes(anims.bossDeadAnim.resArr)
 
   const img: IImgObj = addImg(anims.bossIdleAnim.resArr[0])
   img.x = 100
@@ -61,6 +58,15 @@ const init = async (val) => {
   anim.w = 300
   anim.h = 200
   anim.count = 3
+  anim.addCb(CB_TYPE.CHANGE_ANIM, () => {
+    console.log('changeAnim')
+  })
+  anim.addCb(CB_TYPE.LOOP, () => {
+    console.log('loop')
+  })
+  setTimeout(() => {
+    anim.changeAnim(anims.bossDeadAnim.resArr)
+  }, 1000)
 }
 </script>
 
