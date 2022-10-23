@@ -1,14 +1,23 @@
 <template>
   <view class="page">
+    <button @click="handleAddImg">添加图片</button>
+    <button @click="handleRemoveImg">移除图片</button>
+    <button @click="handleAddAnim">添加动画</button>
+    <button @click="handleChangeAnim">切换动画</button>
+    <button @click="handleRemoveAnim">移除动画</button>
     <Render class="render" @init="init"></Render>
   </view>
 </template>
 
 <script setup lang="ts">
 import Render from '@lib/components/render/render.vue'
-import { CB_TYPE, IImg, IAnim } from '@lib/common/types/render.d'
+import { IImg, IAnim } from '@lib/common/types/render.d'
 
 const anims = getAnims()
+let addImg
+let addAnim
+let img: IImg
+let anim: IAnim
 
 function getAnims() {
   function getResWebpArr(name, num) {
@@ -43,31 +52,35 @@ function getAnims() {
 }
 
 const init = (val) => {
-  const { addImg, addAnim } = val
+  addImg = val.addImg
+  addAnim = val.addAnim
+}
 
-  const img: IImg = addImg(anims.bossIdleAnim.resArr[0])
-  img.x = 100
+const handleAddImg = () => {
+  img = addImg(anims.bossIdleAnim.resArr[0])
+  img.x = 150
   img.w = 200
   img.h = 200
-  img.zIndex = 1
+}
 
-  const anim: IAnim = addAnim(anims.bossInjureAnim.resArr)
-  anim.x = 100
-  anim.w = 300
+const handleRemoveImg = () => {
+  img.destroy()
+}
+
+const handleAddAnim = () => {
+  anim = addAnim(anims.bossInjureAnim.resArr)
+  anim.x = 400
+  anim.w = 200
   anim.h = 200
   anim.count = 3
-  anim.addCb(CB_TYPE.CHANGE_ANIM, () => {
-    console.log('changeAnim')
-  })
-  anim.addCb(CB_TYPE.LOOP, () => {
-    console.log('loop')
-  })
-  setTimeout(() => {
-    anim.changeAnim(anims.bossDeadAnim.resArr)
-  }, 1000)
-  setTimeout(() => {
-    anim.destroy()
-  }, 2000)
+}
+
+const handleChangeAnim = () => {
+  anim.changeAnim(anims.bossDeadAnim.resArr)
+}
+
+const handleRemoveAnim = () => {
+  anim.destroy()
 }
 </script>
 
