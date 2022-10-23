@@ -1,4 +1,5 @@
 import { useLibStore } from '@lib/pinia/libStore'
+import { nextTick } from 'vue'
 
 export enum LOAD_STATUS {
   UNLOAD,
@@ -27,8 +28,11 @@ export const useCanvas = () => {
   function setup(id = 'canvas', inst: any = null) {
     return new Promise((resolve) => {
       // #ifdef H5
-      ctx = uni.createCanvasContext(id, inst)
-      resolve(null)
+      nextTick(() => {
+        canvas = document.getElementById('anim-canvas')?.firstChild
+        ctx = canvas.getContext('2d')
+        resolve(null)
+      })
       // #endif
       // #ifdef MP-WEIXIN
       let query = uni.createSelectorQuery()
@@ -163,7 +167,7 @@ export const useCanvas = () => {
     w = w === 0 ? res.w : w
     h = h === 0 ? res.h : h
     // #ifdef H5
-    ctx.drawImage(src, rpx2px(x), rpx2px(y), rpx2px(w), rpx2px(h))
+    ctx.drawImage(res.img, rpx2px(x), rpx2px(y), rpx2px(w), rpx2px(h))
     // #endif
     // #ifdef MP-WEIXIN
     ctx.drawImage(res.img, rpx2px(x), rpx2px(y), rpx2px(w), rpx2px(h))
