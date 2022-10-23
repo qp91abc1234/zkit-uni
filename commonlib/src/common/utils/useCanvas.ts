@@ -1,6 +1,6 @@
 import { useLibStore } from '@lib/pinia/libStore'
 
-enum LOAD_STATUS {
+export enum LOAD_STATUS {
   UNLOAD,
   LOADING,
   SUCC,
@@ -9,9 +9,6 @@ enum LOAD_STATUS {
 
 const resObj: {
   [key: string]: { img: any; w: number; h: number; loaded: LOAD_STATUS }
-} = {}
-const animObj: {
-  [key: string]: { cur: number; total: number }
 } = {}
 let loopId = 0
 
@@ -118,45 +115,11 @@ export const useCanvas = () => {
     loopId = canvas.requestAnimationFrame(renderLoop)
   }
 
-  async function drawImg(src: string, x: number, y: number, w = 0, h = 0) {
-    const ret = await preloadRes([src])
-    if (ret[0].loaded !== LOAD_STATUS.SUCC) {
-      return
-    }
-
+  function drawImg(src: string, x: number, y: number, w = 0, h = 0) {
     const res = resObj[src]
     w = w === 0 ? res.w : w
     h = h === 0 ? res.h : h
     ctx.drawImage(res.img, rpx2px(x), rpx2px(y), rpx2px(w), rpx2px(h))
-  }
-
-  async function drawAnim(
-    key: string,
-    src: string[],
-    x: number,
-    y: number,
-    w = 0,
-    h = 0,
-    cb: any = undefined
-  ) {
-    const ret = await preloadRes(src)
-    const isFail = ret.some((val) => {
-      return val.loaded !== LOAD_STATUS.SUCC
-    })
-
-    if (isFail) {
-      return
-    }
-
-    if (!animObj[key]) {
-      animObj[key] = { cur: 0, total: src.length }
-    }
-
-    drawImg(src[animObj[key].cur++], x, y, w, h)
-    if (animObj[key].cur === animObj[key].total) {
-      cb && cb()
-      animObj[key].cur = 0
-    }
   }
 
   function destroy() {
@@ -173,7 +136,6 @@ export const useCanvas = () => {
     clearRes,
     render,
     drawImg,
-    drawAnim,
     destroy
   }
 }

@@ -56,10 +56,11 @@ const init = async (val) => {
   img.h = 200
   img.zIndex = 1
 
-  const anim: IAnimObj = addAnim('1', anims.bossInjureAnim.resArr)
+  const anim: IAnimObj = addAnim(anims.bossInjureAnim.resArr)
   anim.x = 100
   anim.w = 300
   anim.h = 200
+  anim.count = 3
 }
 </script>
 

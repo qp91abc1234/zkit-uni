@@ -3,13 +3,15 @@ export enum RENDER_TYPE {
   ANIM
 }
 
-interface IObj {
+export interface IObj {
   type: RENDER_TYPE
   x: number
   y: number
   w: number
   h: number
   zIndex: number
+  visible: boolean
+  destroy: boolean
 }
 
 export interface IImgObj extends IObj {
@@ -17,6 +19,9 @@ export interface IImgObj extends IObj {
 }
 
 export interface IAnimObj extends IObj {
-  key: string
   src: string[]
+  cur: number
+  total: number
+  count: number
+  loopCb: () => void
 }
