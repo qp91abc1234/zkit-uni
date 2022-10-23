@@ -26,20 +26,23 @@ export const useCanvas = () => {
 
   function setup(id = 'canvas', inst: any = null) {
     return new Promise((resolve) => {
-      let query = wx.createSelectorQuery()
+      let query = uni.createSelectorQuery()
       if (inst) {
         query = query.in(inst)
       }
-      query
-        .select(`#${id}`)
-        .fields({
-          node: true,
+      const node = query.select(`#${id}`)
+      node.fields(
+        {
           size: true
-        })
+        },
+        () => {}
+      )
+      node
+        .node(() => {})
         .exec((res) => {
           canvasW = res[0].width
           canvasH = res[0].height
-          canvas = res[0].node
+          canvas = res[1].node
           ctx = canvas.getContext('2d')
           canvas.width = canvasW * libStore.dpr
           canvas.height = canvasH * libStore.dpr
