@@ -50,11 +50,11 @@ onUnload(() => {
 })
 
 function addImg(src: string) {
-  return new Img(src, canvas, queue)
+  return new Img(canvas, queue, src)
 }
 
 function addAnim(src: string[]) {
-  return new Anim(src, canvas, queue)
+  return new Anim(canvas, queue, src)
 }
 
 function render() {
@@ -62,21 +62,9 @@ function render() {
     return a.zIndex - b.zIndex
   })
 
-  const delIndex: number[] = []
   for (let i = 0; i < queue.length; i++) {
-    if (!queue[i].visible) {
-      continue
-    }
-    if (queue[i].destroy) {
-      delIndex.push(i)
-      continue
-    }
     queue[i].draw && queue[i].draw()
   }
-
-  delIndex.forEach((val) => {
-    queue.splice(val, 1)
-  })
 }
 </script>
 

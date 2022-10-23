@@ -1,19 +1,13 @@
-import Base from './base'
-
-export enum CB_TYPE {
-  CHANGE_ANIM,
-  LOOP
-}
+import Base, { CB_TYPE } from '@lib/components/render/base'
 
 export default class Anim extends Base {
   private src: string[] = []
-  private cb = {}
   cur = 0
   total = 0
   count = -1
   pause = false
 
-  constructor(src: string[], canvas, queue) {
+  constructor(canvas, queue, src: string[]) {
     super(canvas, queue)
     this.src = src
     this.total = src.length
@@ -43,21 +37,9 @@ export default class Anim extends Base {
     })
   }
 
-  addCb(key: CB_TYPE, val: Function) {
-    this.cb[key] = this.cb[key] || []
-    this.cb[key].push(val)
-  }
-
-  removeCb(key: CB_TYPE, val: Function) {
-    if (this.cb[key]) {
-      const index = this.cb[key].indexOf(val)
-      if (index > 0) {
-        this.cb[key].splice(index, 1)
-      }
-    }
-  }
-
   draw() {
+    const ret = super.draw()
+    if (!ret) return false
     const cur = this.cur
     const count = this.count
 
@@ -87,5 +69,7 @@ export default class Anim extends Base {
       this.cur = cur
       this.count = count
     }
+
+    return true
   }
 }

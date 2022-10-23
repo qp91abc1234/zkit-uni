@@ -1,9 +1,9 @@
-import Base from './base'
+import Base from '@lib/components/render/base'
 
 export default class Img extends Base {
   private src: string = ''
 
-  constructor(src: string, canvas, queue) {
+  constructor(canvas, queue, src: string) {
     super(canvas, queue)
     this.src = src
 
@@ -15,6 +15,9 @@ export default class Img extends Base {
   }
 
   draw() {
+    const ret = super.draw()
+    if (ret) return false
     this.canvas.drawImg(this.src, this.x, this.y, this.w, this.h)
+    return true
   }
 }

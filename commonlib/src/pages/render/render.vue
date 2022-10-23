@@ -7,8 +7,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Render from '@lib/components/render/render.vue'
-import Img from '@lib/components/render/img'
-import Anim, { CB_TYPE } from '@lib/components/render/anim'
+import { CB_TYPE, IImg, IAnim } from '@lib/common/types/render.d'
 
 const bossStatus = ref('bossIdleAnim')
 const anims = getAnims()
@@ -48,13 +47,13 @@ function getAnims() {
 const init = (val) => {
   const { preloadRes, clearRes, addImg, addAnim } = val
 
-  const img: Img = addImg(anims.bossIdleAnim.resArr[0])
+  const img: IImg = addImg(anims.bossIdleAnim.resArr[0])
   img.x = 100
   img.w = 200
   img.h = 200
   img.zIndex = 1
 
-  const anim: Anim = addAnim(anims.bossInjureAnim.resArr)
+  const anim: IAnim = addAnim(anims.bossInjureAnim.resArr)
   anim.x = 100
   anim.w = 300
   anim.h = 200
@@ -68,6 +67,9 @@ const init = (val) => {
   setTimeout(() => {
     anim.changeAnim(anims.bossDeadAnim.resArr)
   }, 1000)
+  setTimeout(() => {
+    anim.destroy()
+  }, 2000)
 }
 </script>
 
