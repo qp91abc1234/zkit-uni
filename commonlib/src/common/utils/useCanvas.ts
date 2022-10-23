@@ -95,6 +95,16 @@ export const useCanvas = () => {
     return Promise.all(arr)
   }
 
+  function clearRes(res: string[] = []) {
+    const arr = res.length === 0 ? Object.keys(resObj) : res
+    for (let i = 0; i < arr.length; i++) {
+      const key = arr[i]
+      if (resObj[key]) {
+        delete resObj[key]
+      }
+    }
+  }
+
   function render(renderCore?: () => void, frameNum = 40) {
     const renderLoop = () => {
       const timestamp = new Date().getTime()
@@ -160,6 +170,7 @@ export const useCanvas = () => {
     rpx2px,
     setup,
     preloadRes,
+    clearRes,
     render,
     drawImg,
     drawAnim,

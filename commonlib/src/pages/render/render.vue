@@ -1,12 +1,13 @@
 <template>
   <view class="page">
-    <Render class="render" @init="init" @render="render"></Render>
+    <Render class="render" @init="init"></Render>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import Render from '@lib/components/render/render.vue'
+import { IImgObj, IAnimObj } from '@lib/common/types/render'
 
 const bossStatus = ref('bossIdleAnim')
 const anims = getAnims()
@@ -25,57 +26,40 @@ function getAnims() {
   const bossIdleAnim = {
     width: 350,
     height: 543,
-    resArr: getResWebpArr('boss-idle', 26),
-    load: false
+    resArr: getResWebpArr('boss-idle', 26)
   }
 
   const bossInjureAnim = {
     width: 350,
     height: 543,
-    resArr: getResWebpArr('boss-injure', 25),
-    load: false
+    resArr: getResWebpArr('boss-injure', 25)
   }
 
   const bossDeadAnim = {
     width: 350,
     height: 543,
-    resArr: getResWebpArr('boss-dead', 26),
-    load: false
+    resArr: getResWebpArr('boss-dead', 26)
   }
 
   return { bossIdleAnim, bossInjureAnim, bossDeadAnim }
 }
 
 const init = async (val) => {
-  const { preloadRes } = val
+  const { preloadRes, clearRes, addImg, addAnim } = val
   await preloadRes(anims.bossIdleAnim.resArr)
-  anims.bossIdleAnim.load = true
   await preloadRes(anims.bossInjureAnim.resArr)
-  anims.bossInjureAnim.load = true
   await preloadRes(anims.bossDeadAnim.resArr)
-  anims.bossDeadAnim.load = true
-}
 
-const render = (val) => {
-  const { drawAnim } = val
-  anims[bossStatus.value].load &&
-    drawAnim(
-      `${bossStatus.value}`,
-      anims[bossStatus.value].resArr,
-      0,
-      0,
-      anims[bossStatus.value].width,
-      anims[bossStatus.value].height,
-      () => {
-        if (bossStatus.value === 'bossIdleAnim') {
-          bossStatus.value = 'bossInjureAnim'
-        } else if (bossStatus.value === 'bossInjureAnim') {
-          bossStatus.value = 'bossDeadAnim'
-        } else if (bossStatus.value === 'bossDeadAnim') {
-          bossStatus.value = 'bossIdleAnim'
-        }
-      }
-    )
+  const img: IImgObj = addImg(anims.bossIdleAnim.resArr[0])
+  img.x = 100
+  img.w = 200
+  img.h = 200
+  img.zIndex = 1
+
+  const anim: IAnimObj = addAnim('1', anims.bossInjureAnim.resArr)
+  anim.x = 100
+  anim.w = 300
+  anim.h = 200
 }
 </script>
 
