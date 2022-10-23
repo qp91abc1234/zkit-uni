@@ -5,11 +5,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import Render from '@lib/components/render/render.vue'
 import { CB_TYPE, IImg, IAnim } from '@lib/common/types/render.d'
 
-const bossStatus = ref('bossIdleAnim')
 const anims = getAnims()
 
 function getAnims() {
@@ -45,7 +43,7 @@ function getAnims() {
 }
 
 const init = (val) => {
-  const { preloadRes, clearRes, addImg, addAnim } = val
+  const { addImg, addAnim } = val
 
   const img: IImg = addImg(anims.bossIdleAnim.resArr[0])
   img.x = 100

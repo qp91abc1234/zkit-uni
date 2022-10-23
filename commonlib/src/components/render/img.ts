@@ -16,7 +16,7 @@ export default class Img extends Base {
 
   draw() {
     const ret = super.draw()
-    if (ret) return false
+    if (!ret) return false
     this.canvas.drawImg(this.src, this.x, this.y, this.w, this.h)
     return true
   }
