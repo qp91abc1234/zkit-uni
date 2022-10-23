@@ -89,7 +89,16 @@ export const useCanvas = () => {
         resObj[src].loaded = LOAD_STATUS.LOADING
       })
     }
-    return Promise.all(arr)
+
+    return Promise.resolve(Promise.all(arr)).then((ret) => {
+      const isSucc = ret.every((item) => {
+        return item.loaded === LOAD_STATUS.SUCC
+      })
+      if (!isSucc) {
+        console.error('[render.vue][preloadRes] preloadRes Fail~')
+      }
+      return isSucc
+    })
   }
 
   function clearRes(res: string[] = []) {
