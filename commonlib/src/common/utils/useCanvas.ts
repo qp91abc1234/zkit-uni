@@ -32,6 +32,9 @@ export const useCanvas = () => {
       canvasW = canvas.clientWidth
       canvasH = canvas.clientHeight
       ctx = canvas.getContext('2d')
+      canvas.width = `${canvasW * libStore.dpr}px`
+      canvas.height = `${canvasH * libStore.dpr}px`
+      ctx.scale(libStore.dpr, libStore.dpr)
       resolve(null)
       // #endif
       // #ifdef MP-WEIXIN
