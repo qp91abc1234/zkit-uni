@@ -28,7 +28,7 @@ export const useCanvas = () => {
   function setup(id = 'canvas', inst: any = null) {
     return new Promise((resolve) => {
       // #ifdef H5
-      canvas = document.getElementById('anim-canvas')?.firstChild
+      canvas = document.getElementById(id)?.firstChild
       canvasW = canvas.clientWidth
       canvasH = canvas.clientHeight
       ctx = canvas.getContext('2d')
