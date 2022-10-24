@@ -169,12 +169,7 @@ export const useCanvas = () => {
     const res = resObj[src]
     w = w === 0 ? res.w : w
     h = h === 0 ? res.h : h
-    // #ifdef H5
     ctx.drawImage(res.img, rpx2px(x), rpx2px(y), rpx2px(w), rpx2px(h))
-    // #endif
-    // #ifdef MP-WEIXIN
-    ctx.drawImage(res.img, rpx2px(x), rpx2px(y), rpx2px(w), rpx2px(h))
-    // #endif
   }
 
   function destroy() {
