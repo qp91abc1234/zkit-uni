@@ -22,7 +22,7 @@ export const useCanvas = () => {
   let t = 0
 
   function rpx2px(val: number) {
-    return (libStore.screenW / 750) * val
+    return (libStore.windowW / 750) * val
   }
 
   function setup(id = 'canvas', inst: any = null) {
