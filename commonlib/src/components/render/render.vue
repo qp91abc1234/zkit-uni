@@ -8,8 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance } from 'vue'
-import { onLoad, onUnload } from '@dcloudio/uni-app'
+import { getCurrentInstance, onBeforeUnmount, onMounted } from 'vue'
 import { useCanvas } from '@lib/common/utils/useCanvas'
 import Img from '@lib/components/render/img'
 import Anim from '@lib/components/render/anim'
@@ -39,7 +38,7 @@ const inst = getCurrentInstance()
 const canvas = useCanvas()
 const queue: any[] = []
 
-onLoad(async () => {
+onMounted(async () => {
   await canvas.setup('anim-canvas', inst)
   emits('init', {
     preloadRes: canvas.preloadRes,
@@ -50,7 +49,7 @@ onLoad(async () => {
   canvas.render(render, props.frameNum)
 })
 
-onUnload(() => {
+onBeforeUnmount(() => {
   canvas.destroy()
 })
 

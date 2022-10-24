@@ -28,11 +28,11 @@ export const useCanvas = () => {
   function setup(id = 'canvas', inst: any = null) {
     return new Promise((resolve) => {
       // #ifdef H5
-      nextTick(() => {
-        canvas = document.getElementById('anim-canvas')?.firstChild
-        ctx = canvas.getContext('2d')
-        resolve(null)
-      })
+      canvas = document.getElementById('anim-canvas')?.firstChild
+      canvasW = canvas.clientWidth
+      canvasH = canvas.clientHeight
+      ctx = canvas.getContext('2d')
+      resolve(null)
       // #endif
       // #ifdef MP-WEIXIN
       let query = uni.createSelectorQuery()
