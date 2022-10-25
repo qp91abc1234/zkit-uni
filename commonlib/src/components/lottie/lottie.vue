@@ -5,8 +5,12 @@
 <script setup lang="ts">
 import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useCanvas } from '@lib/common/utils/useCanvas'
-import lottie from 'lottie-miniprogram'
-import { ILottieAnim } from '@lib/common/types/lottie.d'
+// #ifdef H5
+import lottieWeb from 'lottie-web'
+// #endif
+// #ifdef MP_WEIXIN
+import lottieWx from 'lottie-miniprogram'
+// #endif
 
 const props = withDefaults(
   defineProps<{
@@ -22,17 +26,36 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  (event: 'init', val: ILottieAnim): void
+  (event: 'init', val: any): void
 }>()
 
 const inst = getCurrentInstance()
 const canvas = useCanvas()
-const anim = ref<ILottieAnim>({} as any)
+const anim = ref<any>({})
 
-onMounted(async () => {
+onMounted(() => {
+  // #ifdef H5
+  initH5()
+  // #endif
+  // #ifdef MP_WEIXIN
+  initWx()
+  // #endif
+  emits('init', anim.value)
+})
+
+onBeforeUnmount(() => {
+  canvas.destroy()
+  anim.value.destroy()
+})
+
+async function initH5() {
+  anim.value = lottieWeb.loadAnimation({})
+}
+
+async function initWx() {
   const ret: any = await canvas.setup('lottie-canvas', inst)
-  lottie.setup(ret.canvas)
-  anim.value = lottie.loadAnimation({
+  lottieWx.setup(ret.canvas)
+  anim.value = lottieWx.loadAnimation({
     renderer: 'canvas',
     loop: props.loop,
     autoplay: props.autoplay,
@@ -41,13 +64,7 @@ onMounted(async () => {
     },
     path: props.path
   })
-  emits('init', anim.value)
-})
-
-onBeforeUnmount(() => {
-  canvas.destroy()
-  anim.value.destroy()
-})
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,4 +1,4 @@
-import lottie from 'lottie-miniprogram'
+import lottieMini from 'lottie-miniprogram'
 
 export type AnimationEventName =
   | 'enterFrame'
@@ -6,4 +6,4 @@ export type AnimationEventName =
   | 'complete'
   | 'segmentStart'
   | 'destroy'
-export type ILottieAnim = ReturnType<typeof lottie.loadAnimation>
+export type ILottieAnim = ReturnType<typeof lottieMini.loadAnimation>
