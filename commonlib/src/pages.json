@@ -11,6 +11,9 @@
     },
     {
       "path": "pages/load/load"
+    },
+    {
+      "path": "pages/lottie/lottie"
     }
   ],
   "globalStyle": {

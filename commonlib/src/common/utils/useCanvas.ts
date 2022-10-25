@@ -1,6 +1,6 @@
 import { useLibStore } from '@lib/pinia/libStore'
 
-export enum LOAD_STATUS {
+enum LOAD_STATUS {
   UNLOAD,
   LOADING,
   SUCC,
@@ -65,7 +65,7 @@ export const useCanvas = () => {
       canvas.width = `${canvasW * libStore.dpr}px`
       canvas.height = `${canvasH * libStore.dpr}px`
       ctx.scale(libStore.dpr, libStore.dpr)
-      resolve(null)
+      resolve({ canvas, ctx })
       // #endif
       // #ifdef MP-WEIXIN
       let query = uni.createSelectorQuery()
@@ -89,7 +89,7 @@ export const useCanvas = () => {
           canvas.width = canvasW * libStore.dpr
           canvas.height = canvasH * libStore.dpr
           ctx.scale(libStore.dpr, libStore.dpr)
-          resolve(null)
+          resolve({ canvas, ctx })
         })
       // #endif
     })
