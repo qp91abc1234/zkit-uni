@@ -1,5 +1,4 @@
 import { useLibStore } from '@lib/pinia/libStore'
-import { nextTick } from 'vue'
 
 export enum LOAD_STATUS {
   UNLOAD,
@@ -23,6 +22,37 @@ export const useCanvas = () => {
 
   function rpx2px(val: number) {
     return (libStore.windowW / 750) * val
+  }
+
+  function createImage() {
+    let ret
+    // #ifdef H5
+    ret = new Image()
+    // #endif
+    // #ifdef MP-WEIXIN
+    ret = canvas.createImage()
+    // #endif
+    return ret
+  }
+
+  function nextFrame(cb) {
+    let ret
+    // #ifdef H5
+    ret = requestAnimationFrame(cb)
+    // #endif
+    // #ifdef MP-WEIXIN
+    ret = canvas.requestAnimationFrame(cb)
+    // #endif
+    return ret
+  }
+
+  function cancelNextFrame(id) {
+    // #ifdef H5
+    cancelAnimationFrame(id)
+    // #endif
+    // #ifdef MP-WEIXIN
+    canvas.cancelAnimationFrame(id)
+    // #endif
   }
 
   function setup(id = 'canvas', inst: any = null) {
@@ -70,22 +100,12 @@ export const useCanvas = () => {
     for (let i = 0; i < res.length; i++) {
       arr[i] = new Promise((resolve) => {
         const src = res[i]
-        // #ifdef H5
         resObj[src] = resObj[src] || {
-          img: new Image(),
+          img: createImage(),
           w: 0,
           h: 0,
           loaded: LOAD_STATUS.UNLOAD
         }
-        // #endif
-        // #ifdef MP-WEIXIN
-        resObj[src] = resObj[src] || {
-          img: canvas.createImage(),
-          w: 0,
-          h: 0,
-          loaded: LOAD_STATUS.UNLOAD
-        }
-        // #endif
 
         if (
           resObj[src].loaded === LOAD_STATUS.LOADING ||
@@ -96,12 +116,7 @@ export const useCanvas = () => {
         }
 
         if (resObj[src].loaded === LOAD_STATUS.FAIL) {
-          // #ifdef H5
-          resObj[src].img = new Image()
-          // #endif
-          // #ifdef MP-WEIXIN
-          resObj[src].img = canvas.createImage()
-          // #endif
+          resObj[src].img = createImage()
         }
 
         resObj[src].img.onload = () => {
@@ -150,19 +165,9 @@ export const useCanvas = () => {
         ctx.clearRect(0, 0, canvasW, canvasH)
         renderCore && renderCore()
       }
-      // #ifdef H5
-      loopId = requestAnimationFrame(renderLoop)
-      // #endif
-      // #ifdef MP-WEIXIN
-      loopId = canvas.requestAnimationFrame(renderLoop)
-      // #endif
+      loopId = nextFrame(renderLoop)
     }
-    // #ifdef H5
-    loopId = requestAnimationFrame(renderLoop)
-    // #endif
-    // #ifdef MP-WEIXIN
-    loopId = canvas.requestAnimationFrame(renderLoop)
-    // #endif
+    loopId = nextFrame(renderLoop)
   }
 
   function drawImg(src: string, x: number, y: number, w = 0, h = 0) {
@@ -174,12 +179,7 @@ export const useCanvas = () => {
 
   function destroy() {
     if (loopId) {
-      // #ifdef H5
-      cancelAnimationFrame(loopId)
-      // #endif
-      // #ifdef MP-WEIXIN
-      canvas.cancelAnimationFrame(loopId)
-      // #endif
+      cancelNextFrame(loopId)
       loopId = 0
     }
   }

@@ -12,8 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, getCurrentInstance } from 'vue'
-import { onUnload } from '@dcloudio/uni-app'
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted } from 'vue'
 import { useCanvas } from '@lib/common/utils/useCanvas'
 
 const props = withDefaults(
@@ -46,7 +45,11 @@ const allNum = computed(() => {
   return props.resImg.length + props.resCanvas.length + props.resAudio.length
 })
 
-onUnload(() => {
+onMounted(() => {
+  loadCanvas()
+})
+
+onBeforeUnmount(() => {
   canvas.destroy()
 })
 
@@ -123,7 +126,6 @@ const loadedJudge = (name) => {
 
 const init = () => {
   loadAudio()
-  loadCanvas()
   setTimeout(updateProgress, props.time / 100)
 }
 
