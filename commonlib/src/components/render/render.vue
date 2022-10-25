@@ -69,7 +69,6 @@ function render() {
 
 <style lang="scss" scoped>
 .anim-canvas {
-  position: absolute;
   width: 100%;
   height: 100%;
 }

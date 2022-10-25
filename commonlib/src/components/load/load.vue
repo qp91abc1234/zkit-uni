@@ -134,9 +134,8 @@ init()
 
 <style lang="scss" scoped>
 .load {
-  position: absolute;
   overflow: hidden;
-  width: 0%;
-  height: 0%;
+  width: 0;
+  height: 0;
 }
 </style>

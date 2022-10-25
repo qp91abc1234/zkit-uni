@@ -8,6 +8,7 @@ module.exports = {
   ],
   plugins: ['stylelint-order'],
   rules: {
+    'selector-type-no-unknown': null,
     'unit-no-unknown': null,
     'no-descending-specificity': null,
     'unit-case': null,

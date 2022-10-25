@@ -49,6 +49,7 @@
     "@dcloudio/uni-mp-weixin": "3.0.0-alpha-3060420220922009",
     "@dcloudio/uni-quickapp-webview": "3.0.0-alpha-3060420220922009",
     "lottie-miniprogram": "^1.0.12",
+    "lottie-web": "^5.9.6",
     "pinia": "^2.0.23",
     "vue": "^3.2.40"
   },

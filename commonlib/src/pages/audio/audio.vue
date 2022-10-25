@@ -13,10 +13,4 @@ const bgMusic = ref(
 )
 </script>
 
-<style scoped lang="scss">
-.page {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-</style>
+<style scoped lang="scss"></style>

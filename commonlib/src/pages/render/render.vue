@@ -85,14 +85,8 @@ const handleRemoveAnim = () => {
 </script>
 
 <style scoped lang="scss">
-.page {
-  position: absolute;
+.render {
   width: 100%;
   height: 100%;
-  .render {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-  }
 }
 </style>

@@ -19,14 +19,8 @@ const init = (val: ILottieAnim) => {
 </script>
 
 <style scoped lang="scss">
-.page {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  .lottie {
-    position: absolute;
-    width: 270rpx;
-    height: 310rpx;
-  }
+.lottie {
+  width: 270rpx;
+  height: 310rpx;
 }
 </style>

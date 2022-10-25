@@ -40,13 +40,8 @@ initCfg()
 
 <style scoped lang="scss">
 .page {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   overflow-y: scroll;
-  width: 100%;
-  height: 100%;
   .item {
     margin: 20rpx;
   }
