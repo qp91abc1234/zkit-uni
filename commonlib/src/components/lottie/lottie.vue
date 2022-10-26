@@ -1,11 +1,17 @@
 <template>
+  <!-- #ifdef H5 -->
+  <view class="lottie-canvas" id="lottie-canvas"></view>
+  <!-- #endif -->
+  <!-- #ifdef MP-WEIXIN -->
   <canvas class="lottie-canvas" id="lottie-canvas" type="2d"></canvas>
+  <!-- #endif -->
 </template>
 
 <script setup lang="ts">
 import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useCanvas } from '@lib/common/utils/useCanvas'
 // #ifdef H5
+import { CORSPathRewrite } from '@lib/common/utils'
 import lottieWeb from 'lottie-web'
 // #endif
 // #ifdef MP_WEIXIN
@@ -33,12 +39,12 @@ const inst = getCurrentInstance()
 const canvas = useCanvas()
 const anim = ref<any>({})
 
-onMounted(() => {
+onMounted(async () => {
   // #ifdef H5
   initH5()
   // #endif
   // #ifdef MP_WEIXIN
-  initWx()
+  await initWx()
   // #endif
   emits('init', anim.value)
 })
@@ -48,8 +54,13 @@ onBeforeUnmount(() => {
   anim.value.destroy()
 })
 
-async function initH5() {
-  anim.value = lottieWeb.loadAnimation({})
+function initH5() {
+  anim.value = lottieWeb.loadAnimation({
+    container: document.getElementById('lottie-canvas') as Element,
+    loop: props.loop,
+    autoplay: props.autoplay,
+    path: CORSPathRewrite(props.path)
+  })
 }
 
 async function initWx() {

@@ -9,5 +9,14 @@ export default defineConfig({
     alias: {
       '@lib': resolve(__dirname, 'src')
     }
+  },
+  server: {
+    proxy: {
+      '/creation-zone/static/': {
+        target: 'https://cdn-s3-gjzc.my.99.com',
+        secure: false,
+        changeOrigin: true
+      }
+    }
   }
 })
