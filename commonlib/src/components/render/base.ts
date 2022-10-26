@@ -22,6 +22,8 @@ export default class Base {
   y = 0
   w = 0
   h = 0
+  rotate = 0
+  anchor = { x: 0.5, y: 0.5 }
   zIndex = 0
   visible = true
 

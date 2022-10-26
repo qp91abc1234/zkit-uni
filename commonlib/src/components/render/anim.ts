@@ -47,7 +47,15 @@ export default class Anim extends Base {
       this.count > 0 && this.count--
       if (this.count !== 0) {
         this.cur = 0
-        this.canvas.drawImg(this.src[this.cur], this.x, this.y, this.w, this.h)
+        this.canvas.drawImg(
+          this.src[this.cur],
+          this.x,
+          this.y,
+          this.w,
+          this.h,
+          this.rotate,
+          this.anchor
+        )
         this.cb[CB_TYPE.LOOP] &&
           this.cb[CB_TYPE.LOOP].forEach((cb) => {
             cb(this)
@@ -58,11 +66,21 @@ export default class Anim extends Base {
           this.x,
           this.y,
           this.w,
-          this.h
+          this.h,
+          this.rotate,
+          this.anchor
         )
       }
     } else {
-      this.canvas.drawImg(this.src[this.cur++], this.x, this.y, this.w, this.h)
+      this.canvas.drawImg(
+        this.src[this.cur++],
+        this.x,
+        this.y,
+        this.w,
+        this.h,
+        this.rotate,
+        this.anchor
+      )
     }
 
     if (this.pause) {

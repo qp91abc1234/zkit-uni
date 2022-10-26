@@ -170,11 +170,30 @@ export const useCanvas = () => {
     loopId = nextFrame(renderLoop)
   }
 
-  function drawImg(src: string, x: number, y: number, w = 0, h = 0) {
+  function drawImg(
+    src: string,
+    x: number,
+    y: number,
+    w = 0,
+    h = 0,
+    rotate = 0,
+    anchor = { x: 0.5, y: 0.5 }
+  ) {
+    ctx.save()
+    ctx.translate(rpx2px(x), rpx2px(y))
+    ctx.rotate((rotate * Math.PI) / 180)
+
     const res = resObj[src]
     w = w === 0 ? res.w : w
     h = h === 0 ? res.h : h
-    ctx.drawImage(res.img, rpx2px(x), rpx2px(y), rpx2px(w), rpx2px(h))
+    ctx.drawImage(
+      res.img,
+      -rpx2px(w * anchor.x),
+      -rpx2px(h * anchor.y),
+      rpx2px(w),
+      rpx2px(h)
+    )
+    ctx.restore()
   }
 
   function destroy() {

@@ -59,9 +59,11 @@ const init = (val) => {
 
 const handleAddImg = () => {
   img = addImg(anims.bossIdleAnim.resArr[0])
-  img.x = 150
+  img.x = 375
+  img.y = 200
   img.w = 200
   img.h = 200
+  img.rotate = 180
 }
 
 const handleRemoveImg = () => {
@@ -70,9 +72,11 @@ const handleRemoveImg = () => {
 
 const handleAddAnim = () => {
   anim = addAnim(anims.bossInjureAnim.resArr)
-  anim.x = 400
+  anim.x = 375
+  anim.y = 200
   anim.w = 200
   anim.h = 200
+  anim.rotate = 180
   anim.count = 3
 }
 
