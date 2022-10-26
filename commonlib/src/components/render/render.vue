@@ -27,6 +27,7 @@ const emits = defineEmits<{
       addAnim: typeof addAnim
     }
   ): void
+  (event: 'loop'): void
 }>()
 
 const inst = getCurrentInstance()
@@ -57,6 +58,7 @@ function addAnim(src: string[]) {
 }
 
 function render() {
+  emits('loop')
   queue.sort((a, b) => {
     return a.zIndex - b.zIndex
   })
