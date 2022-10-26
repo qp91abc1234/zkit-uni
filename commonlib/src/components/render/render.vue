@@ -28,6 +28,7 @@ const emits = defineEmits<{
     }
   ): void
   (event: 'loop'): void
+  (event: 'afterLoop'): void
 }>()
 
 const inst = getCurrentInstance()
@@ -66,6 +67,7 @@ function render() {
   for (let i = 0; i < queue.length; i++) {
     queue[i].draw && queue[i].draw()
   }
+  emits('afterLoop')
 }
 </script>
 

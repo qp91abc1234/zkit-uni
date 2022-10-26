@@ -5,6 +5,7 @@
     <button @click="handleAddAnim">添加动画</button>
     <button @click="handleChangeAnim">切换动画</button>
     <button @click="handleRemoveAnim">移除动画</button>
+    <button @click="handleTweenAnim">动画缓动</button>
     <Render class="render" @init="init"></Render>
   </view>
 </template>
@@ -81,6 +82,13 @@ const handleChangeAnim = () => {
 
 const handleRemoveAnim = () => {
   anim.destroy()
+}
+
+const handleTweenAnim = () => {
+  anim
+    .tween(2000, 'y', 0, 200)
+    .tween(2000, 'x', 400, 200, 'parallel')
+    .tween(2000, 'x', 200, 400)
 }
 </script>
 
