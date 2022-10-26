@@ -90,9 +90,9 @@ const handleRemoveAnim = () => {
 
 const handleTweenAnim = () => {
   anim
-    .tween(2000, 'y', 0, 200)
-    .tween(2000, 'x', 400, 200, 'parallel')
-    .tween(2000, 'x', 200, 400)
+    .tween(2000, 'y', 200, 400)
+    .tween(2000, 'x', 375, 500, 'parallel')
+    .tween(2000, 'rotate', 0, 180, 'parallel')
 }
 </script>
 

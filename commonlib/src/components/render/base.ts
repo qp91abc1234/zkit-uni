@@ -63,7 +63,7 @@ export default class Base {
 
   tween(
     duration,
-    propName: 'x' | 'y' | 'w' | 'h',
+    propName: 'x' | 'y' | 'w' | 'h' | 'rotate',
     from,
     to,
     addWay: 'seq' | 'parallel' = 'seq',
@@ -96,7 +96,10 @@ export default class Base {
     const delIndex: number[] = []
     arr.forEach((val: ITWEEN, index) => {
       const cur = new Date().getTime()
-      val.start = val.start < 0 ? cur : val.start
+      if (val.start < 0) {
+        val.start = cur
+        this[val.propName] = val.from
+      }
       const t = cur - val.start
       const s = t * val.step
       if (
