@@ -64,6 +64,7 @@ const handleAddImg = () => {
   img.w = 200
   img.h = 200
   img.rotate = 180
+  img.alpha = 0.5
 }
 
 const handleRemoveImg = () => {

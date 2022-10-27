@@ -14,6 +14,7 @@ interface IImgData {
   w: number
   h: number
   rotate: number
+  alpha: number
   anchor: { x: number; y: number }
 }
 
@@ -186,6 +187,7 @@ export const useCanvas = () => {
     ctx.save()
     ctx.translate(rpx2px(data.x), rpx2px(data.y))
     ctx.rotate((data.rotate * Math.PI) / 180)
+    ctx.globalAlpha = data.alpha
 
     const res = resObj[data.src]
     data.w = data.w === 0 ? res.w : data.w

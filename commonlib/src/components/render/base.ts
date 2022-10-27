@@ -25,6 +25,7 @@ export default class Base {
   w = 0
   h = 0
   rotate = 0
+  alpha = 1
   anchor = { x: 0.5, y: 0.5 }
   zIndex = 0
   visible = true
@@ -41,6 +42,7 @@ export default class Base {
       w: this.w,
       h: this.h,
       rotate: this.rotate,
+      alpha: this.alpha,
       anchor: this.anchor,
       zIndex: this.zIndex,
       visible: this.visible
