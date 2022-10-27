@@ -1,4 +1,4 @@
-import Base, { CB_TYPE } from '@lib/components/render/base'
+import Base, { CB_TYPE } from '@lib/components/render/object/object'
 
 export default class Anim extends Base {
   private src: string[] = []

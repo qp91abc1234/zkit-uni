@@ -5,9 +5,9 @@
 <script setup lang="ts">
 import { getCurrentInstance, onBeforeUnmount, onMounted } from 'vue'
 import { useCanvas } from '@lib/common/utils/useCanvas'
-import { CB_TYPE as cb_type } from '@lib/components/render/base'
-import Img from '@lib/components/render/img'
-import Anim from '@lib/components/render/anim'
+import { CB_TYPE as cb_type } from '@lib/components/render/object/object'
+import Img from '@lib/components/render/object/img'
+import Anim from '@lib/components/render/object/anim'
 
 export type CB_TYPE = cb_type
 export type IImg = Img

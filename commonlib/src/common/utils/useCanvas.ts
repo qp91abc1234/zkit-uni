@@ -1,4 +1,5 @@
 import { useLibStore } from '@lib/pinia/libStore'
+import { rpx2px } from '@lib/common/utils'
 
 enum LOAD_STATUS {
   UNLOAD,
@@ -32,10 +33,6 @@ export const useCanvas = () => {
   let canvas: any
   let ctx: any
   let t = 0
-
-  function rpx2px(val: number) {
-    return (libStore.windowW / 750) * val
-  }
 
   function createImage() {
     let ret

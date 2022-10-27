@@ -1,4 +1,4 @@
-import Base from '@lib/components/render/base'
+import Base from '@lib/components/render/object/object'
 
 export default class Img extends Base {
   private src: string = ''
