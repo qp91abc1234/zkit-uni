@@ -1,3 +1,5 @@
+import { ICanvas } from '@lib/common/utils/useCanvas'
+
 export enum CB_TYPE {
   CHANGE_ANIM,
   LOOP
@@ -14,7 +16,7 @@ interface ITWEEN {
 }
 
 export default class Base {
-  protected canvas: any
+  protected canvas: ICanvas
   protected queue: any[] = []
   protected cb = {}
   private tweenArr: ITWEEN[][] = []
@@ -30,6 +32,19 @@ export default class Base {
   constructor(canvas, queue) {
     this.canvas = canvas
     this.queue = queue
+  }
+
+  protected get baseProps() {
+    return {
+      x: this.x,
+      y: this.y,
+      w: this.w,
+      h: this.h,
+      rotate: this.rotate,
+      anchor: this.anchor,
+      zIndex: this.zIndex,
+      visible: this.visible
+    }
   }
 
   draw() {

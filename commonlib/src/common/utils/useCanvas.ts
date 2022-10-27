@@ -7,6 +7,18 @@ enum LOAD_STATUS {
   FAIL
 }
 
+interface IImgData {
+  src: string
+  x: number
+  y: number
+  w: number
+  h: number
+  rotate: number
+  anchor: { x: number; y: number }
+}
+
+export type ICanvas = ReturnType<typeof useCanvas>
+
 const resObj: {
   [key: string]: { img: any; w: number; h: number; loaded: LOAD_STATUS }
 } = {}
@@ -170,28 +182,20 @@ export const useCanvas = () => {
     loopId = nextFrame(renderLoop)
   }
 
-  function drawImg(
-    src: string,
-    x: number,
-    y: number,
-    w = 0,
-    h = 0,
-    rotate = 0,
-    anchor = { x: 0.5, y: 0.5 }
-  ) {
+  function drawImg(data: IImgData) {
     ctx.save()
-    ctx.translate(rpx2px(x), rpx2px(y))
-    ctx.rotate((rotate * Math.PI) / 180)
+    ctx.translate(rpx2px(data.x), rpx2px(data.y))
+    ctx.rotate((data.rotate * Math.PI) / 180)
 
-    const res = resObj[src]
-    w = w === 0 ? res.w : w
-    h = h === 0 ? res.h : h
+    const res = resObj[data.src]
+    data.w = data.w === 0 ? res.w : data.w
+    data.h = data.h === 0 ? res.h : data.h
     ctx.drawImage(
       res.img,
-      -rpx2px(w * anchor.x),
-      -rpx2px(h * anchor.y),
-      rpx2px(w),
-      rpx2px(h)
+      -rpx2px(data.w * data.anchor.x),
+      -rpx2px(data.h * data.anchor.y),
+      rpx2px(data.w),
+      rpx2px(data.h)
     )
     ctx.restore()
   }

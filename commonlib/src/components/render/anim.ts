@@ -47,40 +47,25 @@ export default class Anim extends Base {
       this.count > 0 && this.count--
       if (this.count !== 0) {
         this.cur = 0
-        this.canvas.drawImg(
-          this.src[this.cur],
-          this.x,
-          this.y,
-          this.w,
-          this.h,
-          this.rotate,
-          this.anchor
-        )
+        this.canvas.drawImg({
+          ...this.baseProps,
+          src: this.src[this.cur]
+        })
         this.cb[CB_TYPE.LOOP] &&
           this.cb[CB_TYPE.LOOP].forEach((cb) => {
             cb(this)
           })
       } else {
-        this.canvas.drawImg(
-          this.src[this.total - 1],
-          this.x,
-          this.y,
-          this.w,
-          this.h,
-          this.rotate,
-          this.anchor
-        )
+        this.canvas.drawImg({
+          ...this.baseProps,
+          src: this.src[this.total - 1]
+        })
       }
     } else {
-      this.canvas.drawImg(
-        this.src[this.cur++],
-        this.x,
-        this.y,
-        this.w,
-        this.h,
-        this.rotate,
-        this.anchor
-      )
+      this.canvas.drawImg({
+        ...this.baseProps,
+        src: this.src[this.cur++]
+      })
     }
 
     if (this.pause) {

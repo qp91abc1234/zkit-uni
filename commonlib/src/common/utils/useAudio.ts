@@ -50,27 +50,27 @@ export const useMusic = () => {
   }
 }
 
-let audioContext: { [name: string]: UniApp.InnerAudioContext } = {}
+let effectContext: { [name: string]: UniApp.InnerAudioContext } = {}
 let isMute = false
 export const useEffect = () => {
   const play = (path: string, cb: any = null) => {
     if (isMute) return
-    audioContext[path] = uni.createInnerAudioContext()
-    audioContext[path].src = path
-    audioContext[path].play()
-    audioContext[path].onEnded(() => {
-      audioContext[path].destroy()
-      delete audioContext[path]
+    effectContext[path] = uni.createInnerAudioContext()
+    effectContext[path].src = path
+    effectContext[path].play()
+    effectContext[path].onEnded(() => {
+      effectContext[path].destroy()
+      delete effectContext[path]
       cb && cb()
     })
   }
 
   const stop = () => {
-    const keys = Object.keys(audioContext)
+    const keys = Object.keys(effectContext)
     for (let i = 0; i < keys.length; i++) {
-      audioContext[keys[i]].destroy()
+      effectContext[keys[i]].destroy()
     }
-    audioContext = {}
+    effectContext = {}
   }
 
   const mute = (val) => {
