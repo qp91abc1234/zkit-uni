@@ -37,12 +37,13 @@ const emits = defineEmits<{
 }>()
 
 const inst = getCurrentInstance()
-const canvas = useCanvas()
 const queue: any[] = []
+const canvas = useCanvas()
+const tween = new Tween()
 const renderInst = {
   preloadRes: canvas.preloadRes,
   clearRes: canvas.clearRes,
-  tween: new Tween().tween,
+  tween: tween.tween.bind(tween),
   addImg,
   addAnim
 }
@@ -67,6 +68,7 @@ function addAnim(src: string[]) {
 
 function render() {
   emits('loop', renderInst)
+  tween.runTween()
   queue.sort((a, b) => {
     return a.zIndex - b.zIndex
   })

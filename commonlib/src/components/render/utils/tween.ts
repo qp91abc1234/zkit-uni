@@ -1,11 +1,9 @@
 import Entity from '@lib/components/render/entity/entity'
 
-type Prop = 'x' | 'y' | 'w' | 'h' | 'rotate' | 'alpha' | 'zIndex'
-
 interface ITween {
   entity: Entity
   duration: number
-  propName: Prop
+  propName: string
   from: number
   to: number
   startT: number
@@ -13,19 +11,10 @@ interface ITween {
   cb?: () => void
 }
 
-interface ITweenOptions {
-  duration: number
-  propName: Prop
-  from: number
-  to: number
-  addWay?: 'seq' | 'parallel'
-  cb?: () => void
-}
-
 export type ITweenFunc = (
   entity: Entity,
   duration: number,
-  propName: Prop,
+  propName: string,
   from: number,
   to: number,
   addWay?: 'seq' | 'parallel',
@@ -38,12 +27,16 @@ export default class Tween {
   tween(
     entity: Entity,
     duration: number,
-    propName: Prop,
+    propName: string,
     from: number,
     to: number,
     addWay: 'seq' | 'parallel' = 'seq',
     cb: () => void = () => {}
   ) {
+    if (!(propName in entity)) {
+      console.error(`[tween.ts][tween] ${propName} not in entity`)
+      return this
+    }
     const step = (to - from) / duration
     const tweenObj: ITween = {
       entity,
@@ -71,7 +64,7 @@ export default class Tween {
     return this
   }
 
-  private runTween() {
+  runTween() {
     this.tweenMap.forEach((tweenArr) => {
       if (tweenArr.length <= 0) return
       const arr = tweenArr[0]
