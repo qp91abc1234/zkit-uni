@@ -14,9 +14,16 @@ import { useCanvas } from '@lib/common/utils/useCanvas'
 import { CORSPathRewrite } from '@lib/common/utils'
 import lottieWeb from 'lottie-web'
 // #endif
-// #ifdef MP_WEIXIN
 import lottieWx from 'lottie-miniprogram'
-// #endif
+
+export type AnimationEventName =
+  | 'enterFrame'
+  | 'loopComplete'
+  | 'complete'
+  | 'segmentStart'
+  | 'destroy'
+
+export type ILottieAnim = ReturnType<typeof lottieWx.loadAnimation>
 
 const props = withDefaults(
   defineProps<{

@@ -6,8 +6,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import Lottie from '@lib/components/lottie/lottie.vue'
-import { ILottieAnim } from '@lib/common/types/lottieWx.d'
+import Lottie, { ILottieAnim } from '@lib/components/lottie/lottie.vue'
 
 const path = ref(
   'https://cdn-s3-gjzc.my.99.com/creation-zone/static/v1/activity/wly/data.json'
