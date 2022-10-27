@@ -1,6 +1,6 @@
-import Base, { CB_TYPE } from '@lib/components/render/object/object'
+import Entity, { CB_TYPE } from '@lib/components/render/entity/entity'
 
-export default class Anim extends Base {
+export default class Anim extends Entity {
   private src: string[] = []
   cur = 0
   total = 0

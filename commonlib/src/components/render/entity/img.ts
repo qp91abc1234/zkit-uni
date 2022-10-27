@@ -1,6 +1,6 @@
-import Base from '@lib/components/render/object/object'
+import Entity from '@lib/components/render/entity/entity'
 
-export default class Img extends Base {
+export default class Img extends Entity {
   private src: string = ''
 
   constructor(canvas, queue, src: string) {

@@ -5,9 +5,10 @@
 <script setup lang="ts">
 import { getCurrentInstance, onBeforeUnmount, onMounted } from 'vue'
 import { useCanvas } from '@lib/common/utils/useCanvas'
-import { CB_TYPE as cb_type } from '@lib/components/render/object/object'
-import Img from '@lib/components/render/object/img'
-import Anim from '@lib/components/render/object/anim'
+import Tween, { ITweenFunc } from '@lib/components/render/utils/tween'
+import { CB_TYPE as cb_type } from '@lib/components/render/entity/entity'
+import Img from '@lib/components/render/entity/img'
+import Anim from '@lib/components/render/entity/anim'
 
 export type CB_TYPE = cb_type
 export type IImg = Img
@@ -15,6 +16,7 @@ export type IAnim = Anim
 export interface IRender {
   preloadRes: (res: string[]) => Promise<boolean>
   clearRes: (res?: string[]) => void
+  tween: ITweenFunc
   addImg(src: string): Img
   addAnim(src: string[]): Anim
 }
@@ -40,6 +42,7 @@ const queue: any[] = []
 const renderInst = {
   preloadRes: canvas.preloadRes,
   clearRes: canvas.clearRes,
+  tween: new Tween().tween,
   addImg,
   addAnim
 }
