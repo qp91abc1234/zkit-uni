@@ -37,7 +37,7 @@ const emits = defineEmits<{
 const inst = getCurrentInstance()
 const canvas = useCanvas()
 const queue: any[] = []
-const renderObj = {
+const renderInst = {
   preloadRes: canvas.preloadRes,
   clearRes: canvas.clearRes,
   addImg,
@@ -46,7 +46,7 @@ const renderObj = {
 
 onMounted(async () => {
   await canvas.setup('anim-canvas', inst)
-  emits('init', renderObj)
+  emits('init', renderInst)
   canvas.render(render, props.frameNum)
 })
 
@@ -63,7 +63,7 @@ function addAnim(src: string[]) {
 }
 
 function render() {
-  emits('loop', renderObj)
+  emits('loop', renderInst)
   queue.sort((a, b) => {
     return a.zIndex - b.zIndex
   })
@@ -71,7 +71,7 @@ function render() {
   for (let i = 0; i < queue.length; i++) {
     queue[i].draw && queue[i].draw()
   }
-  emits('afterLoop', renderObj)
+  emits('afterLoop', renderInst)
 }
 </script>
 
