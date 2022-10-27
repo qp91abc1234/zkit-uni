@@ -11,12 +11,10 @@
 </template>
 
 <script setup lang="ts">
-import Render from '@lib/components/render/render.vue'
-import { IImg, IAnim } from '@lib/common/types/render.d'
+import Render, { IRender, IImg, IAnim } from '@lib/components/render/render.vue'
 
 const anims = getAnims()
-let addImg
-let addAnim
+let renderInst: IRender
 let img: IImg
 let anim: IAnim
 
@@ -52,13 +50,12 @@ function getAnims() {
   return { bossIdleAnim, bossInjureAnim, bossDeadAnim }
 }
 
-const init = (val) => {
-  addImg = val.addImg
-  addAnim = val.addAnim
+const init = (val: IRender) => {
+  renderInst = val
 }
 
 const handleAddImg = () => {
-  img = addImg(anims.bossIdleAnim.resArr[0])
+  img = renderInst.addImg(anims.bossIdleAnim.resArr[0])
   img.x = 375
   img.y = 200
   img.w = 200
@@ -72,7 +69,7 @@ const handleRemoveImg = () => {
 }
 
 const handleAddAnim = () => {
-  anim = addAnim(anims.bossInjureAnim.resArr)
+  anim = renderInst.addAnim(anims.bossInjureAnim.resArr)
   anim.x = 375
   anim.y = 200
   anim.w = 200
