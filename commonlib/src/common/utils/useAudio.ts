@@ -1,26 +1,19 @@
-export enum MUSIC_STATUS {
-  IDLE,
+enum MUSIC_STATUS {
   PLAY,
   PAUSE,
   STOP
 }
 
 const musicContext: UniApp.InnerAudioContext = uni.createInnerAudioContext()
-let status: MUSIC_STATUS = MUSIC_STATUS.IDLE
+let status: MUSIC_STATUS = MUSIC_STATUS.STOP
+let isMusicMute = false
 export const useMusic = () => {
-  const src = (path: string, loop = true) => {
-    musicContext.src = path
-    musicContext.loop = loop
-  }
-
-  const getStatus = () => {
-    return status
-  }
-
-  const play = (path?: string, loop?: boolean) => {
+  const play = (path: string = '', loop: boolean = true) => {
+    if (isMusicMute) return
     if (path) {
       status = MUSIC_STATUS.PLAY
-      src(path, loop)
+      musicContext.src = path
+      musicContext.loop = loop
       musicContext.play()
     }
   }
@@ -31,6 +24,7 @@ export const useMusic = () => {
   }
 
   const resume = () => {
+    if (isMusicMute) return
     status = MUSIC_STATUS.PLAY
     musicContext.play()
   }
@@ -41,27 +35,44 @@ export const useMusic = () => {
     musicContext.src = ''
   }
 
+  const mute = (val: boolean, path?: string, loop?: boolean) => {
+    isMusicMute = val
+    if (val) {
+      pause()
+    } else if (status === MUSIC_STATUS.STOP) {
+      play(path, loop)
+    } else if (status === MUSIC_STATUS.PAUSE) {
+      resume()
+    }
+  }
+
   return {
-    getStatus,
     play,
     pause,
     resume,
-    stop
+    stop,
+    mute
   }
 }
 
 let effectContext: { [name: string]: UniApp.InnerAudioContext } = {}
-let isMute = false
+let isEffectMute = false
 export const useEffect = () => {
   const play = (path: string, cb: any = null) => {
-    if (isMute) return
+    if (isEffectMute) return
     if (!effectContext[path]) {
       effectContext[path] = uni.createInnerAudioContext()
       effectContext[path].src = path
-      effectContext[path].onEnded(() => {
-        cb && cb()
-      })
     }
+
+    if (cb) {
+      const cbFunc = () => {
+        cb()
+        effectContext[path].offEnded(cbFunc)
+      }
+      effectContext[path].onEnded(cbFunc)
+    }
+
     effectContext[path].play()
   }
 
@@ -73,7 +84,7 @@ export const useEffect = () => {
   }
 
   const mute = (val) => {
-    isMute = val
+    isEffectMute = val
     if (val) {
       stop()
     }

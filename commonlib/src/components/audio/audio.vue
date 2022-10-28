@@ -13,7 +13,7 @@
 import { onBeforeUnmount } from 'vue'
 import { onHide, onShow } from '@dcloudio/uni-app'
 import { useLibStore } from '@lib/pinia/libStore'
-import { MUSIC_STATUS, useMusic, useEffect } from '@lib/common/utils/useAudio'
+import { useMusic, useEffect } from '@lib/common/utils/useAudio'
 
 const props = withDefaults(
   defineProps<{
@@ -37,52 +37,35 @@ const effect = useEffect()
 
 const changeStatus = (isPlay) => {
   libStore.isMute = !isPlay
-  if (!isPlay) {
+  if (isPlay) {
+    effect.mute(!isPlay)
+    effect.play(props.clickEffect)
+  } else {
     effect.play(props.clickEffect, () => {
       effect.mute(!isPlay)
     })
-    music.pause()
-  } else {
-    effect.mute(!isPlay)
-    effect.play(props.clickEffect)
-    if (music.getStatus() === MUSIC_STATUS.STOP) {
-      // b 页面静音，返回 a 页面取消静音的情况
-      music.play(props.bgMusic, props.isLoop)
-    }
-    if (music.getStatus() === MUSIC_STATUS.PAUSE) {
-      music.resume()
-    }
   }
+  music.mute(libStore.isMute, props.bgMusic, props.isLoop)
 }
 
 onShow(() => {
-  if (libStore.isMute) return
-  if (music.getStatus() === MUSIC_STATUS.STOP) {
-    // b 页面返回 a 页面的情况
-    music.play(props.bgMusic, props.isLoop)
-  }
-  if (music.getStatus() === MUSIC_STATUS.PAUSE) {
-    music.resume()
-  }
+  music.mute(libStore.isMute, props.bgMusic, props.isLoop)
 })
 
 onHide(() => {
-  if (libStore.isMute) return
-  music.pause()
   effect.stop()
+  music.pause()
 })
 
 onBeforeUnmount(() => {
   if (!props.isStop) return
-  music.stop()
   effect.stop()
+  music.stop()
 })
 
 const init = () => {
   effect.mute(libStore.isMute)
-  if (!libStore.isMute) {
-    music.play(props.bgMusic, props.isLoop)
-  }
+  music.mute(libStore.isMute, props.bgMusic, props.isLoop)
 }
 
 init()
