@@ -11,6 +11,16 @@ onHide(() => {
   console.log('App Hide')
 })
 </script>
+
+<script lang="ts">
+const globalData: App.IGlobalData = {
+  tst: 'text'
+}
+export default {
+  globalData
+}
+</script>
+
 <style lang="scss">
 @import '@lib/common/scss/app.scss';
 </style>
