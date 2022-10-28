@@ -18,13 +18,13 @@ import { MUSIC_STATUS, useMusic, useEffect } from '@lib/common/utils/useAudio'
 const props = withDefaults(
   defineProps<{
     bgMusic: string
-    isDestroy?: boolean
+    isStop?: boolean
     isLoop?: boolean
     clickEffect?: string
   }>(),
   {
     bgMusic: '',
-    isDestroy: true,
+    isStop: true,
     isLoop: true,
     clickEffect:
       'https://cdn-s3-gjzc.my.99.com/creation-zone/static/v1/activity/6337dfda19d6b9f2a3aef001.mp3'
@@ -71,7 +71,7 @@ onHide(() => {
 })
 
 onBeforeUnmount(() => {
-  if (!props.isDestroy) return
+  if (!props.isStop) return
   music.stop()
   effect.stop()
 })

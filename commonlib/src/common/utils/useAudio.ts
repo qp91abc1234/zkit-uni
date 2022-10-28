@@ -55,22 +55,21 @@ let isMute = false
 export const useEffect = () => {
   const play = (path: string, cb: any = null) => {
     if (isMute) return
-    effectContext[path] = uni.createInnerAudioContext()
-    effectContext[path].src = path
+    if (!effectContext[path]) {
+      effectContext[path] = uni.createInnerAudioContext()
+      effectContext[path].src = path
+      effectContext[path].onEnded(() => {
+        cb && cb()
+      })
+    }
     effectContext[path].play()
-    effectContext[path].onEnded(() => {
-      effectContext[path].destroy()
-      delete effectContext[path]
-      cb && cb()
-    })
   }
 
   const stop = () => {
     const keys = Object.keys(effectContext)
     for (let i = 0; i < keys.length; i++) {
-      effectContext[keys[i]].destroy()
+      effectContext[keys[i]].stop()
     }
-    effectContext = {}
   }
 
   const mute = (val) => {
@@ -80,9 +79,18 @@ export const useEffect = () => {
     }
   }
 
+  const destroy = () => {
+    const keys = Object.keys(effectContext)
+    for (let i = 0; i < keys.length; i++) {
+      effectContext[keys[i]].destroy()
+    }
+    effectContext = {}
+  }
+
   return {
     play,
     stop,
-    mute
+    mute,
+    destroy
   }
 }
