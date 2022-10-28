@@ -7,6 +7,9 @@
       "path": "pages/audio/audio"
     },
     {
+      "path": "pages/audio/other/other"
+    },
+    {
       "path": "pages/render/render"
     },
     {
