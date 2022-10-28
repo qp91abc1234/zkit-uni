@@ -65,7 +65,8 @@ onBeforeUnmount(() => {
 
 const init = () => {
   effect.mute(libStore.isMute)
-  music.mute(libStore.isMute, props.bgMusic, props.isLoop)
+  music.mute(libStore.isMute)
+  music.play(props.bgMusic, props.isLoop)
 }
 
 init()
