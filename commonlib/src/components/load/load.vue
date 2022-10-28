@@ -5,7 +5,7 @@
       v-for="item in resImg"
       :key="item"
       :src="item"
-      @error="errored($event, item)"
+      @error="errored(item)"
       @load="loadImg"
     ></image>
   </view>
@@ -18,12 +18,14 @@ import { useCanvas } from '@lib/common/utils/useCanvas'
 const props = withDefaults(
   defineProps<{
     time?: number
+    maxTime?: number
     resImg: string[]
     resCanvas?: string[]
     resAudio?: string[]
   }>(),
   {
-    time: 1500,
+    time: 3000,
+    maxTime: 8000,
     resImg: () => [],
     resCanvas: () => [],
     resAudio: () => []
@@ -39,7 +41,8 @@ const inst = getCurrentInstance()
 const canvas = useCanvas()
 let progress = 0
 let loadedNum = 0
-const loadedTime = new Date().getTime()
+const startTime = new Date().getTime()
+let isEnd = false
 
 const allNum = computed(() => {
   return props.resImg.length + props.resCanvas.length + props.resAudio.length
@@ -53,7 +56,7 @@ onBeforeUnmount(() => {
   canvas.destroy()
 })
 
-const errored = (event: object, item: string) => {
+const errored = (item: string) => {
   console.error('[load][errored]: file load error ', item)
   loadedNum++
   loadedJudge('errored')
@@ -66,11 +69,15 @@ const loadImg = () => {
 
 const loadCanvas = async () => {
   if (props.resCanvas.length <= 0) return
-  await canvas.setup('load-canvas', inst)
-  await canvas.preloadRes(props.resCanvas)
-
-  loadedNum += props.resCanvas.length
-  loadedJudge('loadCanvas')
+  try {
+    await canvas.setup('load-canvas', inst)
+    await canvas.preloadRes(props.resCanvas)
+  } catch (err) {
+    console.error(`[load.vue][loadCanvas] ${err}`)
+  } finally {
+    loadedNum += props.resCanvas.length
+    loadedJudge('loadCanvas')
+  }
 }
 
 const loadAudioCore = (path: string[]) => {
@@ -98,17 +105,28 @@ const loadAudioCore = (path: string[]) => {
 }
 
 const loadAudio = async () => {
-  await loadAudioCore(props.resAudio)
-  loadedNum += props.resAudio.length
-  loadedJudge('loadAudio')
+  try {
+    await loadAudioCore(props.resAudio)
+  } catch (err) {
+    console.error(`[load.vue][loadAudio] ${err}`)
+  } finally {
+    loadedNum += props.resAudio.length
+    loadedJudge('loadAudio')
+  }
 }
 
 const updateProgress = () => {
   if (loadedNum === allNum.value && progress === 99) {
-    emits('end')
+    loadEnd()
   } else if (progress < 99) {
     emits('progress', ++progress)
     setTimeout(updateProgress, props.time / 100)
+  } else if (progress === 99) {
+    if (new Date().getTime() - startTime > props.maxTime) {
+      loadEnd()
+    } else {
+      setTimeout(updateProgress, props.time / 100)
+    }
   }
 }
 
@@ -116,11 +134,18 @@ const loadedJudge = (name) => {
   console.log(`[load.vue][${name}] progress = ${loadedNum}/${allNum.value}`)
   if (loadedNum === allNum.value) {
     console.log(
-      `[load.vue][loaded] loadedTime = ${new Date().getTime() - loadedTime}ms`
+      `[load.vue][loaded] loadedTime = ${new Date().getTime() - startTime}ms`
     )
   }
   if (loadedNum === allNum.value && progress === 99) {
+    loadEnd()
+  }
+}
+
+const loadEnd = () => {
+  if (!isEnd) {
     emits('end')
+    isEnd = true
   }
 }
 

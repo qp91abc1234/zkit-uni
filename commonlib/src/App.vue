@@ -14,7 +14,7 @@ onHide(() => {
 
 <script lang="ts">
 const globalData: App.IGlobalData = {
-  tst: 'text'
+  name: 'commonlib'
 }
 export default {
   globalData

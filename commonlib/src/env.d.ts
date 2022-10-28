@@ -9,7 +9,7 @@ declare module '*.vue' {
 
 declare namespace App {
   interface IGlobalData {
-    tst: string
+    name: string
   }
   interface AppInstance<T extends AnyObject = {}> {
     globalData?: IGlobalData
