@@ -37,11 +37,11 @@ const emits = defineEmits<{
   (event: 'end'): void
 }>()
 
+const startTime = new Date().getTime()
 const inst = getCurrentInstance()
 const canvas = useCanvas()
 let progress = 0
 let loadedNum = 0
-const startTime = new Date().getTime()
 let isEnd = false
 
 const allNum = computed(() => {
@@ -58,13 +58,11 @@ onBeforeUnmount(() => {
 
 const errored = (item: string) => {
   console.error('[load][errored]: file load error ', item)
-  loadedNum++
-  loadedJudge('errored')
+  updateRealProgress('errored')
 }
 
 const loadImg = () => {
-  loadedNum++
-  loadedJudge('loadImg')
+  updateRealProgress('loadImg')
 }
 
 const loadCanvas = async () => {
@@ -75,8 +73,7 @@ const loadCanvas = async () => {
   } catch (err) {
     console.error(`[load.vue][loadCanvas] ${err}`)
   } finally {
-    loadedNum += props.resCanvas.length
-    loadedJudge('loadCanvas')
+    updateRealProgress('loadCanvas', props.resCanvas.length)
   }
 }
 
@@ -110,27 +107,27 @@ const loadAudio = async () => {
   } catch (err) {
     console.error(`[load.vue][loadAudio] ${err}`)
   } finally {
-    loadedNum += props.resAudio.length
-    loadedJudge('loadAudio')
+    updateRealProgress('loadAudio', props.resAudio.length)
   }
 }
 
-const updateProgress = () => {
+const updateFakeProgress = () => {
   if (loadedNum === allNum.value && progress === 99) {
     loadEnd()
   } else if (progress < 99) {
     emits('progress', ++progress)
-    setTimeout(updateProgress, props.time / 100)
+    setTimeout(updateFakeProgress, props.time / 100)
   } else if (progress === 99) {
     if (new Date().getTime() - startTime > props.maxTime) {
       loadEnd()
     } else {
-      setTimeout(updateProgress, props.time / 100)
+      setTimeout(updateFakeProgress, props.time / 100)
     }
   }
 }
 
-const loadedJudge = (name) => {
+const updateRealProgress = (name, num = 1) => {
+  loadedNum += num
   console.log(`[load.vue][${name}] progress = ${loadedNum}/${allNum.value}`)
   if (loadedNum === allNum.value) {
     console.log(
@@ -149,12 +146,8 @@ const loadEnd = () => {
   }
 }
 
-const init = () => {
-  loadAudio()
-  setTimeout(updateProgress, props.time / 100)
-}
-
-init()
+loadAudio()
+setTimeout(updateFakeProgress, props.time / 100)
 </script>
 
 <style lang="scss" scoped>
