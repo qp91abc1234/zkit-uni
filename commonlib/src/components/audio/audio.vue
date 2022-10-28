@@ -46,6 +46,7 @@ const changeStatus = (isPlay) => {
     effect.mute(!isPlay)
     effect.play(props.clickEffect)
     if (music.getStatus() === MUSIC_STATUS.STOP) {
+      // b 页面静音，返回 a 页面取消静音的情况
       music.play(props.bgMusic, props.isLoop)
     }
     if (music.getStatus() === MUSIC_STATUS.PAUSE) {
@@ -57,6 +58,7 @@ const changeStatus = (isPlay) => {
 onShow(() => {
   if (libStore.isMute) return
   if (music.getStatus() === MUSIC_STATUS.STOP) {
+    // b 页面返回 a 页面的情况
     music.play(props.bgMusic, props.isLoop)
   }
   if (music.getStatus() === MUSIC_STATUS.PAUSE) {
