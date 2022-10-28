@@ -8,6 +8,7 @@ interface ITween {
   to: number
   startT: number
   step: number
+  destroy: boolean
   cb?: () => void
 }
 
@@ -19,7 +20,7 @@ export type ITweenFunc = (
   to: number,
   addWay?: 'seq' | 'parallel',
   cb?: () => void
-) => Tween
+) => () => void
 
 export default class Tween {
   private tweenMap: Map<Entity, ITween[][]> = new Map<Entity, ITween[][]>()
@@ -35,7 +36,7 @@ export default class Tween {
   ) {
     if (!(propName in entity)) {
       console.error(`[tween.ts][tween] ${propName} not in entity`)
-      return this
+      return () => {}
     }
     const step = (to - from) / duration
     const tweenObj: ITween = {
@@ -46,6 +47,7 @@ export default class Tween {
       to,
       startT: -1,
       step,
+      destroy: false,
       cb
     }
 
@@ -61,7 +63,10 @@ export default class Tween {
       tweenArr[tweenArr.length - 1].push(tweenObj)
     }
 
-    return this
+    return () => {
+      if (!tweenObj) return
+      tweenObj.destroy = true
+    }
   }
 
   runTween() {
@@ -70,6 +75,11 @@ export default class Tween {
       const arr = tweenArr[0]
       const delIndex: number[] = []
       arr.forEach((val: ITween, index) => {
+        if (val.destroy) {
+          delIndex.push(index)
+          val.cb && val.cb()
+          return
+        }
         const cur = new Date().getTime()
         if (val.startT < 0) {
           val.startT = cur
@@ -89,12 +99,12 @@ export default class Tween {
           val.startT = cur
         }
       })
-      delIndex.forEach((val) => {
-        arr.splice(val, 1)
+      for (let i = delIndex.length - 1; i >= 0; i--) {
+        arr.splice(delIndex[i], 1)
         if (arr.length === 0) {
           tweenArr.shift()
         }
-      })
+      }
       delIndex.length = 0
     })
   }

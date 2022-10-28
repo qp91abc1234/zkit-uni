@@ -87,10 +87,9 @@ const handleRemoveAnim = () => {
 }
 
 const handleTweenAnim = () => {
-  renderInst
-    .tween(anim, 2000, 'y', 200, 400)
-    .tween(anim, 2000, 'x', 375, 500, 'parallel')
-    .tween(anim, 2000, 'rotate', 0, 180, 'parallel')
+  renderInst.tween(anim, 2000, 'y', 200, 400)
+  renderInst.tween(anim, 2000, 'x', 375, 500)
+  renderInst.tween(anim, 2000, 'rotate', 0, 180, 'parallel')
 }
 </script>
 
