@@ -75,7 +75,7 @@ export const useCanvas = () => {
       canvas.width = `${canvasW * libStore.dpr}px`
       canvas.height = `${canvasH * libStore.dpr}px`
       ctx.scale(libStore.dpr, libStore.dpr)
-      resolve({ canvas, ctx })
+      resolve({ canvas, ctx, canvasW, canvasH })
       // #endif
       // #ifdef MP-WEIXIN
       let query = uni.createSelectorQuery()
@@ -99,7 +99,7 @@ export const useCanvas = () => {
           canvas.width = canvasW * libStore.dpr
           canvas.height = canvasH * libStore.dpr
           ctx.scale(libStore.dpr, libStore.dpr)
-          resolve({ canvas, ctx })
+          resolve({ canvas, ctx, canvasW, canvasH })
         })
       // #endif
     })

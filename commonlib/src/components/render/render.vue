@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import { getCurrentInstance, onBeforeUnmount, onMounted } from 'vue'
 import { useCanvas } from '@lib/common/utils/useCanvas'
+import { px2rpx } from '@lib/common/utils'
 import Tween, { ITweenFunc } from '@lib/components/render/utils/tween'
 import { CB_TYPE as cb_type } from '@lib/components/render/entity/entity'
 import Img from '@lib/components/render/entity/img'
@@ -54,8 +55,8 @@ const renderInst = {
 
 onMounted(async () => {
   const ret: any = await canvas.setup('anim-canvas', inst)
-  renderInst.canvasW = ret.canvas.width
-  renderInst.canvasH = ret.canvas.height
+  renderInst.canvasW = px2rpx(ret.canvasW)
+  renderInst.canvasH = px2rpx(ret.canvasH)
   emits('init', renderInst)
   canvas.render(render, props.frameNum)
 })
