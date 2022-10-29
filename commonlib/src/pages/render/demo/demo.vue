@@ -68,7 +68,6 @@ const loop = () => {
       Math.abs(present.x - hero.x) < present.w / 2 + hero.w / 2 &&
       Math.abs(present.y - hero.y) < present.h / 2 + hero.h / 2
     ) {
-      cancel()
       present.destroy()
       delete presentObj[val]
     }

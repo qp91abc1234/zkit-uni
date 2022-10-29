@@ -3,14 +3,12 @@ import Entity from '@lib/components/render/entity/entity'
 export default class Img extends Entity {
   private src: string = ''
 
-  constructor(canvas, queue, src: string) {
-    super(canvas, queue)
+  constructor(canvas, src: string) {
+    super(canvas)
     this.src = src
 
     Promise.resolve(this.canvas.preloadRes([src])).then((val) => {
-      if (val) {
-        this.queue.push(this)
-      }
+      this.readyFlag = val
     })
   }
 

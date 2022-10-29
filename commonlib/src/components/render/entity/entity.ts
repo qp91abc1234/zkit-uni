@@ -7,8 +7,9 @@ export enum CB_TYPE {
 
 export default class Entity {
   protected canvas: ICanvas
-  protected queue: any[] = []
   protected cb = {}
+  readyFlag = false
+  destroyFlag = false
   x = 0
   y = 0
   w = 0
@@ -19,9 +20,8 @@ export default class Entity {
   zIndex = 0
   visible = true
 
-  constructor(canvas, queue) {
+  constructor(canvas) {
     this.canvas = canvas
-    this.queue = queue
   }
 
   protected get baseProps() {
@@ -48,10 +48,7 @@ export default class Entity {
   }
 
   destroy() {
-    const index = this.queue.indexOf(this)
-    if (index >= 0) {
-      this.queue.splice(index, 1)
-    }
+    this.destroyFlag = true
   }
 
   addCb(key: CB_TYPE, val: Function) {

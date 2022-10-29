@@ -15,7 +15,9 @@ import { getCurrentInstance, onBeforeUnmount, onMounted } from 'vue'
 import { useCanvas } from '@lib/common/utils/useCanvas'
 import { px2rpx } from '@lib/common/utils'
 import Tween, { ITweenFunc } from '@lib/components/render/utils/tween'
-import { CB_TYPE as cb_type } from '@lib/components/render/entity/entity'
+import IEntity, {
+  CB_TYPE as cb_type
+} from '@lib/components/render/entity/entity'
 import Img from '@lib/components/render/entity/img'
 import Anim from '@lib/components/render/entity/anim'
 
@@ -49,7 +51,7 @@ const emits = defineEmits<{
 }>()
 
 const inst = getCurrentInstance()
-const queue: any[] = []
+const queue: IEntity[] = []
 const canvas = useCanvas()
 const tween = new Tween()
 const renderInst = {
@@ -75,22 +77,33 @@ onBeforeUnmount(() => {
 })
 
 function addImg(src: string) {
-  return new Img(canvas, queue, src)
+  const item = new Img(canvas, src)
+  queue.push(item)
+  return item
 }
 
 function addAnim(src: string[]) {
-  return new Anim(canvas, queue, src)
+  const item = new Anim(canvas, src)
+  queue.push(item)
+  return item
 }
 
 function render() {
   emits('loop', renderInst)
   tween.runTween()
+
+  for (let i = queue.length - 1; i >= 0; i--) {
+    if (queue[i].destroyFlag) {
+      queue.splice(i, 1)
+    }
+  }
+
   queue.sort((a, b) => {
     return a.zIndex - b.zIndex
   })
 
   for (let i = 0; i < queue.length; i++) {
-    queue[i].draw && queue[i].draw()
+    queue[i].readyFlag && queue[i].draw && queue[i].draw()
   }
   emits('afterLoop', renderInst)
 }

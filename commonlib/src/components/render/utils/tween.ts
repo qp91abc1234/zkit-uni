@@ -31,7 +31,7 @@ export default class Tween {
     propName: string,
     from: number,
     to: number,
-    addWay: 'seq' | 'parallel' = 'seq',
+    addWay: 'seq' | 'parallel' = 'parallel',
     cb: () => void = () => {}
   ) {
     if (!(propName in entity)) {
@@ -75,7 +75,7 @@ export default class Tween {
       const arr = tweenArr[0]
       const delIndex: number[] = []
       arr.forEach((val: ITween, index) => {
-        if (val.destroy) {
+        if (val.destroy || val.entity.destroyFlag) {
           delIndex.push(index)
           return
         }
