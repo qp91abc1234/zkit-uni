@@ -53,8 +53,6 @@ function getAnims() {
 
 const init = async (val: IRender) => {
   renderInst = val
-  await renderInst.preloadRes(anims.bossIdleAnim.resArr)
-  await renderInst.preloadRes(anims.bossInjureAnim.resArr)
   addHero()
   addPresent()
 }

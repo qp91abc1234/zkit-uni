@@ -22,7 +22,13 @@ interface IImgData {
 export type ICanvas = ReturnType<typeof useCanvas>
 
 const resObj: {
-  [key: string]: { img: any; w: number; h: number; loaded: LOAD_STATUS }
+  [key: string]: {
+    img: any
+    w: number
+    h: number
+    loaded: LOAD_STATUS
+    cb: Function[]
+  }
 } = {}
 let loopId = 0
 
@@ -117,10 +123,7 @@ export const useCanvas = () => {
           loaded: LOAD_STATUS.UNLOAD
         }
 
-        if (
-          resObj[src].loaded === LOAD_STATUS.LOADING ||
-          resObj[src].loaded === LOAD_STATUS.SUCC
-        ) {
+        if (resObj[src].loaded === LOAD_STATUS.SUCC) {
           resolve(resObj[src])
           return
         }
@@ -129,17 +132,27 @@ export const useCanvas = () => {
           resObj[src].img = createImage()
         }
 
+        if (!resObj[src].cb) {
+          resObj[src].cb = []
+        }
+        resObj[src].cb.push(resolve)
         resObj[src].img.onload = () => {
           resObj[src].w = resObj[src].img.width
           resObj[src].h = resObj[src].img.height
           resObj[src].loaded = LOAD_STATUS.SUCC
-          resolve(resObj[src])
+          resObj[src].cb.forEach((val) => {
+            val(resObj[src])
+          })
+          resObj[src].cb.length = 0
         }
         resObj[src].img.onerror = () => {
           resObj[src].w = -1
           resObj[src].h = -1
           resObj[src].loaded = LOAD_STATUS.FAIL
-          resolve(resObj[src])
+          resObj[src].cb.forEach((val) => {
+            val(resObj[src])
+          })
+          resObj[src].cb.length = 0
         }
         resObj[src].img.src = src
         resObj[src].loaded = LOAD_STATUS.LOADING
