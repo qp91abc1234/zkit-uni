@@ -14,6 +14,8 @@ export type CB_TYPE = cb_type
 export type IImg = Img
 export type IAnim = Anim
 export interface IRender {
+  canvasW: number
+  canvasH: number
   preloadRes: (res: string[]) => Promise<boolean>
   clearRes: (res?: string[]) => void
   tween: ITweenFunc
@@ -41,6 +43,8 @@ const queue: any[] = []
 const canvas = useCanvas()
 const tween = new Tween()
 const renderInst = {
+  canvasW: 0,
+  canvasH: 0,
   preloadRes: canvas.preloadRes,
   clearRes: canvas.clearRes,
   tween: tween.tween.bind(tween),
@@ -49,7 +53,9 @@ const renderInst = {
 }
 
 onMounted(async () => {
-  await canvas.setup('anim-canvas', inst)
+  const ret: any = await canvas.setup('anim-canvas', inst)
+  renderInst.canvasW = ret.canvas.width
+  renderInst.canvasH = ret.canvas.height
   emits('init', renderInst)
   canvas.render(render, props.frameNum)
 })

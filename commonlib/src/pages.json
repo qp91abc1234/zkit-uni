@@ -16,6 +16,9 @@
       "path": "pages/render/render"
     },
     {
+      "path": "pages/render/demo/demo"
+    },
+    {
       "path": "pages/load/load"
     },
     {

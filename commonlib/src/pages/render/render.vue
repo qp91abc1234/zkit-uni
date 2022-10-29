@@ -5,7 +5,7 @@
     <button @click="handleAddAnim">添加动画</button>
     <button @click="handleChangeAnim">切换动画</button>
     <button @click="handleRemoveAnim">移除动画</button>
-    <button @click="handleTweenAnim">动画缓动</button>
+    <button @click="handleDemo">demo</button>
     <Render class="render" @init="init"></Render>
   </view>
 </template>
@@ -86,10 +86,10 @@ const handleRemoveAnim = () => {
   anim.destroy()
 }
 
-const handleTweenAnim = () => {
-  renderInst.tween(anim, 2000, 'y', 200, 400)
-  renderInst.tween(anim, 2000, 'x', 375, 500)
-  renderInst.tween(anim, 2000, 'rotate', 0, 180, 'parallel')
+const handleDemo = () => {
+  uni.navigateTo({
+    url: '/pages/render/demo/demo'
+  })
 }
 </script>
 
