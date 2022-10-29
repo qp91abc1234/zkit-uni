@@ -49,7 +49,9 @@ export default class Entity {
 
   destroy() {
     const index = this.queue.indexOf(this)
-    this.queue.splice(index, 1)
+    if (index >= 0) {
+      this.queue.splice(index, 1)
+    }
   }
 
   addCb(key: CB_TYPE, val: Function) {

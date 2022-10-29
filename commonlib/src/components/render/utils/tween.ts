@@ -77,7 +77,6 @@ export default class Tween {
       arr.forEach((val: ITween, index) => {
         if (val.destroy) {
           delIndex.push(index)
-          val.cb && val.cb()
           return
         }
         const cur = new Date().getTime()
