@@ -1,15 +1,17 @@
 <template>
   <view class="page">
-    <Render class="render" @init="init"></Render>
+    <Render class="render" @init="init" @touch-event="handleTouch"></Render>
   </view>
 </template>
 
 <script setup lang="ts">
+import { px2rpx } from '@lib/common/utils'
 import Render, { IRender, IAnim } from '@lib/components/render/render.vue'
 
 const anims = getAnims()
 let renderInst: IRender
 let hero: IAnim
+let touchStart = 0
 
 function getAnims() {
   function getResWebpArr(name, num) {
@@ -43,9 +45,12 @@ function getAnims() {
   return { bossIdleAnim, bossInjureAnim, bossDeadAnim }
 }
 
-const init = (val: IRender) => {
+const init = async (val: IRender) => {
   renderInst = val
+  await renderInst.preloadRes(anims.bossIdleAnim.resArr)
+  await renderInst.preloadRes(anims.bossInjureAnim.resArr)
   addHero()
+  addPresent()
 }
 
 const addHero = () => {
@@ -55,6 +60,41 @@ const addHero = () => {
   hero.anchor = { x: 0.5, y: 1 }
   hero.w = 200
   hero.h = 200
+}
+
+const addPresent = () => {
+  const presentSize = 100
+  const start = 25
+  let randomCnt = Math.floor(Math.random() * 3) + 2
+  randomCnt = randomCnt === 5 ? 4 : randomCnt
+  const posArr: any = []
+  posArr[2] = [2, 4]
+  posArr[3] = [1, 3, 5]
+  posArr[4] = [0, 2, 4, 6]
+
+  for (let i = 0; i < randomCnt; i++) {
+    const present = renderInst.addAnim(anims.bossInjureAnim.resArr)
+    present.x = start + posArr[randomCnt][i] * presentSize
+    present.y = 0
+    present.anchor = { x: 0, y: 0.5 }
+    present.w = presentSize
+    present.h = presentSize
+  }
+}
+
+const handleTouch = (payload: TouchEvent) => {
+  const { type, touches } = payload
+
+  if (type === 'touchstart') {
+    const { x, y } = touches[0] as any
+    touchStart = px2rpx(x)
+  }
+
+  if (type === 'touchmove') {
+    const { x, y } = touches[0] as any
+    hero.x += px2rpx(x) - touchStart
+    touchStart = px2rpx(x)
+  }
 }
 </script>
 

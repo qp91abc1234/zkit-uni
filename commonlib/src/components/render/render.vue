@@ -1,5 +1,13 @@
 <template>
-  <canvas class="anim-canvas" id="anim-canvas" type="2d"></canvas>
+  <canvas
+    class="anim-canvas"
+    id="anim-canvas"
+    type="2d"
+    @touchstart="(payload: TouchEvent) => emits('touchEvent', payload)"
+    @touchmove="(payload: TouchEvent) => emits('touchEvent', payload)"
+    @touchend="(payload: TouchEvent) => emits('touchEvent', payload)"
+    @touchcancel="(payload: TouchEvent) => emits('touchEvent', payload)"
+  ></canvas>
 </template>
 
 <script setup lang="ts">
@@ -37,6 +45,7 @@ const emits = defineEmits<{
   (event: 'init', val: IRender): void
   (event: 'loop', val: IRender): void
   (event: 'afterLoop', val: IRender): void
+  (event: 'touchEvent', val: TouchEvent): void
 }>()
 
 const inst = getCurrentInstance()
