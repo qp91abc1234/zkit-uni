@@ -57,7 +57,9 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
+  // #ifdef MP_WEIXIN
   canvas.destroy()
+  // #endif
   anim.value.destroy()
 })
 
