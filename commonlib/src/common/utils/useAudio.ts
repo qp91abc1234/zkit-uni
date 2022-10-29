@@ -3,7 +3,8 @@ let isMusicMute = false
 export const useMusic = () => {
   const play = (path: string = '', loop: boolean = true) => {
     if (isMusicMute) return
-    if (path) {
+    if (path !== musicContext.src) {
+      // 兼容 android 机，避免 onShow 时重新播放
       musicContext.src = path
       musicContext.loop = loop
     }
@@ -16,7 +17,6 @@ export const useMusic = () => {
 
   const stop = () => {
     musicContext.stop()
-    musicContext.src = ''
   }
 
   const mute = (val: boolean, path?: string, loop?: boolean) => {
