@@ -1,7 +1,7 @@
 <template>
   <view class="page">
-    <button @click="click">change</button>
-    <Audio :bg-music="bgMusic"></Audio>
+    <button @click="click">redirect</button>
+    <Audio :bg-music="bgMusic" :is-stop="false"></Audio>
   </view>
 </template>
 
@@ -14,7 +14,7 @@ const bgMusic = ref(
 )
 
 const click = () => {
-  uni.navigateTo({
+  uni.redirectTo({
     url: '/pages/audio/other/other'
   })
 }
