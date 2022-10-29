@@ -63,12 +63,12 @@ const loop = () => {
   const keys = Object.keys(presentObj)
   keys.forEach((val) => {
     if (val === 'index') return
-    const { present, cancel } = presentObj[val]
     if (
-      Math.abs(present.x - hero.x) < present.w / 2 + hero.w / 2 &&
-      Math.abs(present.y - hero.y) < present.h / 2 + hero.h / 2
+      Math.abs(presentObj[val].x - hero.x) <
+        presentObj[val].w / 2 + hero.w / 2 &&
+      Math.abs(presentObj[val].y - hero.y) < presentObj[val].h / 2 + hero.h / 2
     ) {
-      present.destroy()
+      presentObj[val].destroy = true
       delete presentObj[val]
     }
   })
@@ -113,21 +113,17 @@ const addPresent = () => {
     present.y = -presentSize / 2
     present.w = presentSize
     present.h = presentSize
-    const cancel = renderInst.tween(
+    const tween = renderInst.tween(
       present,
       10000,
       'y',
       0,
-      renderInst.canvasH + presentSize,
-      'parallel',
-      () => {
-        present.destroy()
-      }
+      renderInst.canvasH + presentSize
     )
-    presentObj[presentObj.index++] = {
-      present,
-      cancel
+    tween.succ = () => {
+      present.destroy = true
     }
+    presentObj[presentObj.index++] = present
   }
 }
 </script>

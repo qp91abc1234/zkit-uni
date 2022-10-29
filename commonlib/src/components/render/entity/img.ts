@@ -8,7 +8,7 @@ export default class Img extends Entity {
     this.src = src
 
     Promise.resolve(this.canvas.preloadRes([src])).then((val) => {
-      this.readyFlag = val
+      this.ready = val
     })
   }
 

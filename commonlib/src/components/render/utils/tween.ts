@@ -9,7 +9,15 @@ interface ITween {
   startT: number
   step: number
   destroy: boolean
-  cb?: () => void
+  succ: () => void
+  fail: () => void
+  cancel: () => void
+}
+
+type ITweenFuncRet = {
+  succ: () => void
+  fail: () => void
+  cancel: () => void
 }
 
 export type ITweenFunc = (
@@ -18,9 +26,8 @@ export type ITweenFunc = (
   propName: string,
   from: number,
   to: number,
-  addWay?: 'seq' | 'parallel',
-  cb?: () => void
-) => () => void
+  addWay?: 'seq' | 'parallel'
+) => ITweenFuncRet
 
 export default class Tween {
   private tweenMap: Map<Entity, ITween[][]> = new Map<Entity, ITween[][]>()
@@ -31,12 +38,11 @@ export default class Tween {
     propName: string,
     from: number,
     to: number,
-    addWay: 'seq' | 'parallel' = 'parallel',
-    cb: () => void = () => {}
-  ) {
+    addWay: 'seq' | 'parallel' = 'parallel'
+  ): ITweenFuncRet {
     if (!(propName in entity)) {
       console.error(`[tween.ts][tween] ${propName} not in entity`)
-      return () => {}
+      return {} as ITweenFuncRet
     }
     const step = (to - from) / duration
     const tweenObj: ITween = {
@@ -48,7 +54,11 @@ export default class Tween {
       startT: -1,
       step,
       destroy: false,
-      cb
+      succ: () => {},
+      fail: () => {},
+      cancel: () => {
+        tweenObj.destroy = true
+      }
     }
 
     if (!this.tweenMap.has(entity)) {
@@ -63,10 +73,7 @@ export default class Tween {
       tweenArr[tweenArr.length - 1].push(tweenObj)
     }
 
-    return () => {
-      if (!tweenObj) return
-      tweenObj.destroy = true
-    }
+    return tweenObj
   }
 
   runTween() {
@@ -75,8 +82,9 @@ export default class Tween {
       const arr = tweenArr[0]
       const delIndex: number[] = []
       arr.forEach((val: ITween, index) => {
-        if (val.destroy || val.entity.destroyFlag) {
+        if (val.destroy || val.entity.destroy) {
           delIndex.push(index)
+          val.fail()
           return
         }
         const cur = new Date().getTime()
@@ -92,7 +100,7 @@ export default class Tween {
         ) {
           val.entity[val.propName] = val.to
           delIndex.push(index)
-          val.cb && val.cb()
+          val.succ()
         } else {
           val.entity[val.propName] += s
           val.startT = cur

@@ -65,7 +65,7 @@ const handleAddImg = () => {
 }
 
 const handleRemoveImg = () => {
-  img.destroy()
+  img.destroy = true
 }
 
 const handleAddAnim = () => {
@@ -83,7 +83,7 @@ const handleChangeAnim = () => {
 }
 
 const handleRemoveAnim = () => {
-  anim.destroy()
+  anim.destroy = true
 }
 
 const handleDemo = () => {

@@ -13,7 +13,7 @@ export default class Anim extends Entity {
     this.total = src.length
 
     Promise.resolve(this.canvas.preloadRes(src)).then((val) => {
-      this.readyFlag = val
+      this.ready = val
     })
   }
 

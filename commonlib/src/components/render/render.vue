@@ -93,7 +93,7 @@ function render() {
   tween.runTween()
 
   for (let i = queue.length - 1; i >= 0; i--) {
-    if (queue[i].destroyFlag) {
+    if (queue[i].destroy) {
       queue.splice(i, 1)
     }
   }
@@ -103,7 +103,7 @@ function render() {
   })
 
   for (let i = 0; i < queue.length; i++) {
-    queue[i].readyFlag && queue[i].draw && queue[i].draw()
+    queue[i].ready && queue[i].draw && queue[i].draw()
   }
   emits('afterLoop', renderInst)
 }

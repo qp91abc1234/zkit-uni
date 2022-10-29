@@ -8,8 +8,8 @@ export enum CB_TYPE {
 export default class Entity {
   protected canvas: ICanvas
   protected cb = {}
-  readyFlag = false
-  destroyFlag = false
+  ready = false
+  destroy = false
   x = 0
   y = 0
   w = 0
@@ -45,10 +45,6 @@ export default class Entity {
     }
 
     return ret
-  }
-
-  destroy() {
-    this.destroyFlag = true
   }
 
   addCb(key: CB_TYPE, val: Function) {
