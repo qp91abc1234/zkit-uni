@@ -1,36 +1,20 @@
-enum MUSIC_STATUS {
-  PLAY,
-  PAUSE,
-  STOP
-}
-
 const musicContext: UniApp.InnerAudioContext = uni.createInnerAudioContext()
-let status: MUSIC_STATUS = MUSIC_STATUS.STOP
 let isMusicMute = false
 export const useMusic = () => {
   const play = (path: string = '', loop: boolean = true) => {
     if (isMusicMute) return
     if (path) {
-      status = MUSIC_STATUS.PLAY
       musicContext.src = path
       musicContext.loop = loop
-      musicContext.play()
     }
-  }
-
-  const pause = () => {
-    status = MUSIC_STATUS.PAUSE
-    musicContext.pause()
-  }
-
-  const resume = () => {
-    if (isMusicMute) return
-    status = MUSIC_STATUS.PLAY
     musicContext.play()
   }
 
+  const pause = () => {
+    musicContext.pause()
+  }
+
   const stop = () => {
-    status = MUSIC_STATUS.STOP
     musicContext.stop()
     musicContext.src = ''
   }
@@ -39,17 +23,14 @@ export const useMusic = () => {
     isMusicMute = val
     if (val) {
       pause()
-    } else if (status === MUSIC_STATUS.STOP) {
+    } else {
       play(path, loop)
-    } else if (status === MUSIC_STATUS.PAUSE) {
-      resume()
     }
   }
 
   return {
     play,
     pause,
-    resume,
     stop,
     mute
   }
