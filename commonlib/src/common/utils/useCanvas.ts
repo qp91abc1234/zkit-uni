@@ -184,9 +184,9 @@ export const useCanvas = () => {
     const renderLoop = () => {
       const timestamp = new Date().getTime()
       if (timestamp - t > 1000 / frameNum) {
-        t = timestamp
         ctx.clearRect(0, 0, canvasW, canvasH)
         renderCore && renderCore(timestamp - t)
+        t = timestamp
       }
       loopId = nextFrame(renderLoop)
     }

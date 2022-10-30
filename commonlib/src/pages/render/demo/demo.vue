@@ -104,7 +104,6 @@ onHide(() => {
 const init = async (val: IRender) => {
   renderInst = val
   addHero()
-  addPresent()
 }
 
 const loop = () => {
@@ -155,6 +154,9 @@ const click = () => {
     })
     hero.x = renderInst.canvasW / 2
   }
+  if (gameStatus.value === GAME_STATUS.UNSTART) {
+    addPresent()
+  }
   gameStatus.value = GAME_STATUS.PLAY
 }
 
@@ -186,6 +188,7 @@ const addPresent = () => {
     })
     presentObj[presentObj.index++] = present
   }
+
   schedule = renderInst.schedule(addPresent, delay, 1)
 }
 </script>
