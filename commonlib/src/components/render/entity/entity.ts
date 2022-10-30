@@ -9,7 +9,7 @@ export default class Entity {
   protected canvas: ICanvas
   protected cb = {}
   ready = false
-  destroy = false
+  private destroyVal = false
   private xVal = 0
   private yVal = 0
   w = 0
@@ -38,6 +38,22 @@ export default class Entity {
       zIndex: this.zIndex,
       visible: this.visible
     }
+  }
+
+  get destroy() {
+    return this.destroyVal
+  }
+
+  set destroy(val: boolean) {
+    if (this.children) {
+      const keys = Object.keys(this.children)
+      for (let i = keys.length - 1; i >= 0; i--) {
+        this.children[keys[i]].forEach((ele: Entity) => {
+          ele.destroy = true
+        })
+      }
+    }
+    this.destroyVal = val
   }
 
   get x() {
