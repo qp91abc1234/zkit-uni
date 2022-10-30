@@ -46,7 +46,7 @@ export default class Anim extends Entity {
       if (this.count !== 0) {
         this.cur = 0
         this.canvas.drawImg({
-          ...this.baseProps,
+          ...this.renderProps,
           src: this.src[this.cur]
         })
         this.cb[CB_TYPE.LOOP] &&
@@ -55,13 +55,13 @@ export default class Anim extends Entity {
           })
       } else {
         this.canvas.drawImg({
-          ...this.baseProps,
+          ...this.renderProps,
           src: this.src[this.total - 1]
         })
       }
     } else {
       this.canvas.drawImg({
-        ...this.baseProps,
+        ...this.renderProps,
         src: this.src[this.cur++]
       })
     }

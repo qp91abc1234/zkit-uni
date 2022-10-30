@@ -16,7 +16,7 @@ export default class Img extends Entity {
     const ret = super.draw()
     if (!ret) return false
     this.canvas.drawImg({
-      ...this.baseProps,
+      ...this.renderProps,
       src: this.src
     })
     return true
