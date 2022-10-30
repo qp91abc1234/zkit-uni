@@ -56,7 +56,8 @@ const init = (val: IRender) => {
 }
 
 const handleAddImg = () => {
-  img = renderInst.addImg(anims.bossIdleAnim.resArr[0])
+  img = renderInst.createImg(anims.bossIdleAnim.resArr[0])
+  renderInst.addChild(img)
   img.x = 375
   img.y = 200
   img.w = 200
@@ -66,11 +67,12 @@ const handleAddImg = () => {
 }
 
 const handleRemoveImg = () => {
-  img.destroy = true
+  img.removeFromParent()
 }
 
 const handleAddAnim = () => {
-  anim = renderInst.addAnim(anims.bossInjureAnim.resArr)
+  anim = renderInst.createAnim(anims.bossInjureAnim.resArr)
+  renderInst.addChild(anim)
   anim.x = 375
   anim.y = 200
   anim.w = 200
@@ -84,7 +86,7 @@ const handleChangeAnim = () => {
 }
 
 const handleRemoveAnim = () => {
-  anim.destroy = true
+  anim.removeFromParent()
 }
 
 const handleDemo = () => {

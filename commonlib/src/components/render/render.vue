@@ -16,10 +16,11 @@ import { useCanvas } from '@lib/common/utils/useCanvas'
 import { px2rpx } from '@lib/common/utils'
 import Schedule from '@lib/components/render/utils/schedule'
 import Tween from '@lib/components/render/utils/tween'
+import Entity from '@lib/components/render/entity/entity'
 import Img from '@lib/components/render/entity/img'
 import Anim from '@lib/components/render/entity/anim'
 import { onHide, onShow } from '@dcloudio/uni-app'
-import { IRender, IEntity } from '@lib/common/types/render.d'
+import { IRender } from '@lib/common/types/render.d'
 
 const props = withDefaults(
   defineProps<{
@@ -39,8 +40,8 @@ const emits = defineEmits<{
 
 let pause = false
 const inst = getCurrentInstance()
-const queue: IEntity[] = []
 const canvas = useCanvas()
+const root = new Entity(canvas)
 const schedule = new Schedule()
 const tween = new Tween()
 const renderInst = {
@@ -50,8 +51,10 @@ const renderInst = {
   clearRes: canvas.clearRes,
   schedule: schedule.add.bind(schedule),
   tween: tween.add.bind(tween),
-  addImg,
-  addAnim
+  addChild,
+  removeChild,
+  createImg,
+  createAnim
 }
 
 onShow(() => {
@@ -74,16 +77,20 @@ onBeforeUnmount(() => {
   canvas.destroy()
 })
 
-function addImg(src: string) {
-  const item = new Img(canvas, src)
-  queue.push(item)
-  return item
+function addChild(child: Entity) {
+  return root.addChild(child)
 }
 
-function addAnim(src: string[]) {
-  const item = new Anim(canvas, src)
-  queue.push(item)
-  return item
+function removeChild(child: Entity) {
+  return root.removeChild(child)
+}
+
+function createImg(src: string) {
+  return new Img(canvas, src)
+}
+
+function createAnim(src: string[]) {
+  return new Anim(canvas, src)
 }
 
 function render(delta: number) {
@@ -91,20 +98,7 @@ function render(delta: number) {
   emits('loop', delta)
   schedule.run(delta)
   tween.run(delta)
-
-  for (let i = queue.length - 1; i >= 0; i--) {
-    if (queue[i].destroy) {
-      queue.splice(i, 1)
-    }
-  }
-
-  queue.sort((a, b) => {
-    return a.zIndex - b.zIndex
-  })
-
-  for (let i = 0; i < queue.length; i++) {
-    queue[i].ready && queue[i].draw && queue[i].draw()
-  }
+  root.draw()
   emits('afterLoop', delta)
 }
 </script>

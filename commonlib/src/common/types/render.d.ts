@@ -25,6 +25,8 @@ export interface IRender {
   clearRes: (res?: string[]) => void
   schedule: IScheduleFunc
   tween: ITweenFunc
-  addImg(src: string): Img
-  addAnim(src: string[]): Anim
+  addChild(val: Entity): Entity
+  removeChild(val: Entity): Entity
+  createImg(src: string): Img
+  createAnim(src: string[]): Anim
 }

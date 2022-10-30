@@ -9,7 +9,6 @@ export default class Entity {
   protected canvas: ICanvas
   protected cb = {}
   ready = false
-  private destroyVal = false
   private xVal = 0
   private yVal = 0
   w = 0
@@ -38,22 +37,6 @@ export default class Entity {
       zIndex: this.zIndex,
       visible: this.visible
     }
-  }
-
-  get destroy() {
-    return this.destroyVal
-  }
-
-  set destroy(val: boolean) {
-    if (this.children) {
-      const keys = Object.keys(this.children)
-      for (let i = keys.length - 1; i >= 0; i--) {
-        this.children[keys[i]].forEach((ele: Entity) => {
-          ele.destroy = true
-        })
-      }
-    }
-    this.destroyVal = val
   }
 
   get x() {
@@ -116,12 +99,16 @@ export default class Entity {
   }
 
   draw() {
-    let ret = true
-    if (!this.visible) {
-      ret = false
+    if (this.visible && this.children) {
+      const keys = Object.keys(this.children)
+      for (let i = 0; i < keys.length; i++) {
+        this.children[keys[i]].forEach((ele: Entity) => {
+          ele.draw()
+        })
+      }
     }
 
-    return ret
+    return this.visible
   }
 
   addCb(key: CB_TYPE, val: Function) {
@@ -142,6 +129,7 @@ export default class Entity {
     child.parent = this
     this.children[child.zIndexVal] = this.children[child.zIndexVal] || []
     this.children[child.zIndexVal].push(child)
+    return child
   }
 
   removeChild(child: Entity) {
@@ -149,5 +137,11 @@ export default class Entity {
     this.children[child.zIndexVal] = this.children[child.zIndexVal] || []
     const index = this.children[child.zIndexVal].indexOf(child)
     this.children[child.zIndexVal].splice(index, 1)
+    return child
+  }
+
+  removeFromParent() {
+    this.parent && this.parent.removeChild(this)
+    return this
   }
 }

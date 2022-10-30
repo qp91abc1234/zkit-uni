@@ -33,7 +33,7 @@ const anims = getAnims()
 let renderInst: IRender
 let schedule: IScheduleRet
 let hero: IAnim
-const presentObj: any = { index: 0 }
+const presentArr: IAnim[] = []
 
 const btnTxt = computed(() => {
   let ret = ''
@@ -143,7 +143,8 @@ const click = () => {
 }
 
 const addHero = () => {
-  hero = renderInst.addAnim(anims.bossIdleAnim.resArr)
+  hero = renderInst.createAnim(anims.bossIdleAnim.resArr)
+  renderInst.addChild(hero)
   hero.x = renderInst.canvasW / 2
   hero.y = renderInst.canvasH - 100
   hero.w = 200
@@ -158,35 +159,37 @@ const addPresent = () => {
   const delay = Math.random() * 1000 + 1000
 
   for (let i = 0; i < randomCnt; i++) {
-    const present = renderInst.addAnim(anims.bossInjureAnim.resArr)
+    const present = renderInst.createAnim(anims.bossInjureAnim.resArr)
+    renderInst.addChild(present)
     present.x = start + posArr[i] * presentSize + presentSize / 2
     present.y = -presentSize / 2
     present.w = presentSize
     present.h = presentSize
-    presentObj[presentObj.index++] = present
+    presentArr.push(present)
   }
 
   schedule = renderInst.schedule(addPresent, delay, 1)
 }
 
 const movePresent = (delta: number) => {
-  const keys = Object.keys(presentObj)
-  keys.forEach((val) => {
-    if (val === 'index') return
-    presentObj[val].y += (200 * delta) / 1000
+  const delIndex: number[] = []
+  presentArr.forEach((val, index) => {
+    val.y += (200 * delta) / 1000
     if (
-      Math.abs(presentObj[val].x - hero.x) <
-        presentObj[val].w / 2 + hero.w / 2 &&
-      Math.abs(presentObj[val].y - hero.y) < presentObj[val].h / 2 + hero.h / 2
+      Math.abs(val.x - hero.x) < val.w / 2 + hero.w / 2 &&
+      Math.abs(val.y - hero.y) < val.h / 2 + hero.h / 2
     ) {
-      presentObj[val].destroy = true
-      delete presentObj[val]
+      val.removeFromParent()
+      delIndex.push(index)
       score.value++
       if (score.value >= maxScore) {
         gameEnd()
       }
     }
   })
+  for (let i = delIndex.length - 1; i >= 0; i--) {
+    presentArr.splice(i, 1)
+  }
 }
 
 const gameEnd = () => {
@@ -196,12 +199,10 @@ const gameEnd = () => {
 
 const gameRestart = () => {
   score.value = 0
-  const keys = Object.keys(presentObj)
-  keys.forEach((val) => {
-    if (val === 'index') return
-    presentObj[val].destroy = true
-    delete presentObj[val]
+  presentArr.forEach((val) => {
+    val.removeFromParent()
   })
+  presentArr.length = 0
   hero.x = renderInst.canvasW / 2
 }
 </script>
