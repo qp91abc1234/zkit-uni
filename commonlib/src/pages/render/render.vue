@@ -78,14 +78,15 @@ const handleAddAnim = () => {
   anim.y = 200
   anim.w = 200
   anim.h = 200
-  anim.rotate = 180
   anim.count = 3
+  anim.alpha = 0.5
   const child = anim.addChild(
     renderInst.createImg(anims.bossDeadAnim.resArr[10])
   )
-  child.y = -50
+  child.y = -100
   child.w = 100
   child.h = 100
+  child.anchor = { x: 0.5, y: 1 }
 }
 
 const handleChangeAnim = () => {

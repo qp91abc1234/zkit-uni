@@ -14,10 +14,12 @@ export default class Img extends Entity {
 
   draw() {
     if (!this.ready || !this.visible) return
+    this.canvas.save()
     this.canvas.drawImg({
       ...this.renderProps,
       src: this.src
     })
     super.draw()
+    this.canvas.restore()
   }
 }

@@ -25,18 +25,7 @@ export default class Anim extends Entity {
     this.pause = false
   }
 
-  changeAnim(newSrc: string[]) {
-    Promise.resolve(this.canvas.preloadRes(newSrc)).then((val) => {
-      this.resetAnim(newSrc)
-      this.cb[CB_TYPE.CHANGE_ANIM] &&
-        this.cb[CB_TYPE.CHANGE_ANIM].forEach((cb) => {
-          cb(this)
-        })
-    })
-  }
-
-  draw() {
-    if (!this.ready || !this.visible) return
+  private drawAnim() {
     const cur = this.cur
     const count = this.count
 
@@ -69,7 +58,23 @@ export default class Anim extends Entity {
       this.cur = cur
       this.count = count
     }
+  }
 
+  changeAnim(newSrc: string[]) {
+    Promise.resolve(this.canvas.preloadRes(newSrc)).then((val) => {
+      this.resetAnim(newSrc)
+      this.cb[CB_TYPE.CHANGE_ANIM] &&
+        this.cb[CB_TYPE.CHANGE_ANIM].forEach((cb) => {
+          cb(this)
+        })
+    })
+  }
+
+  draw() {
+    if (!this.ready || !this.visible) return
+    this.canvas.save()
+    this.drawAnim()
     super.draw()
+    this.canvas.restore()
   }
 }

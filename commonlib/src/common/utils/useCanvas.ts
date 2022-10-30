@@ -194,7 +194,6 @@ export const useCanvas = () => {
   }
 
   function drawImg(data: IImgData) {
-    ctx.save()
     ctx.translate(rpx2px(data.x), rpx2px(data.y))
     ctx.rotate((data.rotate * Math.PI) / 180)
     ctx.globalAlpha = data.alpha
@@ -209,6 +208,13 @@ export const useCanvas = () => {
       rpx2px(data.w),
       rpx2px(data.h)
     )
+  }
+
+  function save() {
+    ctx.save()
+  }
+
+  function restore() {
     ctx.restore()
   }
 
@@ -226,6 +232,8 @@ export const useCanvas = () => {
     clearRes,
     render,
     drawImg,
+    save,
+    restore,
     destroy
   }
 }
