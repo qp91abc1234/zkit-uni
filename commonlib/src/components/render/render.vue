@@ -32,8 +32,8 @@ const props = withDefaults(
 
 const emits = defineEmits<{
   (event: 'init', val: IRender): void
-  (event: 'loop', val: IRender): void
-  (event: 'afterLoop', val: IRender): void
+  (event: 'loop', delta: number): void
+  (event: 'afterLoop', delta: number): void
   (event: 'touchEvent', val: TouchEvent): void
 }>()
 
@@ -88,7 +88,7 @@ function addAnim(src: string[]) {
 }
 
 function render(delta: number) {
-  emits('loop', renderInst)
+  emits('loop', delta)
   schedule.run(delta)
   tween.run(delta)
 
@@ -105,7 +105,7 @@ function render(delta: number) {
   for (let i = 0; i < queue.length; i++) {
     queue[i].ready && queue[i].draw && queue[i].draw()
   }
-  emits('afterLoop', renderInst)
+  emits('afterLoop', delta)
 }
 </script>
 

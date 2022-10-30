@@ -28,7 +28,7 @@ enum GAME_STATUS {
 const gameStatus = ref(GAME_STATUS.UNSTART)
 let touchStart = 0
 const score = ref(0)
-const maxScore = 20
+const maxScore = 10
 const anims = getAnims()
 let renderInst: IRender
 let schedule: IScheduleRet
@@ -99,6 +99,7 @@ const getNFromM = (m, n) => {
 
 onHide(() => {
   gameStatus.value = GAME_STATUS.PAUSE
+  schedule.pause = true
 })
 
 const init = async (val: IRender) => {
@@ -106,9 +107,9 @@ const init = async (val: IRender) => {
   addHero()
 }
 
-const loop = () => {
+const loop = (delta: number) => {
   if (gameStatus.value !== GAME_STATUS.PLAY) return
-  scoreJudge()
+  movePresent(delta)
 }
 
 const handleTouch = (payload: TouchEvent) => {
@@ -130,9 +131,13 @@ const handleTouch = (payload: TouchEvent) => {
 const click = () => {
   if (gameStatus.value === GAME_STATUS.END) {
     gameRestart()
+    addPresent()
   }
   if (gameStatus.value === GAME_STATUS.UNSTART) {
     addPresent()
+  }
+  if (gameStatus.value === GAME_STATUS.PAUSE) {
+    schedule.pause = false
   }
   gameStatus.value = GAME_STATUS.PLAY
 }
@@ -158,21 +163,17 @@ const addPresent = () => {
     present.y = -presentSize / 2
     present.w = presentSize
     present.h = presentSize
-    renderInst.tween(present, 10000, 'y', 0, renderInst.canvasH + presentSize, {
-      succ: () => {
-        present.destroy = true
-      }
-    })
     presentObj[presentObj.index++] = present
   }
 
   schedule = renderInst.schedule(addPresent, delay, 1)
 }
 
-const scoreJudge = () => {
+const movePresent = (delta: number) => {
   const keys = Object.keys(presentObj)
   keys.forEach((val) => {
     if (val === 'index') return
+    presentObj[val].y += (200 * delta) / 1000
     if (
       Math.abs(presentObj[val].x - hero.x) <
         presentObj[val].w / 2 + hero.w / 2 &&
@@ -199,6 +200,7 @@ const gameRestart = () => {
   keys.forEach((val) => {
     if (val === 'index') return
     presentObj[val].destroy = true
+    delete presentObj[val]
   })
   hero.x = renderInst.canvasW / 2
 }
