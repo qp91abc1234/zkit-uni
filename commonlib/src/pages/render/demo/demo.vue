@@ -188,7 +188,7 @@ const movePresent = (delta: number) => {
     }
   })
   for (let i = delIndex.length - 1; i >= 0; i--) {
-    presentArr.splice(i, 1)
+    presentArr.splice(delIndex[i], 1)
   }
 }
 

@@ -13,12 +13,11 @@ export default class Img extends Entity {
   }
 
   draw() {
-    const ret = super.draw()
-    if (!ret) return false
+    if (!this.visible) return
     this.canvas.drawImg({
       ...this.renderProps,
       src: this.src
     })
-    return true
+    super.draw()
   }
 }

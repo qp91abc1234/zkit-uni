@@ -99,7 +99,7 @@ export default class Entity {
   }
 
   draw() {
-    if (this.visible && this.children) {
+    if (this.children) {
       const keys = Object.keys(this.children)
       for (let i = 0; i < keys.length; i++) {
         this.children[keys[i]].forEach((ele: Entity) => {
@@ -107,8 +107,6 @@ export default class Entity {
         })
       }
     }
-
-    return this.visible
   }
 
   addCb(key: CB_TYPE, val: Function) {

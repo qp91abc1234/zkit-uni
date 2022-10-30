@@ -5,6 +5,7 @@
     <button @click="handleAddAnim">添加动画</button>
     <button @click="handleChangeAnim">切换动画</button>
     <button @click="handleRemoveAnim">移除动画</button>
+    <button @click="handleTweenAnim">缓动动画</button>
     <button @click="handleDemo">demo</button>
     <Render class="render" @init="init"></Render>
   </view>
@@ -79,6 +80,12 @@ const handleAddAnim = () => {
   anim.h = 200
   anim.rotate = 180
   anim.count = 3
+  const child = anim.addChild(
+    renderInst.createImg(anims.bossDeadAnim.resArr[10])
+  )
+  child.y = -50
+  child.w = 100
+  child.h = 100
 }
 
 const handleChangeAnim = () => {
@@ -87,6 +94,11 @@ const handleChangeAnim = () => {
 
 const handleRemoveAnim = () => {
   anim.removeFromParent()
+}
+
+const handleTweenAnim = () => {
+  renderInst.tween(anim, 2000, 'y', 200, 300)
+  renderInst.tween(anim, 2000, 'rotate', 0, 180)
 }
 
 const handleDemo = () => {
