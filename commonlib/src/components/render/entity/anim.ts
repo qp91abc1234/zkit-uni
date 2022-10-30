@@ -36,7 +36,7 @@ export default class Anim extends Entity {
   }
 
   draw() {
-    if (!this.visible) return
+    if (!this.ready || !this.visible) return
     const cur = this.cur
     const count = this.count
 

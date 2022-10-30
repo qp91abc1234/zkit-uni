@@ -51,6 +51,18 @@ export default class Entity {
     this.xVal = val
   }
 
+  get y() {
+    let ret = this.yVal
+    if (this.parent) {
+      ret = this.parent.y + ret
+    }
+    return ret
+  }
+
+  set y(val: number) {
+    this.yVal = val
+  }
+
   get rotate() {
     let ret = this.rotateVal
     if (this.parent) {
@@ -73,18 +85,6 @@ export default class Entity {
 
   set alpha(val: number) {
     this.alphaVal = val
-  }
-
-  get y() {
-    let ret = this.yVal
-    if (this.parent) {
-      ret = this.parent.y + ret
-    }
-    return ret
-  }
-
-  set y(val: number) {
-    this.yVal = val
   }
 
   get zIndex() {

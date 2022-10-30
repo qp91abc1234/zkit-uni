@@ -13,7 +13,7 @@ export default class Img extends Entity {
   }
 
   draw() {
-    if (!this.visible) return
+    if (!this.ready || !this.visible) return
     this.canvas.drawImg({
       ...this.renderProps,
       src: this.src
