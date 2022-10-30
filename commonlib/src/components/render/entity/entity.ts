@@ -98,7 +98,9 @@ export default class Entity {
     child.parent = undefined
     this.children[child.zIndexVal] = this.children[child.zIndexVal] || []
     const index = this.children[child.zIndexVal].indexOf(child)
-    this.children[child.zIndexVal].splice(index, 1)
+    if (index > 0) {
+      this.children[child.zIndexVal].splice(index, 1)
+    }
     return child
   }
 
