@@ -14,26 +14,12 @@
 import { getCurrentInstance, onBeforeUnmount, onMounted } from 'vue'
 import { useCanvas } from '@lib/common/utils/useCanvas'
 import { px2rpx } from '@lib/common/utils'
-import Tween, { ITweenFunc } from '@lib/components/render/utils/tween'
-import IEntity, {
-  CB_TYPE as cb_type
-} from '@lib/components/render/entity/entity'
+import Schedule from '@lib/components/render/utils/schedule'
+import Tween from '@lib/components/render/utils/tween'
 import Img from '@lib/components/render/entity/img'
 import Anim from '@lib/components/render/entity/anim'
-
-export type CB_TYPE = cb_type
-export type IImg = Img
-export type IAnim = Anim
-export interface IRender {
-  canvasW: number
-  canvasH: number
-  preloadRes: (res: string[]) => Promise<boolean>
-  clearRes: (res?: string[]) => void
-  tween: ITweenFunc
-  pauseTween: (val: boolean) => void
-  addImg(src: string): Img
-  addAnim(src: string[]): Anim
-}
+import { onHide, onShow } from '@dcloudio/uni-app'
+import { IRender, IEntity } from '@lib/common/types/render.d'
 
 const props = withDefaults(
   defineProps<{
@@ -54,17 +40,28 @@ const emits = defineEmits<{
 const inst = getCurrentInstance()
 const queue: IEntity[] = []
 const canvas = useCanvas()
+const schedule = new Schedule()
 const tween = new Tween()
 const renderInst = {
   canvasW: 0,
   canvasH: 0,
   preloadRes: canvas.preloadRes,
   clearRes: canvas.clearRes,
-  tween: tween.tween.bind(tween),
-  pauseTween: tween.pauseTween.bind(tween),
+  schedule: schedule.add.bind(schedule),
+  tween: tween.add.bind(tween),
   addImg,
   addAnim
 }
+
+onShow(() => {
+  schedule.pause = false
+  tween.pause = false
+})
+
+onHide(() => {
+  schedule.pause = true
+  tween.pause = true
+})
 
 onMounted(async () => {
   const ret: any = await canvas.setup('anim-canvas', inst)
@@ -90,9 +87,10 @@ function addAnim(src: string[]) {
   return item
 }
 
-function render() {
+function render(delta: number) {
   emits('loop', renderInst)
-  tween.runTween()
+  schedule.run(delta)
+  tween.run(delta)
 
   for (let i = queue.length - 1; i >= 0; i--) {
     if (queue[i].destroy) {

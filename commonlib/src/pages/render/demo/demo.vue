@@ -14,8 +14,9 @@
 <script setup lang="ts">
 import { onHide } from '@dcloudio/uni-app'
 import { px2rpx } from '@lib/common/utils'
-import Render, { IRender, IAnim } from '@lib/components/render/render.vue'
+import Render from '@lib/components/render/render.vue'
 import { computed, ref } from 'vue'
+import { IRender, IAnim, IScheduleRet } from '@lib/common/types/render.d'
 
 enum GAME_STATUS {
   UNSTART,
@@ -26,13 +27,11 @@ enum GAME_STATUS {
 
 const gameStatus = ref(GAME_STATUS.UNSTART)
 let touchStart = 0
-let currentT = 0
-let delayT = 0
-let pauseT = 0
 const score = ref(0)
 const maxScore = 20
 const anims = getAnims()
 let renderInst: IRender
+let schedule: IScheduleRet
 let hero: IAnim
 const presentObj: any = { index: 0 }
 
@@ -100,13 +99,12 @@ const getNFromM = (m, n) => {
 
 onHide(() => {
   gameStatus.value = GAME_STATUS.PAUSE
-  renderInst.pauseTween(true)
-  pauseT = new Date().getTime()
 })
 
 const init = async (val: IRender) => {
   renderInst = val
   addHero()
+  addPresent()
 }
 
 const loop = () => {
@@ -125,16 +123,9 @@ const loop = () => {
       score.value++
       if (score.value >= maxScore) {
         gameStatus.value = GAME_STATUS.END
-        renderInst.pauseTween(true)
       }
     }
   })
-
-  const curT = new Date().getTime()
-  if (curT - currentT >= delayT) {
-    delayT = addPresent()
-    currentT = curT
-  }
 }
 
 const handleTouch = (payload: TouchEvent) => {
@@ -155,6 +146,7 @@ const handleTouch = (payload: TouchEvent) => {
 
 const click = () => {
   if (gameStatus.value === GAME_STATUS.END) {
+    schedule.stop = true
     score.value = 0
     const keys = Object.keys(presentObj)
     keys.forEach((val) => {
@@ -162,11 +154,6 @@ const click = () => {
       presentObj[val].destroy = true
     })
     hero.x = renderInst.canvasW / 2
-    renderInst.pauseTween(false)
-  }
-  if (gameStatus.value === GAME_STATUS.PAUSE) {
-    currentT = currentT + new Date().getTime() - pauseT
-    renderInst.pauseTween(false)
   }
   gameStatus.value = GAME_STATUS.PLAY
 }
@@ -199,8 +186,7 @@ const addPresent = () => {
     })
     presentObj[presentObj.index++] = present
   }
-
-  return delay
+  schedule = renderInst.schedule(addPresent, delay, 1)
 }
 </script>
 

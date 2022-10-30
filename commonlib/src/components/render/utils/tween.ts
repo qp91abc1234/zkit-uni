@@ -6,18 +6,22 @@ interface ITween {
   propName: string
   from: number
   to: number
-  startT: number
   step: number
-  destroy: boolean
+  pause: boolean
+  stop: boolean
   succ: () => void
   fail: () => void
-  cancel: () => void
 }
 
 type ITweenOptions = {
   addWay?: 'seq' | 'parallel'
   succ?: () => void
   fail?: () => void
+}
+
+export type ITweenRet = {
+  pause: boolean
+  stop: boolean
 }
 
 export type ITweenFunc = (
@@ -27,26 +31,26 @@ export type ITweenFunc = (
   from: number,
   to: number,
   options?: ITweenOptions
-) => void
+) => ITweenRet
 
 export default class Tween {
   private tweenMap: Map<Entity, ITween[][]> = new Map<Entity, ITween[][]>()
-  private pause: boolean = false
-  private pauseT: number = 0
+  pause: boolean = false
 
-  tween(
+  add(
     entity: Entity,
     duration: number,
     propName: string,
     from: number,
     to: number,
     options?: ITweenOptions
-  ): void {
+  ): ITweenRet {
     if (!(propName in entity)) {
       console.error(`[tween.ts][tween] ${propName} not in entity`)
-      return
+      return {} as ITweenRet
     }
 
+    entity[propName] = from
     options = options || {}
     options.addWay = options.addWay || 'parallel'
     options.succ = options.succ || function succ() {}
@@ -59,14 +63,11 @@ export default class Tween {
       propName,
       from,
       to,
-      startT: -1,
       step,
-      destroy: false,
+      pause: false,
+      stop: false,
       succ: options.succ,
-      fail: options.fail,
-      cancel: () => {
-        tweenObj.destroy = true
-      }
+      fail: options.fail
     }
 
     if (!this.tweenMap.has(entity)) {
@@ -80,29 +81,26 @@ export default class Tween {
     } else {
       tweenArr[tweenArr.length - 1].push(tweenObj)
     }
+
+    return tweenObj
   }
 
-  runTween() {
+  run(delta: number) {
     this.tweenMap.forEach((tweenArr) => {
       if (tweenArr.length <= 0) return
       const arr = tweenArr[0]
       const delIndex: number[] = []
       arr.forEach((val: ITween, index) => {
-        if (this.pause) {
+        if (this.pause || val.pause) {
           return
         }
-        if (val.destroy || val.entity.destroy) {
+        if (val.stop || val.entity.destroy) {
           delIndex.push(index)
           val.fail()
           return
         }
-        const cur = new Date().getTime()
-        if (val.startT < 0) {
-          val.startT = cur
-          val.entity[val.propName] = val.from
-        }
-        const t = cur - val.startT
-        const s = t * val.step
+
+        const s = delta * val.step
         if (
           (s > 0 && val.entity[val.propName] + s >= val.to) ||
           (s < 0 && val.entity[val.propName] + s <= val.to)
@@ -112,7 +110,6 @@ export default class Tween {
           val.succ()
         } else {
           val.entity[val.propName] += s
-          val.startT = cur
         }
       })
       for (let i = delIndex.length - 1; i >= 0; i--) {
@@ -123,21 +120,5 @@ export default class Tween {
       }
       delIndex.length = 0
     })
-  }
-
-  pauseTween(val: boolean) {
-    this.pause = val
-    if (val) {
-      this.pauseT = new Date().getTime()
-    } else {
-      const delay = new Date().getTime() - this.pauseT
-      this.tweenMap.forEach((tweenArr) => {
-        if (tweenArr.length <= 0) return
-        const arr = tweenArr[0]
-        arr.forEach((item: ITween) => {
-          item.startT += delay
-        })
-      })
-    }
   }
 }
