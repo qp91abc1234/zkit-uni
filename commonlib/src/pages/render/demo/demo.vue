@@ -108,23 +108,7 @@ const init = async (val: IRender) => {
 
 const loop = () => {
   if (gameStatus.value !== GAME_STATUS.PLAY) return
-
-  const keys = Object.keys(presentObj)
-  keys.forEach((val) => {
-    if (val === 'index') return
-    if (
-      Math.abs(presentObj[val].x - hero.x) <
-        presentObj[val].w / 2 + hero.w / 2 &&
-      Math.abs(presentObj[val].y - hero.y) < presentObj[val].h / 2 + hero.h / 2
-    ) {
-      presentObj[val].destroy = true
-      delete presentObj[val]
-      score.value++
-      if (score.value >= maxScore) {
-        gameStatus.value = GAME_STATUS.END
-      }
-    }
-  })
+  scoreJudge()
 }
 
 const handleTouch = (payload: TouchEvent) => {
@@ -145,14 +129,7 @@ const handleTouch = (payload: TouchEvent) => {
 
 const click = () => {
   if (gameStatus.value === GAME_STATUS.END) {
-    schedule.stop = true
-    score.value = 0
-    const keys = Object.keys(presentObj)
-    keys.forEach((val) => {
-      if (val === 'index') return
-      presentObj[val].destroy = true
-    })
-    hero.x = renderInst.canvasW / 2
+    gameRestart()
   }
   if (gameStatus.value === GAME_STATUS.UNSTART) {
     addPresent()
@@ -190,6 +167,40 @@ const addPresent = () => {
   }
 
   schedule = renderInst.schedule(addPresent, delay, 1)
+}
+
+const scoreJudge = () => {
+  const keys = Object.keys(presentObj)
+  keys.forEach((val) => {
+    if (val === 'index') return
+    if (
+      Math.abs(presentObj[val].x - hero.x) <
+        presentObj[val].w / 2 + hero.w / 2 &&
+      Math.abs(presentObj[val].y - hero.y) < presentObj[val].h / 2 + hero.h / 2
+    ) {
+      presentObj[val].destroy = true
+      delete presentObj[val]
+      score.value++
+      if (score.value >= maxScore) {
+        gameEnd()
+      }
+    }
+  })
+}
+
+const gameEnd = () => {
+  gameStatus.value = GAME_STATUS.END
+  schedule.stop = true
+}
+
+const gameRestart = () => {
+  score.value = 0
+  const keys = Object.keys(presentObj)
+  keys.forEach((val) => {
+    if (val === 'index') return
+    presentObj[val].destroy = true
+  })
+  hero.x = renderInst.canvasW / 2
 }
 </script>
 

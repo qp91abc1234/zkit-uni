@@ -54,10 +54,10 @@ export default class Schedule {
       ele.curT += delta
       if (ele.curT >= ele.startT + ele.interval) {
         ele.cb(ele.curT - ele.startT)
+        ele.loop = ele.loop > 0 ? ele.loop - 1 : ele.loop
         if (ele.loop === 0) {
           delIndex.push(index)
         } else {
-          ele.loop = ele.loop > 0 ? ele.loop - 1 : ele.loop
           ele.startT += ele.interval
         }
       }
