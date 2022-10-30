@@ -6,18 +6,49 @@
       @loop="loop"
       @touch-event="handleTouch"
     ></Render>
+    <view class="score">{{ score }}</view>
+    <view v-if="btnTxt" class="btn" @click="click">{{ btnTxt }}</view>
   </view>
 </template>
 
 <script setup lang="ts">
+import { onHide } from '@dcloudio/uni-app'
 import { px2rpx } from '@lib/common/utils'
 import Render, { IRender, IAnim } from '@lib/components/render/render.vue'
+import { computed, ref } from 'vue'
 
+enum GAME_STATUS {
+  UNSTART,
+  PLAY,
+  PAUSE,
+  END
+}
+
+const gameStatus = ref(GAME_STATUS.UNSTART)
+let touchStart = 0
+let currentT = 0
+let delayT = 0
+let pauseT = 0
+const score = ref(0)
+const maxScore = 20
 const anims = getAnims()
 let renderInst: IRender
 let hero: IAnim
-let touchStart = 0
 const presentObj: any = { index: 0 }
+
+const btnTxt = computed(() => {
+  let ret = ''
+  if (gameStatus.value === GAME_STATUS.UNSTART) {
+    ret = '开始游戏'
+  }
+  if (gameStatus.value === GAME_STATUS.PAUSE) {
+    ret = '继续游戏'
+  }
+  if (gameStatus.value === GAME_STATUS.END) {
+    ret = '重新开始'
+  }
+  return ret
+})
 
 function getAnims() {
   function getResWebpArr(name, num) {
@@ -51,13 +82,36 @@ function getAnims() {
   return { bossIdleAnim, bossInjureAnim, bossDeadAnim }
 }
 
+const getNFromM = (m, n) => {
+  const arr: number[] = []
+  for (let i = 0; i < m; i++) {
+    arr.push(i)
+  }
+
+  const ret: number[] = []
+  for (let i = 0; i < n; i++) {
+    const index = Math.floor(Math.random() * arr.length)
+    ret.push(arr[index])
+    arr.splice(index, 1)
+  }
+
+  return ret
+}
+
+onHide(() => {
+  gameStatus.value = GAME_STATUS.PAUSE
+  renderInst.pauseTween(true)
+  pauseT = new Date().getTime()
+})
+
 const init = async (val: IRender) => {
   renderInst = val
   addHero()
-  addPresent()
 }
 
 const loop = () => {
+  if (gameStatus.value !== GAME_STATUS.PLAY) return
+
   const keys = Object.keys(presentObj)
   keys.forEach((val) => {
     if (val === 'index') return
@@ -68,11 +122,23 @@ const loop = () => {
     ) {
       presentObj[val].destroy = true
       delete presentObj[val]
+      score.value++
+      if (score.value >= maxScore) {
+        gameStatus.value = GAME_STATUS.END
+        renderInst.pauseTween(true)
+      }
     }
   })
+
+  const curT = new Date().getTime()
+  if (curT - currentT >= delayT) {
+    delayT = addPresent()
+    currentT = curT
+  }
 }
 
 const handleTouch = (payload: TouchEvent) => {
+  if (gameStatus.value !== GAME_STATUS.PLAY) return
   const { type, touches } = payload
 
   if (type === 'touchstart') {
@@ -87,6 +153,24 @@ const handleTouch = (payload: TouchEvent) => {
   }
 }
 
+const click = () => {
+  if (gameStatus.value === GAME_STATUS.END) {
+    score.value = 0
+    const keys = Object.keys(presentObj)
+    keys.forEach((val) => {
+      if (val === 'index') return
+      presentObj[val].destroy = true
+    })
+    hero.x = renderInst.canvasW / 2
+    renderInst.pauseTween(false)
+  }
+  if (gameStatus.value === GAME_STATUS.PAUSE) {
+    currentT = currentT + new Date().getTime() - pauseT
+    renderInst.pauseTween(false)
+  }
+  gameStatus.value = GAME_STATUS.PLAY
+}
+
 const addHero = () => {
   hero = renderInst.addAnim(anims.bossIdleAnim.resArr)
   hero.x = renderInst.canvasW / 2
@@ -98,31 +182,25 @@ const addHero = () => {
 const addPresent = () => {
   const presentSize = 100
   const start = 25
-  let randomCnt = Math.floor(Math.random() * 3) + 2
-  randomCnt = 3 // randomCnt === 5 ? 4 : randomCnt
-  const posArr: any = []
-  posArr[2] = [2, 4]
-  posArr[3] = [1, 3, 5]
-  posArr[4] = [0, 2, 4, 6]
+  const randomCnt = Math.floor(Math.random() * 3) + 2
+  const posArr: any = getNFromM(7, randomCnt)
+  const delay = Math.random() * 1000 + 1000
 
   for (let i = 0; i < randomCnt; i++) {
     const present = renderInst.addAnim(anims.bossInjureAnim.resArr)
-    present.x = start + posArr[randomCnt][i] * presentSize + presentSize / 2
+    present.x = start + posArr[i] * presentSize + presentSize / 2
     present.y = -presentSize / 2
     present.w = presentSize
     present.h = presentSize
-    const tween = renderInst.tween(
-      present,
-      10000,
-      'y',
-      0,
-      renderInst.canvasH + presentSize
-    )
-    tween.succ = () => {
-      present.destroy = true
-    }
+    renderInst.tween(present, 10000, 'y', 0, renderInst.canvasH + presentSize, {
+      succ: () => {
+        present.destroy = true
+      }
+    })
     presentObj[presentObj.index++] = present
   }
+
+  return delay
 }
 </script>
 
@@ -130,5 +208,30 @@ const addPresent = () => {
 .render {
   width: 100%;
   height: 100%;
+}
+.score {
+  position: absolute;
+  left: 50rpx;
+  top: 50rpx;
+  width: 100rpx;
+  height: 100rpx;
+  line-height: 100rpx;
+  text-align: center;
+  border-radius: 40rpx;
+  font-size: 50rpx;
+  color: black;
+  background-color: antiquewhite;
+}
+
+.btn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 200rpx;
+  height: 100rpx;
+  line-height: 100rpx;
+  text-align: center;
+  background-color: antiquewhite;
 }
 </style>

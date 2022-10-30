@@ -30,6 +30,7 @@ export interface IRender {
   preloadRes: (res: string[]) => Promise<boolean>
   clearRes: (res?: string[]) => void
   tween: ITweenFunc
+  pauseTween: (val: boolean) => void
   addImg(src: string): Img
   addAnim(src: string[]): Anim
 }
@@ -60,6 +61,7 @@ const renderInst = {
   preloadRes: canvas.preloadRes,
   clearRes: canvas.clearRes,
   tween: tween.tween.bind(tween),
+  pauseTween,
   addImg,
   addAnim
 }
@@ -75,6 +77,8 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   canvas.destroy()
 })
+
+function pauseTween(val: boolean) {}
 
 function addImg(src: string) {
   const item = new Img(canvas, src)

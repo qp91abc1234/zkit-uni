@@ -14,10 +14,10 @@ interface ITween {
   cancel: () => void
 }
 
-type ITweenFuncRet = {
-  succ: () => void
-  fail: () => void
-  cancel: () => void
+type ITweenOptions = {
+  addWay?: 'seq' | 'parallel'
+  succ?: () => void
+  fail?: () => void
 }
 
 export type ITweenFunc = (
@@ -26,8 +26,8 @@ export type ITweenFunc = (
   propName: string,
   from: number,
   to: number,
-  addWay?: 'seq' | 'parallel'
-) => ITweenFuncRet
+  options?: ITweenOptions
+) => void
 
 export default class Tween {
   private tweenMap: Map<Entity, ITween[][]> = new Map<Entity, ITween[][]>()
@@ -38,12 +38,18 @@ export default class Tween {
     propName: string,
     from: number,
     to: number,
-    addWay: 'seq' | 'parallel' = 'parallel'
-  ): ITweenFuncRet {
+    options?: ITweenOptions
+  ): void {
     if (!(propName in entity)) {
       console.error(`[tween.ts][tween] ${propName} not in entity`)
-      return {} as ITweenFuncRet
+      return
     }
+
+    options = options || {}
+    options.addWay = options.addWay || 'parallel'
+    options.succ = options.succ || function succ() {}
+    options.fail = options.fail || function fail() {}
+
     const step = (to - from) / duration
     const tweenObj: ITween = {
       entity,
@@ -54,8 +60,8 @@ export default class Tween {
       startT: -1,
       step,
       destroy: false,
-      succ: () => {},
-      fail: () => {},
+      succ: options.succ,
+      fail: options.fail,
       cancel: () => {
         tweenObj.destroy = true
       }
@@ -65,15 +71,13 @@ export default class Tween {
       this.tweenMap.set(entity, [])
     }
     const tweenArr = this.tweenMap.get(entity)!
-    if (addWay === 'seq') {
+    if (options.addWay === 'seq') {
       tweenArr.push([tweenObj])
     } else if (tweenArr.length === 0) {
       tweenArr.push([tweenObj])
     } else {
       tweenArr[tweenArr.length - 1].push(tweenObj)
     }
-
-    return tweenObj
   }
 
   runTween() {
