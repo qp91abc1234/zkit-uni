@@ -35,7 +35,6 @@ export type ITweenFunc = (
 
 export default class Tween {
   private tweenMap: Map<Entity, ITween[][]> = new Map<Entity, ITween[][]>()
-  pause: boolean = false
 
   add(
     entity: Entity,
@@ -91,7 +90,7 @@ export default class Tween {
       const arr = tweenArr[0]
       const delIndex: number[] = []
       arr.forEach((val: ITween, index) => {
-        if (this.pause || val.pause) {
+        if (val.pause) {
           return
         }
         if (val.stop || val.entity.destroy) {

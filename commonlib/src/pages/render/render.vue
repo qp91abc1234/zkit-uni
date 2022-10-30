@@ -11,7 +11,8 @@
 </template>
 
 <script setup lang="ts">
-import Render, { IRender, IImg, IAnim } from '@lib/components/render/render.vue'
+import Render from '@lib/components/render/render.vue'
+import { IRender, IImg, IAnim } from '@lib/common/types/render.d'
 
 const anims = getAnims()
 let renderInst: IRender

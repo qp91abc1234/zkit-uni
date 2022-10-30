@@ -37,6 +37,7 @@ const emits = defineEmits<{
   (event: 'touchEvent', val: TouchEvent): void
 }>()
 
+let pause = false
 const inst = getCurrentInstance()
 const queue: IEntity[] = []
 const canvas = useCanvas()
@@ -54,13 +55,11 @@ const renderInst = {
 }
 
 onShow(() => {
-  schedule.pause = false
-  tween.pause = false
+  pause = false
 })
 
 onHide(() => {
-  schedule.pause = true
-  tween.pause = true
+  pause = true
 })
 
 onMounted(async () => {
@@ -88,6 +87,7 @@ function addAnim(src: string[]) {
 }
 
 function render(delta: number) {
+  if (pause) return
   emits('loop', delta)
   schedule.run(delta)
   tween.run(delta)

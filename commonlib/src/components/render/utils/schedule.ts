@@ -21,7 +21,6 @@ export type IScheduleFunc = (
 
 export default class Schedule {
   private scheduleArr: ISchedule[] = []
-  pause: boolean = false
 
   add(
     cb: (val: number) => void,
@@ -44,7 +43,7 @@ export default class Schedule {
   run(delta: number) {
     const delIndex: number[] = []
     this.scheduleArr.forEach((ele: ISchedule, index: number) => {
-      if (this.pause || ele.pause) {
+      if (ele.pause) {
         return
       }
       if (ele.stop) {
