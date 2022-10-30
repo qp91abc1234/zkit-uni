@@ -61,7 +61,7 @@ const renderInst = {
   preloadRes: canvas.preloadRes,
   clearRes: canvas.clearRes,
   tween: tween.tween.bind(tween),
-  pauseTween,
+  pauseTween: tween.pauseTween.bind(tween),
   addImg,
   addAnim
 }
@@ -77,8 +77,6 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   canvas.destroy()
 })
-
-function pauseTween(val: boolean) {}
 
 function addImg(src: string) {
   const item = new Img(canvas, src)
