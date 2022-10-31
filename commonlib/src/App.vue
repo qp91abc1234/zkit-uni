@@ -12,15 +12,6 @@ onHide(() => {
 })
 </script>
 
-<script lang="ts">
-const globalData: App.IGlobalData = {
-  name: 'commonlib'
-}
-export default {
-  globalData
-}
-</script>
-
 <style lang="scss">
 @import '@lib/common/scss/app.scss';
 </style>

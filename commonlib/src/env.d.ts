@@ -6,12 +6,3 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>
   export default component
 }
-
-declare namespace App {
-  interface IGlobalData {
-    name: string
-  }
-  interface AppInstance<T extends AnyObject = {}> {
-    globalData?: IGlobalData
-  }
-}
