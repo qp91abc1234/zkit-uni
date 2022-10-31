@@ -11,9 +11,10 @@ export default class Entity {
   ready = false
   x = 0
   y = 0
+  rotate = 0
+  scale = 1
   w = 0
   h = 0
-  rotate = 0
   private alphaVal = 1
   anchor = { x: 0.5, y: 0.5 }
   private zIndexVal = 0
@@ -29,13 +30,12 @@ export default class Entity {
     return {
       x: this.x,
       y: this.y,
+      rotate: this.rotate,
+      scale: this.scale,
       w: this.w,
       h: this.h,
-      rotate: this.rotate,
       alpha: this.alpha,
-      anchor: this.anchor,
-      zIndex: this.zIndex,
-      visible: this.visible
+      anchor: this.anchor
     }
   }
 

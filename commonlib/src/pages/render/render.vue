@@ -80,6 +80,7 @@ const handleAddAnim = () => {
   anim.h = 200
   anim.count = 3
   anim.alpha = 0.5
+  anim.scale = 0.5
   const child = anim.addChild(
     renderInst.createImg(anims.bossDeadAnim.resArr[10])
   )

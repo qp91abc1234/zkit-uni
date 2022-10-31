@@ -12,9 +12,10 @@ interface IImgData {
   src: string
   x: number
   y: number
+  rotate: number
+  scale: number
   w: number
   h: number
-  rotate: number
   alpha: number
   anchor: { x: number; y: number }
 }
@@ -196,6 +197,7 @@ export const useCanvas = () => {
   function drawImg(data: IImgData) {
     ctx.translate(rpx2px(data.x), rpx2px(data.y))
     ctx.rotate((data.rotate * Math.PI) / 180)
+    ctx.scale(data.scale, data.scale)
     ctx.globalAlpha = data.alpha
 
     const res = resObj[data.src]
