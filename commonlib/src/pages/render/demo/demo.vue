@@ -13,7 +13,6 @@
 
 <script setup lang="ts">
 import { onHide } from '@dcloudio/uni-app'
-import { px2rpx } from '@lib/common/utils'
 import Render from '@lib/components/render/render.vue'
 import { computed, ref } from 'vue'
 import { IRender, IAnim, IScheduleRet } from '@lib/common/types/render.d'
@@ -118,13 +117,13 @@ const handleTouch = (payload: TouchEvent) => {
 
   if (type === 'touchstart') {
     const { x, y } = touches[0] as any
-    touchStart = px2rpx(x)
+    touchStart = uni.utils.px2rpx(x)
   }
 
   if (type === 'touchmove') {
     const { x, y } = touches[0] as any
-    hero.x += px2rpx(x) - touchStart
-    touchStart = px2rpx(x)
+    hero.x += uni.utils.px2rpx(x) - touchStart
+    touchStart = uni.utils.px2rpx(x)
   }
 }
 

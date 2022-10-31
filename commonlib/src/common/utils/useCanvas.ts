@@ -1,5 +1,4 @@
 import { useLibStore } from '@lib/pinia/libStore'
-import { rpx2px } from '@lib/common/utils'
 
 enum LOAD_STATUS {
   UNLOAD,
@@ -195,7 +194,7 @@ export const useCanvas = () => {
   }
 
   function drawImg(data: IImgData) {
-    ctx.translate(rpx2px(data.x), rpx2px(data.y))
+    ctx.translate(uni.utils.rpx2px(data.x), uni.utils.rpx2px(data.y))
     ctx.rotate((data.rotate * Math.PI) / 180)
     ctx.scale(data.scale, data.scale)
     ctx.globalAlpha = data.alpha
@@ -205,10 +204,10 @@ export const useCanvas = () => {
     data.h = data.h === 0 ? res.h : data.h
     ctx.drawImage(
       res.img,
-      -rpx2px(data.w * data.anchor.x),
-      -rpx2px(data.h * data.anchor.y),
-      rpx2px(data.w),
-      rpx2px(data.h)
+      -uni.utils.rpx2px(data.w * data.anchor.x),
+      -uni.utils.rpx2px(data.h * data.anchor.y),
+      uni.utils.rpx2px(data.w),
+      uni.utils.rpx2px(data.h)
     )
   }
 
@@ -228,7 +227,6 @@ export const useCanvas = () => {
   }
 
   return {
-    rpx2px,
     setup,
     preloadRes,
     clearRes,

@@ -11,7 +11,6 @@
 import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useCanvas } from '@lib/common/utils/useCanvas'
 // #ifdef H5
-import { CORSPathRewrite } from '@lib/common/utils'
 import lottieWeb from 'lottie-web'
 // #endif
 import lottieWx from 'lottie-miniprogram'
@@ -68,7 +67,7 @@ function initH5() {
     container: document.getElementById('lottie-canvas') as Element,
     loop: props.loop,
     autoplay: props.autoplay,
-    path: CORSPathRewrite(props.path)
+    path: uni.utils.CORSPathRewrite(props.path)
   })
 }
 

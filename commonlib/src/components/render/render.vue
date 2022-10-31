@@ -13,7 +13,6 @@
 <script setup lang="ts">
 import { getCurrentInstance, onBeforeUnmount, onMounted } from 'vue'
 import { useCanvas } from '@lib/common/utils/useCanvas'
-import { px2rpx } from '@lib/common/utils'
 import Schedule from '@lib/components/render/utils/schedule'
 import Tween from '@lib/components/render/utils/tween'
 import Entity from '@lib/components/render/entity/entity'
@@ -67,8 +66,8 @@ onHide(() => {
 
 onMounted(async () => {
   const ret: any = await canvas.setup('anim-canvas', inst)
-  renderInst.canvasW = px2rpx(ret.canvasW)
-  renderInst.canvasH = px2rpx(ret.canvasH)
+  renderInst.canvasW = uni.utils.px2rpx(ret.canvasW)
+  renderInst.canvasH = uni.utils.px2rpx(ret.canvasH)
   emits('init', renderInst)
   canvas.render(render, props.frameNum)
 })

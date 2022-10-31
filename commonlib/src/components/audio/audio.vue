@@ -13,7 +13,6 @@
 import { onBeforeUnmount } from 'vue'
 import { onHide, onShow } from '@dcloudio/uni-app'
 import { useLibStore } from '@lib/pinia/libStore'
-import { useMusic, useEffect } from '@lib/common/utils/useAudio'
 
 const props = withDefaults(
   defineProps<{
@@ -32,40 +31,38 @@ const props = withDefaults(
 )
 
 const libStore = useLibStore()
-const music = useMusic()
-const effect = useEffect()
 
 const changeStatus = (isPlay) => {
   libStore.isMute = !isPlay
   if (isPlay) {
-    effect.mute(!isPlay)
-    effect.play(props.clickEffect)
+    uni.effect.mute(!isPlay)
+    uni.effect.play(props.clickEffect)
   } else {
-    effect.play(props.clickEffect, () => {
-      effect.mute(!isPlay)
+    uni.effect.play(props.clickEffect, () => {
+      uni.effect.mute(!isPlay)
     })
   }
-  music.mute(libStore.isMute, props.bgMusic, props.isLoop)
+  uni.music.mute(libStore.isMute, props.bgMusic, props.isLoop)
 }
 
 onShow(() => {
-  music.play(props.bgMusic, props.isLoop)
+  uni.music.play(props.bgMusic, props.isLoop)
 })
 
 onHide(() => {
-  effect.stop()
-  music.pause()
+  uni.effect.stop()
+  uni.music.pause()
 })
 
 onBeforeUnmount(() => {
   if (!props.isStop) return
-  effect.stop()
-  music.stop()
+  uni.effect.stop()
+  uni.music.stop()
 })
 
 const init = () => {
-  effect.mute(libStore.isMute)
-  music.mute(libStore.isMute, props.bgMusic, props.isLoop)
+  uni.effect.mute(libStore.isMute)
+  uni.music.mute(libStore.isMute, props.bgMusic, props.isLoop)
 }
 
 init()
