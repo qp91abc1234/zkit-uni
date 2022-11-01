@@ -16,8 +16,8 @@ import Render from '@lib/components/render/render.vue'
 
 const anims = getAnims()
 let renderInst: IRender
-let img: IImg
-let anim: IAnim
+let img: Img
+let anim: Anim
 
 function getAnims() {
   function getResWebpArr(name, num) {

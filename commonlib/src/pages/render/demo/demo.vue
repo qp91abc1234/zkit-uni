@@ -30,8 +30,8 @@ const maxScore = 10
 const anims = getAnims()
 let renderInst: IRender
 let schedule: IScheduleRet
-let hero: IAnim
-const presentArr: IAnim[] = []
+let hero: Anim
+const presentArr: Anim[] = []
 
 const btnTxt = computed(() => {
   let ret = ''

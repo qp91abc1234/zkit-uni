@@ -6,19 +6,19 @@ import {
   ITweenFunc,
   ITweenRet as TweenRet
 } from '@lib/components/render/utils/tween'
-import Entity, {
+import IEntity, {
   CB_TYPE as cb_type
 } from '@lib/components/render/entity/entity'
-import Img from '@lib/components/render/entity/img'
-import Anim from '@lib/components/render/entity/anim'
+import IImg from '@lib/components/render/entity/img'
+import IAnim from '@lib/components/render/entity/anim'
 
 declare global {
-  type IEntity = Entity
+  type Entity = IEntity
   type CB_TYPE = cb_type
   type IScheduleRet = ScheduleRet
   type ITweenRet = TweenRet
-  type IImg = Img
-  type IAnim = Anim
+  type Img = IImg
+  type Anim = IAnim
   interface IRender {
     canvasW: number
     canvasH: number
