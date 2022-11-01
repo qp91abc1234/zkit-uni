@@ -19,7 +19,6 @@ import Entity from '@lib/components/render/entity/entity'
 import Img from '@lib/components/render/entity/img'
 import Anim from '@lib/components/render/entity/anim'
 import { onHide, onShow } from '@dcloudio/uni-app'
-import { IRender } from '@lib/common/types/render.d'
 
 const props = withDefaults(
   defineProps<{

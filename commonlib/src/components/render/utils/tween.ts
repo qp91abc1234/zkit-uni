@@ -93,7 +93,7 @@ export default class Tween {
         if (val.pause) {
           return
         }
-        if (val.stop || val.entity.destroy) {
+        if (val.stop || !val.entity.parent) {
           delIndex.push(index)
           val.fail()
           return

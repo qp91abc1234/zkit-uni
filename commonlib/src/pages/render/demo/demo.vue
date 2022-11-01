@@ -15,7 +15,6 @@
 import { onHide } from '@dcloudio/uni-app'
 import Render from '@lib/components/render/render.vue'
 import { computed, ref } from 'vue'
-import { IRender, IAnim, IScheduleRet } from '@lib/common/types/render.d'
 
 enum GAME_STATUS {
   UNSTART,
