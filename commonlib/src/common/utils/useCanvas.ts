@@ -194,7 +194,7 @@ export const useCanvas = () => {
   }
 
   function drawImg(data: IImgData) {
-    ctx.translate(uni.utils.rpx2px(data.x), uni.utils.rpx2px(data.y))
+    ctx.translate(zkit.utils.rpx2px(data.x), zkit.utils.rpx2px(data.y))
     ctx.rotate((data.rotate * Math.PI) / 180)
     ctx.scale(data.scale, data.scale)
     ctx.globalAlpha = data.alpha
@@ -204,10 +204,10 @@ export const useCanvas = () => {
     data.h = data.h === 0 ? res.h : data.h
     ctx.drawImage(
       res.img,
-      -uni.utils.rpx2px(data.w * data.anchor.x),
-      -uni.utils.rpx2px(data.h * data.anchor.y),
-      uni.utils.rpx2px(data.w),
-      uni.utils.rpx2px(data.h)
+      -zkit.utils.rpx2px(data.w * data.anchor.x),
+      -zkit.utils.rpx2px(data.h * data.anchor.y),
+      zkit.utils.rpx2px(data.w),
+      zkit.utils.rpx2px(data.h)
     )
   }
 

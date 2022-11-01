@@ -117,13 +117,13 @@ const handleTouch = (payload: TouchEvent) => {
 
   if (type === 'touchstart') {
     const { x, y } = touches[0] as any
-    touchStart = uni.utils.px2rpx(x)
+    touchStart = zkit.utils.px2rpx(x)
   }
 
   if (type === 'touchmove') {
     const { x, y } = touches[0] as any
-    hero.x += uni.utils.px2rpx(x) - touchStart
-    touchStart = uni.utils.px2rpx(x)
+    hero.x += zkit.utils.px2rpx(x) - touchStart
+    touchStart = zkit.utils.px2rpx(x)
   }
 }
 

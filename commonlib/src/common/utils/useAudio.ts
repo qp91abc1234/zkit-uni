@@ -1,7 +1,6 @@
+const musicContext: UniApp.InnerAudioContext = uni.createInnerAudioContext()
+let isMusicMute = false
 export const useMusic = () => {
-  const musicContext: UniApp.InnerAudioContext = uni.createInnerAudioContext()
-  let isMusicMute = false
-
   const play = (path: string = '', loop: boolean = true) => {
     if (isMusicMute) return
     if (path !== musicContext.src) {
@@ -37,10 +36,9 @@ export const useMusic = () => {
   }
 }
 
+let effectContext: { [name: string]: UniApp.InnerAudioContext } = {}
+let isEffectMute = false
 export const useEffect = () => {
-  let effectContext: { [name: string]: UniApp.InnerAudioContext } = {}
-  let isEffectMute = false
-
   const play = (path: string, cb: any = null) => {
     if (isEffectMute) return
     if (!effectContext[path]) {

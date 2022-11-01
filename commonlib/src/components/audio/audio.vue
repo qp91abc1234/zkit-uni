@@ -35,34 +35,34 @@ const libStore = useLibStore()
 const changeStatus = (isPlay) => {
   libStore.isMute = !isPlay
   if (isPlay) {
-    uni.effect.mute(!isPlay)
-    uni.effect.play(props.clickEffect)
+    zkit.effect.mute(!isPlay)
+    zkit.effect.play(props.clickEffect)
   } else {
-    uni.effect.play(props.clickEffect, () => {
-      uni.effect.mute(!isPlay)
+    zkit.effect.play(props.clickEffect, () => {
+      zkit.effect.mute(!isPlay)
     })
   }
-  uni.music.mute(libStore.isMute, props.bgMusic, props.isLoop)
+  zkit.music.mute(libStore.isMute, props.bgMusic, props.isLoop)
 }
 
 onShow(() => {
-  uni.music.play(props.bgMusic, props.isLoop)
+  zkit.music.play(props.bgMusic, props.isLoop)
 })
 
 onHide(() => {
-  uni.effect.stop()
-  uni.music.pause()
+  zkit.effect.stop()
+  zkit.music.pause()
 })
 
 onBeforeUnmount(() => {
   if (!props.isStop) return
-  uni.effect.stop()
-  uni.music.stop()
+  zkit.effect.stop()
+  zkit.music.stop()
 })
 
 const init = () => {
-  uni.effect.mute(libStore.isMute)
-  uni.music.mute(libStore.isMute, props.bgMusic, props.isLoop)
+  zkit.effect.mute(libStore.isMute)
+  zkit.music.mute(libStore.isMute, props.bgMusic, props.isLoop)
 }
 
 init()

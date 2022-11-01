@@ -67,7 +67,7 @@ function initH5() {
     container: document.getElementById('lottie-canvas') as Element,
     loop: props.loop,
     autoplay: props.autoplay,
-    path: uni.utils.CORSPathRewrite(props.path)
+    path: zkit.utils.CORSPathRewrite(props.path)
   })
 }
 

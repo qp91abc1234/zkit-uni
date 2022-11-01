@@ -66,8 +66,8 @@ onHide(() => {
 
 onMounted(async () => {
   const ret: any = await canvas.setup('anim-canvas', inst)
-  renderInst.canvasW = uni.utils.px2rpx(ret.canvasW)
-  renderInst.canvasH = uni.utils.px2rpx(ret.canvasH)
+  renderInst.canvasW = zkit.utils.px2rpx(ret.canvasW)
+  renderInst.canvasH = zkit.utils.px2rpx(ret.canvasH)
   emits('init', renderInst)
   canvas.render(render, props.frameNum)
 })
