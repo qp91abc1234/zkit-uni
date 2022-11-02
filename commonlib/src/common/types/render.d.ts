@@ -1,34 +1,90 @@
-import {
-  IScheduleFunc,
-  IScheduleRet as ScheduleRet
-} from '@lib/components/render/utils/schedule'
-import {
-  ITweenFunc,
-  ITweenRet as TweenRet
-} from '@lib/components/render/utils/tween'
-import IEntity, {
-  CB_TYPE as cb_type
-} from '@lib/components/render/entity/entity'
+import IEntity from '@lib/components/render/entity/entity'
 import IImg from '@lib/components/render/entity/img'
 import IAnim from '@lib/components/render/entity/anim'
 
 declare global {
-  type Entity = IEntity
-  type CB_TYPE = cb_type
-  type IScheduleRet = ScheduleRet
-  type ITweenRet = TweenRet
-  type Img = IImg
-  type Anim = IAnim
-  interface IRender {
-    canvasW: number
-    canvasH: number
-    preloadRes: (res: string[]) => Promise<boolean>
-    clearRes: (res?: string[]) => void
-    schedule: IScheduleFunc
-    tween: ITweenFunc
-    addChild(val: Entity): Entity
-    removeChild(val: Entity): Entity
-    createImg(src: string): Img
-    createAnim(src: string[]): Anim
+  namespace zkit {
+    type Entity = IEntity
+    type Img = IImg
+    type Anim = IAnim
+  }
+}
+
+declare global {
+  namespace zkit {
+    type ScheduleObj = {
+      cb: (val: number) => void
+      interval: number
+      loop: number
+      pause: boolean
+      stop: boolean
+      startT: number
+      curT: number
+    }
+
+    type ScheduleRet = {
+      pause: boolean
+      stop: boolean
+    }
+
+    type ScheduleAdd = (
+      cb: (val: number) => void,
+      interval: number,
+      loop: number
+    ) => ScheduleRet
+  }
+}
+
+declare global {
+  namespace zkit {
+    interface TweenObj {
+      entity: Entity
+      duration: number
+      propName: string
+      from: number
+      to: number
+      step: number
+      pause: boolean
+      stop: boolean
+      succ: () => void
+      fail: () => void
+    }
+
+    type TweenOptions = {
+      addWay?: 'seq' | 'parallel'
+      succ?: () => void
+      fail?: () => void
+    }
+
+    type TweenRet = {
+      pause: boolean
+      stop: boolean
+    }
+
+    type TweenFunc = (
+      entity: Entity,
+      duration: number,
+      propName: string,
+      from: number,
+      to: number,
+      options?: TweenOptions
+    ) => TweenRet
+  }
+}
+
+declare global {
+  namespace zkit {
+    interface Render {
+      canvasW: number
+      canvasH: number
+      preloadRes: (res: string[]) => Promise<boolean>
+      clearRes: (res?: string[]) => void
+      schedule: ScheduleAdd
+      tween: TweenFunc
+      addChild(val: Entity): Entity
+      removeChild(val: Entity): Entity
+      createImg(src: string): Img
+      createAnim(src: string[]): Anim
+    }
   }
 }

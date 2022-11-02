@@ -1,32 +1,11 @@
-type ISchedule = {
-  cb: (val: number) => void
-  interval: number
-  loop: number
-  pause: boolean
-  stop: boolean
-  startT: number
-  curT: number
-}
-
-export type IScheduleRet = {
-  pause: boolean
-  stop: boolean
-}
-
-export type IScheduleFunc = (
-  cb: (val: number) => void,
-  interval: number,
-  loop: number
-) => IScheduleRet
-
 export default class Schedule {
-  private scheduleArr: ISchedule[] = []
+  private scheduleArr: zkit.ScheduleObj[] = []
 
   add(
     cb: (val: number) => void,
     interval: number = 0,
     loop: number = -1
-  ): IScheduleRet {
+  ): zkit.ScheduleRet {
     const obj = {
       cb,
       interval,
@@ -42,7 +21,7 @@ export default class Schedule {
 
   run(delta: number) {
     const delIndex: number[] = []
-    this.scheduleArr.forEach((ele: ISchedule, index: number) => {
+    this.scheduleArr.forEach((ele: zkit.ScheduleObj, index: number) => {
       if (ele.pause) {
         return
       }

@@ -1,40 +1,10 @@
 import Entity from '@lib/components/render/entity/entity'
 
-interface ITween {
-  entity: Entity
-  duration: number
-  propName: string
-  from: number
-  to: number
-  step: number
-  pause: boolean
-  stop: boolean
-  succ: () => void
-  fail: () => void
-}
-
-type ITweenOptions = {
-  addWay?: 'seq' | 'parallel'
-  succ?: () => void
-  fail?: () => void
-}
-
-export type ITweenRet = {
-  pause: boolean
-  stop: boolean
-}
-
-export type ITweenFunc = (
-  entity: Entity,
-  duration: number,
-  propName: string,
-  from: number,
-  to: number,
-  options?: ITweenOptions
-) => ITweenRet
-
 export default class Tween {
-  private tweenMap: Map<Entity, ITween[][]> = new Map<Entity, ITween[][]>()
+  private tweenMap: Map<Entity, zkit.TweenObj[][]> = new Map<
+    Entity,
+    zkit.TweenObj[][]
+  >()
 
   add(
     entity: Entity,
@@ -42,11 +12,11 @@ export default class Tween {
     propName: string,
     from: number,
     to: number,
-    options?: ITweenOptions
-  ): ITweenRet {
+    options?: zkit.TweenOptions
+  ): zkit.TweenRet {
     if (!(propName in entity)) {
       console.error(`[tween.ts][tween] ${propName} not in entity`)
-      return {} as ITweenRet
+      return {} as zkit.TweenRet
     }
 
     entity[propName] = from
@@ -56,7 +26,7 @@ export default class Tween {
     options.fail = options.fail || function fail() {}
 
     const step = (to - from) / duration
-    const tweenObj: ITween = {
+    const tweenObj: zkit.TweenObj = {
       entity,
       duration,
       propName,
@@ -89,7 +59,7 @@ export default class Tween {
       if (tweenArr.length <= 0) return
       const arr = tweenArr[0]
       const delIndex: number[] = []
-      arr.forEach((val: ITween, index) => {
+      arr.forEach((val: zkit.TweenObj, index) => {
         if (val.pause) {
           return
         }

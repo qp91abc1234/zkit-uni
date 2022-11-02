@@ -28,10 +28,10 @@ let touchStart = 0
 const score = ref(0)
 const maxScore = 10
 const anims = getAnims()
-let renderInst: IRender
-let schedule: IScheduleRet
-let hero: Anim
-const presentArr: Anim[] = []
+let renderInst: zkit.Render
+let schedule: zkit.ScheduleRet
+let hero: zkit.Anim
+const presentArr: zkit.Anim[] = []
 
 const btnTxt = computed(() => {
   let ret = ''
@@ -100,7 +100,7 @@ onHide(() => {
   schedule.pause = true
 })
 
-const init = async (val: IRender) => {
+const init = async (val: zkit.Render) => {
   renderInst = val
   addHero()
 }
