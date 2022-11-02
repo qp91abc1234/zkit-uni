@@ -3,7 +3,7 @@ import IImg from '@lib/components/render/entity/img'
 import IAnim from '@lib/components/render/entity/anim'
 
 declare global {
-  namespace zkit {
+  namespace ZKit {
     type Entity = IEntity
     type Img = IImg
     type Anim = IAnim
@@ -11,7 +11,7 @@ declare global {
 }
 
 declare global {
-  namespace zkit {
+  namespace ZKit {
     type ScheduleObj = {
       cb: (val: number) => void
       interval: number
@@ -36,7 +36,7 @@ declare global {
 }
 
 declare global {
-  namespace zkit {
+  namespace ZKit {
     interface TweenObj {
       entity: Entity
       duration: number
@@ -73,7 +73,7 @@ declare global {
 }
 
 declare global {
-  namespace zkit {
+  namespace ZKit {
     interface Render {
       canvasW: number
       canvasH: number

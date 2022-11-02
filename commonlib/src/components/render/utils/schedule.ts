@@ -1,11 +1,11 @@
 export default class Schedule {
-  private scheduleArr: zkit.ScheduleObj[] = []
+  private scheduleArr: ZKit.ScheduleObj[] = []
 
   add(
     cb: (val: number) => void,
     interval: number = 0,
     loop: number = -1
-  ): zkit.ScheduleRet {
+  ): ZKit.ScheduleRet {
     const obj = {
       cb,
       interval,
@@ -21,7 +21,7 @@ export default class Schedule {
 
   run(delta: number) {
     const delIndex: number[] = []
-    this.scheduleArr.forEach((ele: zkit.ScheduleObj, index: number) => {
+    this.scheduleArr.forEach((ele: ZKit.ScheduleObj, index: number) => {
       if (ele.pause) {
         return
       }

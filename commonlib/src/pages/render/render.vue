@@ -15,9 +15,9 @@
 import Render from '@lib/components/render/render.vue'
 
 const anims = getAnims()
-let renderInst: zkit.Render
-let img: zkit.Img
-let anim: zkit.Anim
+let renderInst: ZKit.Render
+let img: ZKit.Img
+let anim: ZKit.Anim
 
 function getAnims() {
   function getResWebpArr(name, num) {
@@ -51,7 +51,7 @@ function getAnims() {
   return { bossIdleAnim, bossInjureAnim, bossDeadAnim }
 }
 
-const init = (val: zkit.Render) => {
+const init = (val: ZKit.Render) => {
   renderInst = val
 }
 

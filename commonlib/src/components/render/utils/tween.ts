@@ -1,9 +1,9 @@
 import Entity from '@lib/components/render/entity/entity'
 
 export default class Tween {
-  private tweenMap: Map<Entity, zkit.TweenObj[][]> = new Map<
+  private tweenMap: Map<Entity, ZKit.TweenObj[][]> = new Map<
     Entity,
-    zkit.TweenObj[][]
+    ZKit.TweenObj[][]
   >()
 
   add(
@@ -12,11 +12,11 @@ export default class Tween {
     propName: string,
     from: number,
     to: number,
-    options?: zkit.TweenOptions
-  ): zkit.TweenRet {
+    options?: ZKit.TweenOptions
+  ): ZKit.TweenRet {
     if (!(propName in entity)) {
       console.error(`[tween.ts][tween] ${propName} not in entity`)
-      return {} as zkit.TweenRet
+      return {} as ZKit.TweenRet
     }
 
     entity[propName] = from
@@ -26,7 +26,7 @@ export default class Tween {
     options.fail = options.fail || function fail() {}
 
     const step = (to - from) / duration
-    const tweenObj: zkit.TweenObj = {
+    const tweenObj: ZKit.TweenObj = {
       entity,
       duration,
       propName,
@@ -59,7 +59,7 @@ export default class Tween {
       if (tweenArr.length <= 0) return
       const arr = tweenArr[0]
       const delIndex: number[] = []
-      arr.forEach((val: zkit.TweenObj, index) => {
+      arr.forEach((val: ZKit.TweenObj, index) => {
         if (val.pause) {
           return
         }

@@ -30,7 +30,7 @@ const props = withDefaults(
 )
 
 const emits = defineEmits<{
-  (event: 'init', val: zkit.Render): void
+  (event: 'init', val: ZKit.Render): void
   (event: 'loop', delta: number): void
   (event: 'afterLoop', delta: number): void
   (event: 'touchEvent', val: TouchEvent): void
