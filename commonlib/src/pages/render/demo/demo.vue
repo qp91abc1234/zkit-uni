@@ -97,7 +97,6 @@ const getNFromM = (m, n) => {
 
 onHide(() => {
   gameStatus.value = GAME_STATUS.PAUSE
-  schedule.pause = true
 })
 
 const init = async (val: ZKit.Render) => {
@@ -133,9 +132,6 @@ const click = () => {
   }
   if (gameStatus.value === GAME_STATUS.UNSTART) {
     addPresent()
-  }
-  if (gameStatus.value === GAME_STATUS.PAUSE) {
-    schedule.pause = false
   }
   gameStatus.value = GAME_STATUS.PLAY
 }
