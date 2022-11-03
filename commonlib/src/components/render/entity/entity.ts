@@ -1,12 +1,5 @@
-import { ICanvas } from '@lib/common/utils/useCanvas'
-
-export enum CB_TYPE {
-  CHANGE_ANIM,
-  LOOP
-}
-
 export default class Entity {
-  protected canvas: ICanvas
+  protected canvas: ZKit.Canvas
   protected cb = {}
   ready = false
   x = 0
@@ -73,12 +66,12 @@ export default class Entity {
     }
   }
 
-  addCb(key: CB_TYPE, val: Function) {
+  addCb(key: ZKit.RENDER_CB_TYPE, val: Function) {
     this.cb[key] = this.cb[key] || []
     this.cb[key].push(val)
   }
 
-  removeCb(key: CB_TYPE, val: Function) {
+  removeCb(key: ZKit.RENDER_CB_TYPE, val: Function) {
     if (this.cb[key]) {
       const index = this.cb[key].indexOf(val)
       if (index > 0) {

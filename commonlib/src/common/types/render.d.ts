@@ -4,6 +4,10 @@ import IAnim from '@lib/components/render/entity/anim'
 
 declare global {
   namespace ZKit {
+    enum RENDER_CB_TYPE {
+      CHANGE_ANIM,
+      LOOP
+    }
     type Entity = IEntity
     type Img = IImg
     type Anim = IAnim
