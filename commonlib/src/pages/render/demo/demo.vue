@@ -208,27 +208,26 @@ const gameRestart = () => {
 }
 .score {
   position: absolute;
-  left: 50rpx;
   top: 50rpx;
+  left: 50rpx;
   width: 100rpx;
   height: 100rpx;
-  line-height: 100rpx;
-  text-align: center;
-  border-radius: 40rpx;
   font-size: 50rpx;
+  border-radius: 40rpx;
+  text-align: center;
   color: black;
   background-color: antiquewhite;
+  line-height: 100rpx;
 }
-
 .btn {
   position: absolute;
-  left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  left: 50%;
   width: 200rpx;
   height: 100rpx;
-  line-height: 100rpx;
   text-align: center;
   background-color: antiquewhite;
+  transform: translate(-50%, -50%);
+  line-height: 100rpx;
 }
 </style>
