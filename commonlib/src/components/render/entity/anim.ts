@@ -37,8 +37,8 @@ export default class Anim extends Entity {
           ...this.renderProps,
           src: this.src[this.cur]
         })
-        this.cb[ZKit.RENDER_CB_TYPE.LOOP] &&
-          this.cb[ZKit.RENDER_CB_TYPE.LOOP].forEach((cb) => {
+        this.cb[ZKit.RENDER_CB_TYPE.ANIM_END] &&
+          this.cb[ZKit.RENDER_CB_TYPE.ANIM_END].forEach((cb) => {
             cb(this)
           })
       } else {

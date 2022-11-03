@@ -6,7 +6,7 @@ declare global {
   namespace ZKit {
     enum RENDER_CB_TYPE {
       CHANGE_ANIM,
-      LOOP
+      ANIM_END
     }
     type Entity = IEntity
     type Img = IImg
