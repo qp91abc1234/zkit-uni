@@ -1,5 +1,12 @@
 import { useLibStore } from '@lib/pinia/libStore'
 
+export enum CANVAS_LOAD_STATUS {
+  UNLOAD,
+  LOADING,
+  SUCC,
+  FAIL
+}
+
 let loopId = 0
 const resObj: ZKit.CanvasCacheData = {}
 
@@ -91,15 +98,15 @@ export const useCanvas = () => {
           img: createImage(),
           w: 0,
           h: 0,
-          loaded: ZKit.CANVAS_LOAD_STATUS.UNLOAD
+          loaded: CANVAS_LOAD_STATUS.UNLOAD
         }
 
-        if (resObj[src].loaded === ZKit.CANVAS_LOAD_STATUS.SUCC) {
+        if (resObj[src].loaded === CANVAS_LOAD_STATUS.SUCC) {
           resolve(resObj[src])
           return
         }
 
-        if (resObj[src].loaded === ZKit.CANVAS_LOAD_STATUS.FAIL) {
+        if (resObj[src].loaded === CANVAS_LOAD_STATUS.FAIL) {
           resObj[src].img = createImage()
         }
 
@@ -110,7 +117,7 @@ export const useCanvas = () => {
         resObj[src].img.onload = () => {
           resObj[src].w = resObj[src].img.width
           resObj[src].h = resObj[src].img.height
-          resObj[src].loaded = ZKit.CANVAS_LOAD_STATUS.SUCC
+          resObj[src].loaded = CANVAS_LOAD_STATUS.SUCC
           resObj[src].cb.forEach((val) => {
             val(resObj[src])
           })
@@ -119,20 +126,20 @@ export const useCanvas = () => {
         resObj[src].img.onerror = () => {
           resObj[src].w = -1
           resObj[src].h = -1
-          resObj[src].loaded = ZKit.CANVAS_LOAD_STATUS.FAIL
+          resObj[src].loaded = CANVAS_LOAD_STATUS.FAIL
           resObj[src].cb.forEach((val) => {
             val(resObj[src])
           })
           resObj[src].cb.length = 0
         }
         resObj[src].img.src = src
-        resObj[src].loaded = ZKit.CANVAS_LOAD_STATUS.LOADING
+        resObj[src].loaded = CANVAS_LOAD_STATUS.LOADING
       })
     }
 
     return Promise.resolve(Promise.all(arr)).then((ret) => {
       const isSucc = ret.every((item) => {
-        return item.loaded === ZKit.CANVAS_LOAD_STATUS.SUCC
+        return item.loaded === CANVAS_LOAD_STATUS.SUCC
       })
       if (!isSucc) {
         console.error('[render.vue][preloadRes] preloadRes Fail~')

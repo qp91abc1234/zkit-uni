@@ -1,3 +1,8 @@
+export enum RENDER_CB_TYPE {
+  CHANGE_ANIM,
+  ANIM_END
+}
+
 export default class Entity {
   protected canvas: ZKit.Canvas
   protected cb = {}
@@ -66,12 +71,12 @@ export default class Entity {
     }
   }
 
-  addCb(key: ZKit.RENDER_CB_TYPE, val: Function) {
+  addCb(key: RENDER_CB_TYPE, val: Function) {
     this.cb[key] = this.cb[key] || []
     this.cb[key].push(val)
   }
 
-  removeCb(key: ZKit.RENDER_CB_TYPE, val: Function) {
+  removeCb(key: RENDER_CB_TYPE, val: Function) {
     if (this.cb[key]) {
       const index = this.cb[key].indexOf(val)
       if (index > 0) {

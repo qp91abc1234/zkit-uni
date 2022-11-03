@@ -1,4 +1,4 @@
-import Entity from '@lib/components/render/entity/entity'
+import Entity, { RENDER_CB_TYPE } from '@lib/components/render/entity/entity'
 
 export default class Anim extends Entity {
   private src: string[] = []
@@ -37,8 +37,8 @@ export default class Anim extends Entity {
           ...this.renderProps,
           src: this.src[this.cur]
         })
-        this.cb[ZKit.RENDER_CB_TYPE.ANIM_END] &&
-          this.cb[ZKit.RENDER_CB_TYPE.ANIM_END].forEach((cb) => {
+        this.cb[RENDER_CB_TYPE.ANIM_END] &&
+          this.cb[RENDER_CB_TYPE.ANIM_END].forEach((cb) => {
             cb(this)
           })
       } else {
@@ -63,8 +63,8 @@ export default class Anim extends Entity {
   changeAnim(newSrc: string[]) {
     Promise.resolve(this.canvas.preloadRes(newSrc)).then((val) => {
       this.resetAnim(newSrc)
-      this.cb[ZKit.RENDER_CB_TYPE.CHANGE_ANIM] &&
-        this.cb[ZKit.RENDER_CB_TYPE.CHANGE_ANIM].forEach((cb) => {
+      this.cb[RENDER_CB_TYPE.CHANGE_ANIM] &&
+        this.cb[RENDER_CB_TYPE.CHANGE_ANIM].forEach((cb) => {
           cb(this)
         })
     })

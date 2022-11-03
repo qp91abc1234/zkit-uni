@@ -1,4 +1,4 @@
-import { useCanvas } from '@lib/common/utils/useCanvas'
+import { useCanvas, CANVAS_LOAD_STATUS } from '@lib/common/utils/useCanvas'
 
 declare global {
   namespace ZKit {
@@ -12,13 +12,6 @@ declare global {
       h: number
       alpha: number
       anchor: { x: number; y: number }
-    }
-
-    enum CANVAS_LOAD_STATUS {
-      UNLOAD,
-      LOADING,
-      SUCC,
-      FAIL
     }
 
     interface CanvasCacheData {
