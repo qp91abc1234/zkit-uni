@@ -40,8 +40,9 @@ export default class Spine extends Entity {
     )
 
     this.skeleton = new spine.Skeleton(skeletonData)
-    this.w = this.skeleton.data.width
-    this.h = this.skeleton.data.height
+    this.skeleton.scaleY = -1
+    this.w = this.w === 0 ? this.skeleton.data.width : this.w
+    this.h = this.h === 0 ? this.skeleton.data.height : this.h
 
     this.state = new spine.AnimationState(
       new spine.AnimationStateData(this.skeleton.data)
@@ -51,10 +52,16 @@ export default class Spine extends Entity {
   }
 
   render(delta) {
+    const scaleX = (this.scale * this.w) / this.skeleton.data.width
+    const scaleY = (this.scale * this.h) / this.skeleton.data.height
     const centerX = this.bounds.offset.x + this.bounds.size.x * this.anchor.x
     const centerY = this.bounds.offset.y + this.bounds.size.y * this.anchor.y
-    this.context.translate(-centerX, -centerY)
+
+    this.context.translate(-centerX * scaleX, -centerY * scaleY)
     this.context.translate(zkit.utils.rpx2px(this.x), zkit.utils.rpx2px(this.y))
+    this.context.rotate((this.rotate * Math.PI) / 180)
+    this.context.scale(scaleX, scaleY)
+    this.context.globalAlpha = this.alpha
 
     this.state.update(delta / 1000)
     this.state.apply(this.skeleton)

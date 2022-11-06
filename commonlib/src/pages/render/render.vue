@@ -1,13 +1,6 @@
 <template>
   <view class="page">
-    <button @click="handleAddImg">添加图片</button>
-    <button @click="handleRemoveImg">移除图片</button>
-    <button @click="handleAddAnim">添加动画</button>
-    <button @click="handleChangeAnim">切换动画</button>
-    <button @click="handleRemoveAnim">移除动画</button>
-    <button @click="handleTweenAnim">缓动动画</button>
     <button @click="handleSpineAnim">骨骼动画</button>
-    <button @click="handleDemo">demo</button>
     <Render class="render" @init="init"></Render>
   </view>
 </template>
@@ -108,6 +101,18 @@ const handleSpineAnim = () => {
   spine = renderInst.createSpine(
     'https://md-pic-lib.oss-cn-hangzhou.aliyuncs.com/spine/spineboy'
   )
+  spine.x = 375
+  spine.y = 200
+  spine.scale = 0.3
+  renderInst.addChild(spine)
+
+  spine = renderInst.createSpine(
+    'https://md-pic-lib.oss-cn-hangzhou.aliyuncs.com/spine/spineboy'
+  )
+  spine.x = 375
+  spine.y = 200
+  spine.scale = 0.3
+  spine.rotate = 90
   renderInst.addChild(spine)
 }
 
