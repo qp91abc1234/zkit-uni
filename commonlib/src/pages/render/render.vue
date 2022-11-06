@@ -1,13 +1,16 @@
 <template>
   <view class="page">
-    <button @click="handleAddImg">添加图片</button>
-    <button @click="handleRemoveImg">移除图片</button>
-    <button @click="handleAddAnim">添加动画</button>
-    <button @click="handleChangeAnim">切换动画</button>
-    <button @click="handleRemoveAnim">移除动画</button>
-    <button @click="handleTweenAnim">缓动动画</button>
-    <button @click="handleSpineAnim">骨骼动画</button>
-    <button @click="handleDemo">demo</button>
+    <view class="top">
+      <button @click="handleAddImg">添加图片</button>
+      <button @click="handleRemoveImg">移除图片</button>
+      <button @click="handleAddAnim">添加动画</button>
+      <button @click="handleChangeAnim">切换动画</button>
+      <button @click="handleRemoveAnim">移除动画</button>
+      <button @click="handleTweenAnim">缓动动画</button>
+      <button @click="handleAddSpine">添加骨骼</button>
+      <button @click="handleRemoveSpine">移除骨骼</button>
+      <button @click="handleDemo">demo</button>
+    </view>
     <Render class="render" @init="init"></Render>
   </view>
 </template>
@@ -104,7 +107,7 @@ const handleTweenAnim = () => {
   renderInst.tween(anim, 2000, 'rotate', 0, 180)
 }
 
-const handleSpineAnim = () => {
+const handleAddSpine = () => {
   spine = renderInst.createSpine(
     'https://md-pic-lib.oss-cn-hangzhou.aliyuncs.com/spine/spineboy'
   )
@@ -115,6 +118,10 @@ const handleSpineAnim = () => {
   renderInst.addChild(spine)
 }
 
+const handleRemoveSpine = () => {
+  spine.removeFromParent()
+}
+
 const handleDemo = () => {
   uni.navigateTo({
     url: '/pages/render/demo/demo'
@@ -123,6 +130,16 @@ const handleDemo = () => {
 </script>
 
 <style scoped lang="scss">
+.top {
+  align-items: flex-start;
+  overflow-y: scroll;
+  height: 400rpx;
+  flex-direction: row;
+  flex-wrap: wrap;
+  button {
+    margin: 20rpx;
+  }
+}
 .render {
   width: 100%;
   height: 100%;
