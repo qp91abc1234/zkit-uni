@@ -8,7 +8,7 @@ export default class Spine extends Entity {
   skeleton
   state
   bounds
-  cache = { anim: '', loop: true }
+  cache = { anim: '', loop: true, skin: '' }
 
   constructor(cvs, src) {
     super(cvs)
@@ -71,6 +71,14 @@ export default class Spine extends Entity {
     this.skeletonRenderer.draw(this.skeleton)
   }
 
+  setSkin(skin) {
+    if (this.ready) {
+      skin && this.skeleton.setSkinByName(skin)
+    } else {
+      this.cache.skin = skin
+    }
+  }
+
   play(name, loop = true) {
     if (this.ready) {
       name && this.state.setAnimation(0, name, loop)
@@ -84,6 +92,7 @@ export default class Spine extends Entity {
     if (!this.ready && this.assetManager.isLoadingComplete()) {
       this.ready = true
       this.load()
+      this.setSkin(this.cache.skin)
       this.play(this.cache.anim, this.cache.loop)
     }
     if (!this.ready || !this.visible) return
@@ -93,20 +102,3 @@ export default class Spine extends Entity {
     this.context.restore()
   }
 }
-
-// this.skeleton.setSkinByName('default')
-//     this.state.setAnimation(0, '', true)
-//     this.state.addListener({
-//       event(trackIndex, event) {
-//         // console.log("Event on track " + trackIndex + ": " + JSON.stringify(event));
-//       },
-//       complete(trackIndex, loopCount) {
-//         // console.log("Animation on track " + trackIndex + " completed, loop count: " + loopCount);
-//       },
-//       start(trackIndex) {
-//         // console.log("Animation on track " + trackIndex + " started");
-//       },
-//       end(trackIndex) {
-//         // console.log("Animation on track " + trackIndex + " ended");
-//       }
-//     })
