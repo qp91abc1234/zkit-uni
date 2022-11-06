@@ -18,6 +18,7 @@ import Tween from '@lib/components/render/utils/tween'
 import Entity from '@lib/components/render/entity/entity'
 import Img from '@lib/components/render/entity/img'
 import Anim from '@lib/components/render/entity/anim'
+import Spine from '@lib/components/render/entity/spine'
 import { onHide, onShow } from '@dcloudio/uni-app'
 
 const props = withDefaults(
@@ -38,21 +39,22 @@ const emits = defineEmits<{
 
 let pause = false
 const inst = getCurrentInstance()
-const canvas = useCanvas()
-const root = new Entity(canvas)
+const cvs = useCanvas()
+const root = new Entity(cvs)
 const schedule = new Schedule()
 const tween = new Tween()
 const renderInst = {
   canvasW: 0,
   canvasH: 0,
-  preloadRes: canvas.preloadRes,
-  clearRes: canvas.clearRes,
+  preloadRes: cvs.preloadRes,
+  clearRes: cvs.clearRes,
   schedule: schedule.add.bind(schedule),
   tween: tween.add.bind(tween),
   addChild,
   removeChild,
   createImg,
-  createAnim
+  createAnim,
+  createSpine
 }
 
 onShow(() => {
@@ -64,15 +66,15 @@ onHide(() => {
 })
 
 onMounted(async () => {
-  const ret: any = await canvas.setup('anim-canvas', inst)
-  renderInst.canvasW = zkit.utils.px2rpx(ret.canvasW)
-  renderInst.canvasH = zkit.utils.px2rpx(ret.canvasH)
+  await cvs.setup('anim-canvas', inst)
+  renderInst.canvasW = zkit.utils.px2rpx(cvs.canvasW.value)
+  renderInst.canvasH = zkit.utils.px2rpx(cvs.canvasH.value)
   emits('init', renderInst)
-  canvas.render(render, props.frameNum)
+  cvs.render(render, props.frameNum)
 })
 
 onBeforeUnmount(() => {
-  canvas.destroy()
+  cvs.destroy()
 })
 
 function addChild(child: Entity) {
@@ -84,11 +86,15 @@ function removeChild(child: Entity) {
 }
 
 function createImg(src: string) {
-  return new Img(canvas, src)
+  return new Img(cvs, src)
 }
 
 function createAnim(src: string[]) {
-  return new Anim(canvas, src)
+  return new Anim(cvs, src)
+}
+
+function createSpine() {
+  return new Spine(cvs)
 }
 
 function render(delta: number) {
@@ -96,7 +102,7 @@ function render(delta: number) {
   emits('loop', delta)
   schedule.run(delta)
   tween.run(delta)
-  root.draw()
+  root.draw(delta)
   emits('afterLoop', delta)
 }
 </script>

@@ -7,12 +7,12 @@ export default class Anim extends Entity {
   count = -1
   pause = false
 
-  constructor(canvas, src: string[]) {
-    super(canvas)
+  constructor(cvs, src: string[]) {
+    super(cvs)
     this.src = src
     this.total = src.length
 
-    Promise.resolve(this.canvas.preloadRes(src)).then((val) => {
+    Promise.resolve(this.cvs.preloadRes(src)).then((val) => {
       this.ready = val
     })
   }
@@ -33,7 +33,7 @@ export default class Anim extends Entity {
       this.count > 0 && this.count--
       if (this.count !== 0) {
         this.cur = 0
-        this.canvas.drawImg({
+        this.cvs.drawImg({
           ...this.renderProps,
           src: this.src[this.cur]
         })
@@ -42,13 +42,13 @@ export default class Anim extends Entity {
             cb(this)
           })
       } else {
-        this.canvas.drawImg({
+        this.cvs.drawImg({
           ...this.renderProps,
           src: this.src[this.total - 1]
         })
       }
     } else {
-      this.canvas.drawImg({
+      this.cvs.drawImg({
         ...this.renderProps,
         src: this.src[this.cur++]
       })
@@ -61,7 +61,7 @@ export default class Anim extends Entity {
   }
 
   changeAnim(newSrc: string[]) {
-    Promise.resolve(this.canvas.preloadRes(newSrc)).then((val) => {
+    Promise.resolve(this.cvs.preloadRes(newSrc)).then((val) => {
       this.resetAnim(newSrc)
       this.cb[RENDER_CB_TYPE.CHANGE_ANIM] &&
         this.cb[RENDER_CB_TYPE.CHANGE_ANIM].forEach((cb) => {
@@ -70,11 +70,11 @@ export default class Anim extends Entity {
     })
   }
 
-  draw() {
+  draw(delta: number) {
     if (!this.ready || !this.visible) return
-    this.canvas.save()
+    this.context.save()
     this.drawAnim()
-    super.draw()
-    this.canvas.restore()
+    super.draw(delta)
+    this.context.restore()
   }
 }

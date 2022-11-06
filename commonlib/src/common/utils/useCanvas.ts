@@ -12,10 +12,10 @@ const resObj: ZKit.CanvasCacheData = {}
 
 export const useCanvas = () => {
   const libStore = useLibStore()
-  let canvasW: number
-  let canvasH: number
-  let canvas: any
-  let ctx: any
+  const canvasW: { value: number } = { value: 0 }
+  const canvasH: { value: number } = { value: 0 }
+  const canvas: { value: any } = { value: undefined }
+  const context: { value: any } = { value: undefined }
   let t = 0
 
   function createImage() {
@@ -24,7 +24,7 @@ export const useCanvas = () => {
     ret = new Image()
     // #endif
     // #ifdef MP-WEIXIN
-    ret = canvas.createImage()
+    ret = canvas.value.createImage()
     // #endif
     return ret
   }
@@ -35,7 +35,7 @@ export const useCanvas = () => {
     ret = requestAnimationFrame(cb)
     // #endif
     // #ifdef MP-WEIXIN
-    ret = canvas.requestAnimationFrame(cb)
+    ret = canvas.value.requestAnimationFrame(cb)
     // #endif
     return ret
   }
@@ -45,21 +45,21 @@ export const useCanvas = () => {
     cancelAnimationFrame(id)
     // #endif
     // #ifdef MP-WEIXIN
-    canvas.cancelAnimationFrame(id)
+    canvas.value.cancelAnimationFrame(id)
     // #endif
   }
 
   function setup(id = 'canvas', inst: any = null) {
     return new Promise((resolve) => {
       // #ifdef H5
-      canvas = document.getElementById(id)?.firstChild
-      canvasW = canvas.clientWidth
-      canvasH = canvas.clientHeight
-      ctx = canvas.getContext('2d')
-      canvas.width = `${canvasW * libStore.dpr}px`
-      canvas.height = `${canvasH * libStore.dpr}px`
-      ctx.scale(libStore.dpr, libStore.dpr)
-      resolve({ canvas, ctx, canvasW, canvasH })
+      canvas.value = document.getElementById(id)?.firstChild
+      canvasW.value = canvas.value.clientWidth
+      canvasH.value = canvas.value.clientHeight
+      context.value = canvas.value.getContext('2d')
+      canvas.value.width = `${canvasW.value * libStore.dpr}px`
+      canvas.value.height = `${canvasH.value * libStore.dpr}px`
+      context.value.scale(libStore.dpr, libStore.dpr)
+      resolve(null)
       // #endif
       // #ifdef MP-WEIXIN
       let query = uni.createSelectorQuery()
@@ -76,14 +76,14 @@ export const useCanvas = () => {
       node
         .node(() => {})
         .exec((res) => {
-          canvasW = res[0].width
-          canvasH = res[0].height
-          canvas = res[1].node
-          ctx = canvas.getContext('2d')
-          canvas.width = canvasW * libStore.dpr
-          canvas.height = canvasH * libStore.dpr
-          ctx.scale(libStore.dpr, libStore.dpr)
-          resolve({ canvas, ctx, canvasW, canvasH })
+          canvasW.value = res[0].width
+          canvasH.value = res[0].height
+          canvas.value = res[1].node
+          context.value = canvas.value.getContext('2d')
+          canvas.value.width = canvasW.value * libStore.dpr
+          canvas.value.height = canvasH.value * libStore.dpr
+          context.value.scale(libStore.dpr, libStore.dpr)
+          resolve(null)
         })
       // #endif
     })
@@ -162,7 +162,7 @@ export const useCanvas = () => {
     const renderLoop = () => {
       const timestamp = new Date().getTime()
       if (timestamp - t > 1000 / frameNum) {
-        ctx.clearRect(0, 0, canvasW, canvasH)
+        context.value.clearRect(0, 0, canvasW.value, canvasH.value)
         renderCore && renderCore(timestamp - t)
         t = timestamp
       }
@@ -172,29 +172,24 @@ export const useCanvas = () => {
   }
 
   function drawImg(data: ZKit.ImgData) {
-    ctx.translate(zkit.utils.rpx2px(data.x), zkit.utils.rpx2px(data.y))
-    ctx.rotate((data.rotate * Math.PI) / 180)
-    ctx.scale(data.scale, data.scale)
-    ctx.globalAlpha = data.alpha
+    context.value.translate(
+      zkit.utils.rpx2px(data.x),
+      zkit.utils.rpx2px(data.y)
+    )
+    context.value.rotate((data.rotate * Math.PI) / 180)
+    context.value.scale(data.scale, data.scale)
+    context.value.globalAlpha = data.alpha
 
     const res = resObj[data.src]
     data.w = data.w === 0 ? res.w : data.w
     data.h = data.h === 0 ? res.h : data.h
-    ctx.drawImage(
+    context.value.drawImage(
       res.img,
       -zkit.utils.rpx2px(data.w * data.anchor.x),
       -zkit.utils.rpx2px(data.h * data.anchor.y),
       zkit.utils.rpx2px(data.w),
       zkit.utils.rpx2px(data.h)
     )
-  }
-
-  function save() {
-    ctx.save()
-  }
-
-  function restore() {
-    ctx.restore()
   }
 
   function destroy() {
@@ -205,13 +200,15 @@ export const useCanvas = () => {
   }
 
   return {
+    canvasW,
+    canvasH,
+    canvas,
+    context,
     setup,
     preloadRes,
     clearRes,
     render,
     drawImg,
-    save,
-    restore,
     destroy
   }
 }

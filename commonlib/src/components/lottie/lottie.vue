@@ -42,7 +42,7 @@ const emits = defineEmits<{
 }>()
 
 const inst = getCurrentInstance()
-const canvas = useCanvas()
+const cvs = useCanvas()
 const anim = ref<any>({})
 
 onMounted(async () => {
@@ -57,7 +57,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   // #ifdef MP_WEIXIN
-  canvas.destroy()
+  cvs.destroy()
   // #endif
   anim.value.destroy()
 })
@@ -72,14 +72,14 @@ function initH5() {
 }
 
 async function initWx() {
-  const ret: any = await canvas.setup('lottie-canvas', inst)
-  lottieWx.setup(ret.canvas)
+  await cvs.setup('lottie-canvas', inst)
+  lottieWx.setup(cvs.canvas.value)
   anim.value = lottieWx.loadAnimation({
     renderer: 'canvas',
     loop: props.loop,
     autoplay: props.autoplay,
     rendererSettings: {
-      context: ret.ctx
+      context: cvs.context.value
     },
     path: props.path
   })

@@ -39,7 +39,7 @@ const emits = defineEmits<{
 
 const startTime = new Date().getTime()
 const inst = getCurrentInstance()
-const canvas = useCanvas()
+const cvs = useCanvas()
 let progress = 0
 let loadedNum = 0
 let isEnd = false
@@ -53,7 +53,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  canvas.destroy()
+  cvs.destroy()
 })
 
 const errored = (item: string) => {
@@ -68,8 +68,8 @@ const loadImg = () => {
 const loadCanvas = async () => {
   if (props.resCanvas.length <= 0) return
   try {
-    await canvas.setup('load-canvas', inst)
-    await canvas.preloadRes(props.resCanvas)
+    await cvs.setup('load-canvas', inst)
+    await cvs.preloadRes(props.resCanvas)
   } catch (err) {
     console.error(`[load.vue][loadCanvas] ${err}`)
   } finally {

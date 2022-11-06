@@ -3,23 +3,23 @@ import Entity from '@lib/components/render/entity/entity'
 export default class Img extends Entity {
   private src: string = ''
 
-  constructor(canvas, src: string) {
-    super(canvas)
+  constructor(cvs, src: string) {
+    super(cvs)
     this.src = src
 
-    Promise.resolve(this.canvas.preloadRes([src])).then((val) => {
+    Promise.resolve(this.cvs.preloadRes([src])).then((val) => {
       this.ready = val
     })
   }
 
-  draw() {
+  draw(delta: number) {
     if (!this.ready || !this.visible) return
-    this.canvas.save()
-    this.canvas.drawImg({
+    this.context.save()
+    this.cvs.drawImg({
       ...this.renderProps,
       src: this.src
     })
-    super.draw()
-    this.canvas.restore()
+    super.draw(delta)
+    this.context.restore()
   }
 }

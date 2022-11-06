@@ -1,12 +1,14 @@
 import IEntity from '@lib/components/render/entity/entity'
 import IImg from '@lib/components/render/entity/img'
 import IAnim from '@lib/components/render/entity/anim'
+import ISpine from '@lib/components/render/entity/spine'
 
 declare global {
   namespace ZKit {
     type Entity = IEntity
     type Img = IImg
     type Anim = IAnim
+    type Spine = ISpine
   }
 }
 
@@ -85,6 +87,7 @@ declare global {
       removeChild(val: Entity): Entity
       createImg(src: string): Img
       createAnim(src: string[]): Anim
+      createSpine(): Spine
     }
   }
 }

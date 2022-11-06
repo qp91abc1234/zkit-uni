@@ -4,7 +4,9 @@ export enum RENDER_CB_TYPE {
 }
 
 export default class Entity {
-  protected canvas: ZKit.Canvas
+  protected cvs: ZKit.Canvas
+  protected canvas: any
+  protected context: any
   protected cb = {}
   ready = false
   x = 0
@@ -20,8 +22,10 @@ export default class Entity {
   parent: Entity | undefined
   children: Entity[][] = []
 
-  constructor(canvas) {
-    this.canvas = canvas
+  constructor(cvs) {
+    this.cvs = cvs
+    this.canvas = this.cvs.canvas.value
+    this.context = this.cvs.context.value
   }
 
   protected get renderProps() {
@@ -60,12 +64,12 @@ export default class Entity {
     parent && parent.addChild(this)
   }
 
-  draw() {
+  draw(delta: number) {
     if (this.children) {
       const keys = Object.keys(this.children)
       for (let i = 0; i < keys.length; i++) {
         this.children[keys[i]].forEach((ele: Entity) => {
-          ele.draw()
+          ele.draw(delta)
         })
       }
     }
