@@ -37,7 +37,7 @@ const emits = defineEmits<{
   (event: 'touchEvent', val: TouchEvent): void
 }>()
 
-let pause = false
+const pause = { value: false }
 const inst = getCurrentInstance()
 const cvs = useCanvas()
 const root = new Entity(cvs)
@@ -58,11 +58,11 @@ const renderInst = {
 }
 
 onShow(() => {
-  pause = false
+  pause.value = false
 })
 
 onHide(() => {
-  pause = true
+  pause.value = true
 })
 
 onMounted(async () => {
@@ -70,7 +70,7 @@ onMounted(async () => {
   renderInst.canvasW = zkit.utils.px2rpx(cvs.canvasW.value)
   renderInst.canvasH = zkit.utils.px2rpx(cvs.canvasH.value)
   emits('init', renderInst)
-  cvs.render(render, props.frameNum)
+  cvs.render(render, pause, props.frameNum)
 })
 
 onBeforeUnmount(() => {
@@ -98,7 +98,6 @@ function createSpine(src: string) {
 }
 
 function render(delta: number) {
-  if (pause) return
   emits('loop', delta)
   schedule.run(delta)
   tween.run(delta)

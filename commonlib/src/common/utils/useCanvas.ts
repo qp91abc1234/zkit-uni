@@ -158,12 +158,18 @@ export const useCanvas = () => {
     }
   }
 
-  function render(renderCore?: (delta: number) => void, frameNum = 40) {
+  function render(
+    renderCore?: (delta: number) => void,
+    pause = { value: false },
+    frameNum = 40
+  ) {
     const renderLoop = () => {
       const timestamp = new Date().getTime()
       if (timestamp - t > 1000 / frameNum) {
-        context.value.clearRect(0, 0, canvasW.value, canvasH.value)
-        renderCore && renderCore(timestamp - t)
+        if (!pause.value) {
+          context.value.clearRect(0, 0, canvasW.value, canvasH.value)
+          renderCore && renderCore(timestamp - t)
+        }
         t = timestamp
       }
       loopId = nextFrame(renderLoop)
