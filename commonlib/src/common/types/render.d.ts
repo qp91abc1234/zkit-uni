@@ -87,7 +87,7 @@ declare global {
       removeChild(val: Entity): Entity
       createImg(src: string): Img
       createAnim(src: string[]): Anim
-      createSpine(): Spine
+      createSpine(src: string): Spine
     }
   }
 }

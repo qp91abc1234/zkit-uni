@@ -26,7 +26,7 @@ const props = withDefaults(
     frameNum?: number
   }>(),
   {
-    frameNum: 20
+    frameNum: 30
   }
 )
 
@@ -93,8 +93,8 @@ function createAnim(src: string[]) {
   return new Anim(cvs, src)
 }
 
-function createSpine() {
-  return new Spine(cvs)
+function createSpine(src: string) {
+  return new Spine(cvs, src)
 }
 
 function render(delta: number) {

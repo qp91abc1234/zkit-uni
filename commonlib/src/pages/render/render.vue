@@ -6,6 +6,7 @@
     <button @click="handleChangeAnim">切换动画</button>
     <button @click="handleRemoveAnim">移除动画</button>
     <button @click="handleTweenAnim">缓动动画</button>
+    <button @click="handleSpineAnim">骨骼动画</button>
     <button @click="handleDemo">demo</button>
     <Render class="render" @init="init"></Render>
   </view>
@@ -18,6 +19,7 @@ const anims = getAnims()
 let renderInst: ZKit.Render
 let img: ZKit.Img
 let anim: ZKit.Anim
+let spine: ZKit.Spine
 
 function getAnims() {
   function getResWebpArr(name, num) {
@@ -100,6 +102,13 @@ const handleRemoveAnim = () => {
 const handleTweenAnim = () => {
   renderInst.tween(anim, 2000, 'y', 200, 300)
   renderInst.tween(anim, 2000, 'rotate', 0, 180)
+}
+
+const handleSpineAnim = () => {
+  spine = renderInst.createSpine(
+    'https://md-pic-lib.oss-cn-hangzhou.aliyuncs.com/spine/spineboy'
+  )
+  renderInst.addChild(spine)
 }
 
 const handleDemo = () => {

@@ -2,91 +2,21 @@ import Entity from '@lib/components/render/entity/entity'
 import spine from '@lib/common/lib/spine-canvas.js'
 
 export default class Spine extends Entity {
+  name
   skeletonRenderer
   assetManager
   skeleton
   state
   bounds
 
-  constructor(cvs) {
+  constructor(cvs, src) {
     super(cvs)
-
+    this.name = src.split('/').pop()
     this.skeletonRenderer = new spine.canvas.SkeletonRenderer(this.context)
     this.assetManager = new spine.canvas.AssetManager(this.canvas)
-    this.assetManager.loadText(
-      'https://md-pic-lib.oss-cn-hangzhou.aliyuncs.com/tmp/spine/spineboy-ess.json'
-    ) // (skelName + ".json");
-    this.assetManager.loadText(
-      'https://md-pic-lib.oss-cn-hangzhou.aliyuncs.com/tmp/spine/spineboy.atlas'
-    ) // (skelName.replace("-pro", "").replace("-ess", "") + ".atlas");
-    this.assetManager.loadTexture(
-      'https://md-pic-lib.oss-cn-hangzhou.aliyuncs.com/tmp/spine/spineboy.png'
-    ) // (canvas, skelName.replace("-pro", "").replace("-ess", "") + ".png");
-  }
-
-  load() {
-    if (!this.ready && this.assetManager.isLoadingComplete()) {
-      const data = this.loadSkeleton('spineboy-ess', 'walk', 'default')
-      this.skeleton = data.skeleton
-      this.state = data.state
-      this.bounds = data.bounds
-      this.ready = true
-    }
-  }
-
-  loadSkeleton(name, initialAnimation, skin) {
-    if (skin === undefined) skin = 'default'
-
-    // Load the texture atlas using name.atlas and name.png from the AssetManager.
-    // The function passed to TextureAtlas is used to resolve relative paths.
-    const atlas = new spine.TextureAtlas(
-      this.assetManager.get(
-        `${name.replace('-pro', '').replace('-ess', '')}.atlas`
-      )
-    )
-    atlas.setTextures(this.assetManager)
-
-    // Create a AtlasAttachmentLoader, which is specific to the WebGL backend.
-    const atlasLoader = new spine.AtlasAttachmentLoader(atlas)
-
-    // Create a SkeletonJson instance for parsing the .json file.
-    const skeletonJson = new spine.SkeletonJson(atlasLoader)
-
-    // Set the scale to apply during parsing, parse the file, and create a new skeleton.
-    const skeletonData = skeletonJson.readSkeletonData(
-      this.assetManager.get(`${name}.json`)
-    )
-    const skeleton = new spine.Skeleton(skeletonData)
-
-    const ratio = zkit.utils.rpx2px(skeleton.data.width) / skeleton.data.width
-    skeleton.scaleX = ratio
-    skeleton.scaleY = -ratio
-
-    const bounds = this.calculateBounds(skeleton)
-    skeleton.setSkinByName(skin)
-
-    // Create an AnimationState, and set the initial animation in looping mode.
-    const animationState = new spine.AnimationState(
-      new spine.AnimationStateData(skeleton.data)
-    )
-    animationState.setAnimation(0, initialAnimation, true)
-    animationState.addListener({
-      event(trackIndex, event) {
-        // console.log("Event on track " + trackIndex + ": " + JSON.stringify(event));
-      },
-      complete(trackIndex, loopCount) {
-        // console.log("Animation on track " + trackIndex + " completed, loop count: " + loopCount);
-      },
-      start(trackIndex) {
-        // console.log("Animation on track " + trackIndex + " started");
-      },
-      end(trackIndex) {
-        // console.log("Animation on track " + trackIndex + " ended");
-      }
-    })
-
-    // Pack everything up and return to caller.
-    return { skeleton, state: animationState, bounds }
+    this.assetManager.loadText(`${src}.json`)
+    this.assetManager.loadText(`${src}.atlas`)
+    this.assetManager.loadTexture(`${src}.png`)
   }
 
   calculateBounds(skeleton) {
@@ -98,11 +28,33 @@ export default class Spine extends Entity {
     return { offset, size }
   }
 
+  load() {
+    const atlas = new spine.TextureAtlas(
+      this.assetManager.get(`${this.name}.atlas`)
+    )
+    atlas.setTextures(this.assetManager)
+    const atlasLoader = new spine.AtlasAttachmentLoader(atlas)
+    const skeletonJson = new spine.SkeletonJson(atlasLoader)
+    const skeletonData = skeletonJson.readSkeletonData(
+      this.assetManager.get(`${this.name}.json`)
+    )
+
+    this.skeleton = new spine.Skeleton(skeletonData)
+    this.w = this.skeleton.data.width
+    this.h = this.skeleton.data.height
+
+    this.state = new spine.AnimationState(
+      new spine.AnimationStateData(this.skeleton.data)
+    )
+
+    this.bounds = this.calculateBounds(this.skeleton)
+  }
+
   render(delta) {
-    const centerX = this.bounds.offset.x + this.bounds.size.x / 2
-    const centerY = this.bounds.offset.y + this.bounds.size.y / 2
+    const centerX = this.bounds.offset.x + this.bounds.size.x * this.anchor.x
+    const centerY = this.bounds.offset.y + this.bounds.size.y * this.anchor.y
     this.context.translate(-centerX, -centerY)
-    this.context.translate(zkit.utils.rpx2px(375), zkit.utils.rpx2px(375))
+    this.context.translate(zkit.utils.rpx2px(this.x), zkit.utils.rpx2px(this.y))
 
     this.state.update(delta / 1000)
     this.state.apply(this.skeleton)
@@ -112,7 +64,10 @@ export default class Spine extends Entity {
   }
 
   draw(delta) {
-    this.load()
+    if (!this.ready && this.assetManager.isLoadingComplete()) {
+      this.load()
+      this.ready = true
+    }
     if (!this.ready || !this.visible) return
     this.context.save()
     this.render(delta)
@@ -120,3 +75,20 @@ export default class Spine extends Entity {
     this.context.restore()
   }
 }
+
+// this.skeleton.setSkinByName('default')
+//     this.state.setAnimation(0, '', true)
+//     this.state.addListener({
+//       event(trackIndex, event) {
+//         // console.log("Event on track " + trackIndex + ": " + JSON.stringify(event));
+//       },
+//       complete(trackIndex, loopCount) {
+//         // console.log("Animation on track " + trackIndex + " completed, loop count: " + loopCount);
+//       },
+//       start(trackIndex) {
+//         // console.log("Animation on track " + trackIndex + " started");
+//       },
+//       end(trackIndex) {
+//         // console.log("Animation on track " + trackIndex + " ended");
+//       }
+//     })
