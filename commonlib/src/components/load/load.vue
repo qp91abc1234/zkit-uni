@@ -22,13 +22,15 @@ const props = withDefaults(
     resImg: string[]
     resCanvas?: string[]
     resAudio?: string[]
+    resText?: string[]
   }>(),
   {
     time: 3000,
     maxTime: 8000,
     resImg: () => [],
     resCanvas: () => [],
-    resAudio: () => []
+    resAudio: () => [],
+    resText: () => []
   }
 )
 
@@ -45,7 +47,12 @@ let loadedNum = 0
 let isEnd = false
 
 const allNum = computed(() => {
-  return props.resImg.length + props.resCanvas.length + props.resAudio.length
+  return (
+    props.resImg.length +
+    props.resCanvas.length +
+    props.resAudio.length +
+    props.resText.length
+  )
 })
 
 onMounted(() => {
@@ -111,6 +118,23 @@ const loadAudio = async () => {
   }
 }
 
+const loadText = async () => {
+  const paths = props.resText
+  for (let i = 0; i < paths.length; i++) {
+    uni.request({
+      url: paths[i],
+      responseType: 'text/html',
+      success: () => {
+        updateRealProgress('loadText')
+      },
+      fail: (res) => {
+        console.error('[load][errored]: file load error ', res)
+        updateRealProgress('errored')
+      }
+    })
+  }
+}
+
 const updateFakeProgress = () => {
   if (loadedNum === allNum.value && progress === 99) {
     loadEnd()
@@ -147,6 +171,7 @@ const loadEnd = () => {
 }
 
 loadAudio()
+loadText()
 setTimeout(updateFakeProgress, props.time / 100)
 </script>
 

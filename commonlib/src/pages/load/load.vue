@@ -3,6 +3,7 @@
     <Load
       :res-img="resImg"
       :res-canvas="resCanvas"
+      :res-text="resText"
       @progress="progress"
       @end="end"
     ></Load>
@@ -19,6 +20,10 @@ const resImg = ref([
   `https://cdn-s3-gjzc.my.99.com/creation-zone/static/v1/activity/6335011625e56ff2bd2bdb6b.jpg`
 ])
 const resCanvas = ref(getResWebpArr('boss-idle', 26))
+const resText = ref([
+  `https://md-pic-lib.oss-cn-hangzhou.aliyuncs.com/spine/spineboy.json`,
+  `https://md-pic-lib.oss-cn-hangzhou.aliyuncs.com/spine/spineboy.atlas`
+])
 
 function getResWebpArr(name, num) {
   const ret: string[] = []
