@@ -1,4 +1,4 @@
-import Entity from '@lib/components/render/entity/entity'
+import Entity, { RENDER_CB_TYPE } from '@lib/components/render/entity/entity'
 import spine from '@lib/common/lib/spine-canvas.js'
 
 export default class Spine extends Entity {
@@ -45,9 +45,18 @@ export default class Spine extends Entity {
     this.w = this.w === 0 ? this.skeleton.data.width : this.w
     this.h = this.h === 0 ? this.skeleton.data.height : this.h
 
+    const that = this
     this.state = new spine.AnimationState(
       new spine.AnimationStateData(this.skeleton.data)
     )
+    this.state.addListener({
+      complete() {
+        that.cb[RENDER_CB_TYPE.ANIM_END] &&
+          that.cb[RENDER_CB_TYPE.ANIM_END].forEach((cb) => {
+            cb(that)
+          })
+      }
+    })
 
     this.bounds = this.calculateBounds(this.skeleton)
   }
@@ -82,6 +91,10 @@ export default class Spine extends Entity {
   play(name, loop = true) {
     if (this.ready) {
       name && this.state.setAnimation(0, name, loop)
+      this.cb[RENDER_CB_TYPE.CHANGE_ANIM] &&
+        this.cb[RENDER_CB_TYPE.CHANGE_ANIM].forEach((cb) => {
+          cb(this)
+        })
     } else {
       this.cache.anim = name
       this.cache.loop = loop
