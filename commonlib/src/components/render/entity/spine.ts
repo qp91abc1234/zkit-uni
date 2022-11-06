@@ -8,6 +8,7 @@ export default class Spine extends Entity {
   skeleton
   state
   bounds
+  cache = { anim: '', loop: true }
 
   constructor(cvs, src) {
     super(cvs)
@@ -70,10 +71,20 @@ export default class Spine extends Entity {
     this.skeletonRenderer.draw(this.skeleton)
   }
 
+  play(name, loop = true) {
+    if (this.ready) {
+      name && this.state.setAnimation(0, name, loop)
+    } else {
+      this.cache.anim = name
+      this.cache.loop = loop
+    }
+  }
+
   draw(delta) {
     if (!this.ready && this.assetManager.isLoadingComplete()) {
-      this.load()
       this.ready = true
+      this.load()
+      this.play(this.cache.anim, this.cache.loop)
     }
     if (!this.ready || !this.visible) return
     this.context.save()
