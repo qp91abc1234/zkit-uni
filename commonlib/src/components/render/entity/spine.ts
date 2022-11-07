@@ -1,5 +1,7 @@
 import Entity, { RENDER_CB_TYPE } from '@lib/components/render/entity/entity'
+// #ifdef USE-SPINE
 import spine from '@lib/common/lib/spine-canvas.js'
+// #endif
 
 export default class Spine extends Entity {
   skeletonRenderer
@@ -11,7 +13,9 @@ export default class Spine extends Entity {
 
   constructor(cvs, src) {
     super(cvs)
+    // #ifdef USE-SPINE
     this.init(src)
+    // #endif
   }
 
   async init(src) {
