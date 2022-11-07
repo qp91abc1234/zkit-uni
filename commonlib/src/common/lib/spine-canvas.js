@@ -4348,15 +4348,34 @@ var spine = (() => {
 
   // spine-core/src/AssetManagerBase.ts
   var AssetManagerBase = class {
-    constructor(textureLoader, pathPrefix = "", downloader = new Downloader()) {
+    constructor(canvas, textureLoader, pathPrefix = "", downloader = new Downloader()) {
       this.pathPrefix = "";
       this.assets = {};
       this.errors = {};
       this.toLoad = 0;
       this.loaded = 0;
+      this.canvas = canvas;
       this.textureLoader = textureLoader;
       this.pathPrefix = pathPrefix;
       this.downloader = downloader;
+    }
+    createImage() {
+      let ret
+      // #ifdef H5
+      ret = new Image();
+      // #endif
+      // #ifdef MP-WEIXIN
+      ret = this.canvas.createImage();
+      // #endif
+      return ret
+    }
+    reqAnimationFrame(cb) {
+      // #ifdef H5
+      requestAnimationFrame(cb)
+      // #endif
+      // #ifdef MP-WEIXIN
+      this.canvas.requestAnimationFrame(cb);
+      // #endif
     }
     start(path) {
       this.toLoad++;
@@ -4365,6 +4384,8 @@ var spine = (() => {
     success(callback, path, asset) {
       this.toLoad--;
       this.loaded++;
+      let pathArr = path.split('/')
+      path = pathArr[pathArr.length - 1]
       this.assets[path] = asset;
       if (callback)
         callback(path, asset);
@@ -4372,6 +4393,8 @@ var spine = (() => {
     error(callback, path, message) {
       this.toLoad--;
       this.loaded++;
+      let pathArr = path.split('/')
+      path = pathArr[pathArr.length - 1]
       this.errors[path] = message;
       if (callback)
         callback(path, message);
@@ -4386,9 +4409,9 @@ var spine = (() => {
               resolve(this);
             return;
           }
-          requestAnimationFrame(check);
+          this.reqAnimationFrame(check);
         };
-        requestAnimationFrame(check);
+        this.reqAnimationFrame(check);
       });
       return promise;
     }
@@ -4429,33 +4452,17 @@ var spine = (() => {
     }, error = () => {
     }) {
       path = this.start(path);
-      let isBrowser = !!(typeof window !== "undefined" && typeof navigator !== "undefined" && window.document);
-      let isWebWorker = !isBrowser;
-      if (isWebWorker) {
-        fetch(path, { mode: "cors" }).then((response) => {
-          if (response.ok)
-            return response.blob();
-          this.error(error, path, `Couldn't load image: ${path}`);
-          return null;
-        }).then((blob) => {
-          return blob ? createImageBitmap(blob, { premultiplyAlpha: "none", colorSpaceConversion: "none" }) : null;
-        }).then((bitmap) => {
-          if (bitmap)
-            this.success(success, path, this.textureLoader(bitmap));
-        });
-      } else {
-        let image = new Image();
-        image.crossOrigin = "anonymous";
-        image.onload = () => {
-          this.success(success, path, this.textureLoader(image));
-        };
-        image.onerror = () => {
-          this.error(error, path, `Couldn't load image: ${path}`);
-        };
-        if (this.downloader.rawDataUris[path])
-          path = this.downloader.rawDataUris[path];
-        image.src = path;
-      }
+      let image = this.createImage();
+      image.crossOrigin = "anonymous";
+      image.onload = () => {
+        this.success(success, path, this.textureLoader(image));
+      };
+      image.onerror = () => {
+        this.error(error, path, `Couldn't load image: ${path}`);
+      };
+      if (this.downloader.rawDataUris[path])
+        path = this.downloader.rawDataUris[path];
+      image.src = path;
     }
     loadTextureAtlas(path, success = () => {
     }, error = () => {
@@ -4581,15 +4588,15 @@ var spine = (() => {
         }
         return;
       }
-      let request = new XMLHttpRequest();
-      request.overrideMimeType("text/html");
-      request.open("GET", url, true);
-      let done = () => {
-        this.finish(url, request.status, request.responseText);
-      };
-      request.onload = done;
-      request.onerror = done;
-      request.send();
+      uni.request({
+        url,
+        success: (res)=>{
+          this.finish(url, res.statusCode, res.data);
+        },
+        fail: (res)=>{
+          this.finish(url, res.statusCode, res.data);
+        }
+      })
     }
     downloadJson(url, success, error) {
       this.downloadText(url, (data) => {
@@ -9195,8 +9202,8 @@ var spine = (() => {
 
   // spine-canvas/src/AssetManager.ts
   var AssetManager = class extends AssetManagerBase {
-    constructor(pathPrefix = "", downloader = new Downloader()) {
-      super((image) => {
+    constructor(canvas, pathPrefix = "", downloader = new Downloader()) {
+      super(canvas, (image) => {
         return new CanvasTexture(image);
       }, pathPrefix, downloader);
     }
@@ -9410,4 +9417,5 @@ var spine = (() => {
   SkeletonRenderer.VERTEX_SIZE = 2 + 2 + 4;
   return src_exports;
 })();
+export default spine;
 //# sourceMappingURL=spine-canvas.js.map
