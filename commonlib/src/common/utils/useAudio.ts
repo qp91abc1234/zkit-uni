@@ -48,8 +48,8 @@ export const useEffect = () => {
 
     if (cb) {
       const cbFunc = () => {
-        cb()
         effectContext[path].offEnded(cbFunc)
+        cb()
       }
       effectContext[path].onEnded(cbFunc)
     }
