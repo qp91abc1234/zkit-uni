@@ -21,6 +21,7 @@ export default class Entity {
   visible = true
   parent: Entity | undefined
   children: Entity[][] = []
+  extraData: any
 
   constructor(cvs) {
     this.cvs = cvs
