@@ -37,37 +37,85 @@ export const useMusic = () => {
 }
 
 let effectContext: { [name: string]: UniApp.InnerAudioContext } = {}
+let effectPool: { [name: string]: UniApp.InnerAudioContext[][] } = {}
 let isEffectMute = false
+let noCacheSuffix = 0
 export const useEffect = () => {
-  const play = (path: string, cb: any = null) => {
+  const createPool = (path: string, count = 10) => {
+    if (!effectPool[path]) {
+      effectPool[path] = [[], []]
+      for (let i = 0; i < count; i++) {
+        const ctx = uni.createInnerAudioContext()
+        ctx.src = path
+        ctx.onEnded(() => {
+          const index = effectPool[path][1].indexOf(ctx)
+          effectPool[path][1].splice(index, 1)
+          effectPool[path][0].push(ctx)
+        })
+        effectPool[path][0].push(ctx)
+      }
+    }
+
+    return () => {
+      if (isEffectMute) return
+      const ctx = effectPool[path][0].pop()
+      if (ctx) {
+        effectPool[path][1].push(ctx)
+        ctx.play()
+      }
+    }
+  }
+
+  const stopPool = () => {
+    const keys = Object.keys(effectPool)
+    for (let i = 0; i < keys.length; i++) {
+      effectPool[keys[i]][1].forEach((item) => {
+        item.stop()
+      })
+    }
+  }
+
+  const destroyPool = () => {
+    const keys = Object.keys(effectPool)
+    for (let i = 0; i < keys.length; i++) {
+      effectPool[keys[i]][0].forEach((item) => {
+        item.destroy()
+      })
+      effectPool[keys[i]][1].forEach((item) => {
+        item.destroy()
+      })
+    }
+    effectPool = {}
+  }
+
+  const play = (path: string, cb: any = null, cache = true) => {
     if (isEffectMute) return
-    if (!effectContext[path]) {
-      effectContext[path] = uni.createInnerAudioContext()
-      effectContext[path].src = path
+
+    const key = cache ? path : path + noCacheSuffix++
+    if (!effectContext[key] || !cache) {
+      effectContext[key] = uni.createInnerAudioContext()
+      effectContext[key].src = path
     }
 
     if (cb) {
       const cbFunc = () => {
-        effectContext[path].offEnded(cbFunc)
+        effectContext[key].offEnded(cbFunc)
+        if (!cache) {
+          effectContext[key].destroy()
+          delete effectContext[key]
+        }
         cb()
       }
-      effectContext[path].onEnded(cbFunc)
+      effectContext[key].onEnded(cbFunc)
     }
 
-    effectContext[path].play()
+    effectContext[key].play()
   }
 
   const stop = () => {
     const keys = Object.keys(effectContext)
     for (let i = 0; i < keys.length; i++) {
       effectContext[keys[i]].stop()
-    }
-  }
-
-  const mute = (val) => {
-    isEffectMute = val
-    if (val) {
-      stop()
     }
   }
 
@@ -79,10 +127,21 @@ export const useEffect = () => {
     effectContext = {}
   }
 
+  const mute = (val) => {
+    isEffectMute = val
+    if (val) {
+      stopPool()
+      stop()
+    }
+  }
+
   return {
+    createPool,
+    stopPool,
+    destroyPool,
     play,
     stop,
-    mute,
-    destroy
+    destroy,
+    mute
   }
 }

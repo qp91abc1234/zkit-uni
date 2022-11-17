@@ -50,12 +50,14 @@ onShow(() => {
 })
 
 onHide(() => {
+  zkit.effect.stopPool()
   zkit.effect.stop()
   zkit.music.pause()
 })
 
 onBeforeUnmount(() => {
   if (!props.isStop) return
+  zkit.effect.stopPool()
   zkit.effect.stop()
   zkit.music.stop()
 })
