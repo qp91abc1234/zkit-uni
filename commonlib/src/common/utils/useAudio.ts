@@ -42,27 +42,29 @@ let isEffectMute = false
 let noCacheSuffix = 0
 export const useEffect = () => {
   const createPool = (path: string, count = 10) => {
+    const createEle = () => {
+      const ctx = uni.createInnerAudioContext()
+      ctx.src = path
+      ctx.onEnded(() => {
+        const index = effectPool[path][1].indexOf(ctx)
+        effectPool[path][1].splice(index, 1)
+        effectPool[path][0].push(ctx)
+      })
+      return ctx
+    }
+
     if (!effectPool[path]) {
       effectPool[path] = [[], []]
       for (let i = 0; i < count; i++) {
-        const ctx = uni.createInnerAudioContext()
-        ctx.src = path
-        ctx.onEnded(() => {
-          const index = effectPool[path][1].indexOf(ctx)
-          effectPool[path][1].splice(index, 1)
-          effectPool[path][0].push(ctx)
-        })
-        effectPool[path][0].push(ctx)
+        effectPool[path][0].push(createEle())
       }
     }
 
     return () => {
       if (isEffectMute) return
-      const ctx = effectPool[path][0].pop()
-      if (ctx) {
-        effectPool[path][1].push(ctx)
-        ctx.play()
-      }
+      const ctx = effectPool[path][0].pop() || createEle()
+      effectPool[path][1].push(ctx)
+      ctx.play()
     }
   }
 
