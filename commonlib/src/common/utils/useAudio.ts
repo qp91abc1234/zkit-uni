@@ -91,7 +91,10 @@ export const useEffect = () => {
   }
 
   const play = (path: string, cb: any = null, cache = true) => {
-    if (isEffectMute) return
+    if (isEffectMute) {
+      cb && cb()
+      return
+    }
 
     const key = cache ? path : path + noCacheSuffix++
     if (!effectContext[key] || !cache) {
