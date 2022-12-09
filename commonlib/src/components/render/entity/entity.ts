@@ -7,7 +7,7 @@ export default class Entity {
   protected cvs: ZKit.Canvas
   protected canvas: any
   protected context: any
-  protected cb = {}
+  private cb = {}
   ready = false
   x = 0
   y = 0
@@ -88,6 +88,18 @@ export default class Entity {
         this.cb[key].splice(index, 1)
       }
     }
+  }
+
+  protected triggerCb(key: RENDER_CB_TYPE) {
+    const cbArr = this.cb[key]
+    cbArr &&
+      cbArr.forEach((func) => {
+        try {
+          func(this)
+        } catch (error) {
+          console.error(`[entity.ts][triggerCb] key = ${key}; error = `, error)
+        }
+      })
   }
 
   addChild(child: Entity) {

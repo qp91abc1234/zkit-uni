@@ -53,10 +53,7 @@ export default class Spine extends Entity {
     const that = this
     this.state.addListener({
       complete() {
-        that.cb[RENDER_CB_TYPE.ANIM_END] &&
-          that.cb[RENDER_CB_TYPE.ANIM_END].forEach((cb) => {
-            cb(that)
-          })
+        this.triggerCb(RENDER_CB_TYPE.ANIM_END)
       }
     })
 
@@ -95,10 +92,7 @@ export default class Spine extends Entity {
   play(name, loop = true) {
     if (this.ready) {
       name && this.state.setAnimation(0, name, loop)
-      this.cb[RENDER_CB_TYPE.CHANGE_ANIM] &&
-        this.cb[RENDER_CB_TYPE.CHANGE_ANIM].forEach((cb) => {
-          cb(this)
-        })
+      this.triggerCb(RENDER_CB_TYPE.CHANGE_ANIM)
     } else {
       this.cache.anim = name
       this.cache.loop = loop

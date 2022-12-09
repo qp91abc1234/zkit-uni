@@ -32,10 +32,7 @@ export default class Anim extends Entity {
     if (this.cur === this.total) {
       if (this.count > 0 || this.count === -1) {
         this.count > 0 && this.count--
-        this.cb[RENDER_CB_TYPE.ANIM_END] &&
-          this.cb[RENDER_CB_TYPE.ANIM_END].forEach((cb) => {
-            cb(this)
-          })
+        this.triggerCb(RENDER_CB_TYPE.ANIM_END)
       }
       if (this.count !== 0) {
         this.cur = 0
@@ -65,10 +62,7 @@ export default class Anim extends Entity {
   changeAnim(newSrc: string[]) {
     Promise.resolve(this.cvs.preloadRes(newSrc)).then((val) => {
       this.resetAnim(newSrc)
-      this.cb[RENDER_CB_TYPE.CHANGE_ANIM] &&
-        this.cb[RENDER_CB_TYPE.CHANGE_ANIM].forEach((cb) => {
-          cb(this)
-        })
+      this.triggerCb(RENDER_CB_TYPE.CHANGE_ANIM)
     })
   }
 
