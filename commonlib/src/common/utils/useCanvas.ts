@@ -7,7 +7,6 @@ export enum CANVAS_LOAD_STATUS {
   FAIL
 }
 
-let loopId = 0
 const resObj: ZKit.CanvasCacheData = {}
 
 export const useCanvas = () => {
@@ -17,6 +16,7 @@ export const useCanvas = () => {
   const canvas: { value: any } = { value: undefined }
   const context: { value: any } = { value: undefined }
   let t = 0
+  let loopId = 0
 
   function createImage() {
     let ret

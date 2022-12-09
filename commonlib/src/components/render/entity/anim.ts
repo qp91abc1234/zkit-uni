@@ -30,17 +30,19 @@ export default class Anim extends Entity {
     const count = this.count
 
     if (this.cur === this.total) {
-      this.count > 0 && this.count--
+      if (this.count > 0 || this.count === -1) {
+        this.count > 0 && this.count--
+        this.cb[RENDER_CB_TYPE.ANIM_END] &&
+          this.cb[RENDER_CB_TYPE.ANIM_END].forEach((cb) => {
+            cb(this)
+          })
+      }
       if (this.count !== 0) {
         this.cur = 0
         this.cvs.drawImg({
           ...this.renderProps,
           src: this.src[this.cur]
         })
-        this.cb[RENDER_CB_TYPE.ANIM_END] &&
-          this.cb[RENDER_CB_TYPE.ANIM_END].forEach((cb) => {
-            cb(this)
-          })
       } else {
         this.cvs.drawImg({
           ...this.renderProps,
