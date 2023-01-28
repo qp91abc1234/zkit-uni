@@ -20,9 +20,9 @@ import Render from '@lib/components/render/render.vue'
 
 const anims = getAnims()
 let renderInst: ZKit.Render
-let img: ZKit.Img
-let anim: ZKit.Anim
-let spine: ZKit.Spine
+let img: ZKit.Img | undefined
+let anim: ZKit.Anim | undefined
+let spine: ZKit.Spine | undefined
 
 function getAnims() {
   function getResWebpArr(name, num) {
@@ -61,6 +61,7 @@ const init = (val: ZKit.Render) => {
 }
 
 const handleAddImg = () => {
+  if (img) return
   img = renderInst.createImg(anims.bossIdleAnim.resArr[0])
   renderInst.addChild(img)
   img.x = 375
@@ -72,10 +73,13 @@ const handleAddImg = () => {
 }
 
 const handleRemoveImg = () => {
+  if (!img) return
   img.removeFromParent()
+  img = undefined
 }
 
 const handleAddAnim = () => {
+  if (anim) return
   anim = renderInst.createAnim(anims.bossInjureAnim.resArr)
   renderInst.addChild(anim)
   anim.x = 375
@@ -95,19 +99,24 @@ const handleAddAnim = () => {
 }
 
 const handleChangeAnim = () => {
+  if (!anim) return
   anim.changeAnim(anims.bossDeadAnim.resArr)
 }
 
 const handleRemoveAnim = () => {
+  if (!anim) return
   anim.removeFromParent()
+  anim = undefined
 }
 
 const handleTweenAnim = () => {
+  if (!anim) return
   renderInst.tween(anim, 2000, 'y', 200, 300)
   renderInst.tween(anim, 2000, 'rotate', 0, 180)
 }
 
 const handleAddSpine = () => {
+  if (spine) return
   spine = renderInst.createSpine(
     'https://md-pic-lib.oss-cn-hangzhou.aliyuncs.com/spine/spineboy'
   )
@@ -119,7 +128,9 @@ const handleAddSpine = () => {
 }
 
 const handleRemoveSpine = () => {
+  if (!spine) return
   spine.removeFromParent()
+  spine = undefined
 }
 
 const handleDemo = () => {

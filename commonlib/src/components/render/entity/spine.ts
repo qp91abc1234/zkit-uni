@@ -50,9 +50,8 @@ export default class Spine extends Entity {
     animationStateData.defaultMix = 0.2
     this.state = new spine.AnimationState(animationStateData)
 
-    const that = this
     this.state.addListener({
-      complete() {
+      complete: () => {
         this.triggerCb(RENDER_CB_TYPE.ANIM_END)
       }
     })
