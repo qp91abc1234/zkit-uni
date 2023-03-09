@@ -1,6 +1,6 @@
-import * as utils from '@lib/common/utils'
-import * as log from '@lib/common/utils/useLog'
-import * as audio from '@lib/common/utils/useAudio'
+import * as utils from '@lib/common/utils/index'
+import * as log from '@lib/common/utils/use-log'
+import * as audio from '@lib/common/utils/use-audio'
 
 export const setupGlobal = () => {
   const obj = Object.prototype

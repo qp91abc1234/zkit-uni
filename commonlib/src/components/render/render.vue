@@ -1,32 +1,24 @@
-<template>
-  <canvas
-    class="anim-canvas"
-    id="anim-canvas"
-    type="2d"
-    @touchstart="(payload: TouchEvent) => emits('touchEvent', payload)"
-    @touchmove="(payload: TouchEvent) => emits('touchEvent', payload)"
-    @touchend="(payload: TouchEvent) => emits('touchEvent', payload)"
-    @touchcancel="(payload: TouchEvent) => emits('touchEvent', payload)"
-  ></canvas>
-</template>
-
 <script setup lang="ts">
 import { getCurrentInstance, onBeforeUnmount, onMounted } from 'vue'
-import { useCanvas } from '@lib/common/utils/useCanvas'
+import { onHide, onShow } from '@dcloudio/uni-app'
+import { useCanvas } from '@lib/common/utils/use-canvas'
+import { useLibStore } from '@lib/pinia/libStore'
 import Schedule from '@lib/components/render/utils/schedule'
 import Tween from '@lib/components/render/utils/tween'
 import Entity from '@lib/components/render/entity/entity'
+import Text from '@lib/components/render/entity/text'
 import Img from '@lib/components/render/entity/img'
 import Anim from '@lib/components/render/entity/anim'
 import Spine from '@lib/components/render/entity/spine'
-import { onHide, onShow } from '@dcloudio/uni-app'
 
 const props = withDefaults(
   defineProps<{
+    mode?: 'normal' | 'poster'
     frameNum?: number
   }>(),
   {
-    frameNum: 30
+    mode: 'normal',
+    frameNum: 20
   }
 )
 
@@ -37,6 +29,7 @@ const emits = defineEmits<{
   (event: 'touchEvent', val: TouchEvent): void
 }>()
 
+const libStore = useLibStore()
 const pause = { value: false }
 const inst = getCurrentInstance()
 const cvs = useCanvas()
@@ -50,8 +43,10 @@ const renderInst = {
   clearRes: cvs.clearRes,
   schedule: schedule.add.bind(schedule),
   tween: tween.add.bind(tween),
+  drawPoster,
   addChild,
   removeChild,
+  createText,
   createImg,
   createAnim,
   createSpine
@@ -70,12 +65,29 @@ onMounted(async () => {
   renderInst.canvasW = zkit.utils.px2rpx(cvs.canvasW.value)
   renderInst.canvasH = zkit.utils.px2rpx(cvs.canvasH.value)
   emits('init', renderInst)
-  cvs.render(render, pause, props.frameNum)
+  if (props.mode === 'normal') {
+    cvs.render(render, pause, props.frameNum)
+  }
 })
 
 onBeforeUnmount(() => {
   cvs.destroy()
 })
+
+function drawPoster(cb: () => void): Promise<any> {
+  cvs.clearScreen()
+  cb()
+  root.draw(0.016)
+  return zkit.utils.toPromiseStyle(wx.canvasToTempFilePath, {
+    x: 0,
+    y: 0,
+    width: cvs.canvasW.value,
+    height: cvs.canvasH.value,
+    destWidth: cvs.canvasW.value * (libStore.dpr || 1),
+    destHeight: cvs.canvasH.value * (libStore.dpr || 1),
+    canvas: cvs.canvas.value
+  })
+}
 
 function addChild(child: Entity) {
   return root.addChild(child)
@@ -83,6 +95,10 @@ function addChild(child: Entity) {
 
 function removeChild(child: Entity) {
   return root.removeChild(child)
+}
+
+function createText(val: string) {
+  return new Text(cvs, val)
 }
 
 function createImg(src: string) {
@@ -105,6 +121,18 @@ function render(delta: number) {
   emits('afterLoop', delta)
 }
 </script>
+
+<template>
+  <canvas
+    id="anim-canvas"
+    class="anim-canvas"
+    type="2d"
+    @touchstart="(payload: TouchEvent) => emits('touchEvent', payload)"
+    @touchmove="(payload: TouchEvent) => emits('touchEvent', payload)"
+    @touchend="(payload: TouchEvent) => emits('touchEvent', payload)"
+    @touchcancel="(payload: TouchEvent) => emits('touchEvent', payload)"
+  ></canvas>
+</template>
 
 <style lang="scss" scoped>
 .anim-canvas {

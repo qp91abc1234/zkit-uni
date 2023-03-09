@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted } from 'vue'
-import { useCanvas } from '@lib/common/utils/useCanvas'
+import { useCanvas } from '@lib/common/utils/use-canvas'
 
 const props = withDefaults(
   defineProps<{
@@ -41,10 +41,11 @@ const emits = defineEmits<{
 
 const startTime = new Date().getTime()
 const inst = getCurrentInstance()
-const cvs = useCanvas()
+const canvas = useCanvas()
 let progress = 0
 let loadedNum = 0
 let isEnd = false
+let isUnmount = false
 
 const allNum = computed(() => {
   return (
@@ -60,11 +61,12 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  cvs.destroy()
+  isUnmount = true
+  canvas.destroy()
 })
 
 const errored = (item: string) => {
-  console.error('[load][errored]: file load error ', item)
+  zkit.log.error('[load][errored]: file load error ', item)
   updateRealProgress('errored')
 }
 
@@ -75,10 +77,10 @@ const loadImg = () => {
 const loadCanvas = async () => {
   if (props.resCanvas.length <= 0) return
   try {
-    await cvs.setup('load-canvas', inst)
-    await cvs.preloadRes(props.resCanvas)
+    await canvas.setup('load-canvas', inst)
+    await canvas.preloadRes(props.resCanvas)
   } catch (err) {
-    console.error(`[load.vue][loadCanvas] ${err}`)
+    zkit.log.error(`[load.vue][loadCanvas] ${err}`)
   } finally {
     updateRealProgress('loadCanvas', props.resCanvas.length)
   }
@@ -112,7 +114,7 @@ const loadAudio = async () => {
   try {
     await loadAudioCore(props.resAudio)
   } catch (err) {
-    console.error(`[load.vue][loadAudio] ${err}`)
+    zkit.log.error(`[load.vue][loadAudio] ${err}`)
   } finally {
     updateRealProgress('loadAudio', props.resAudio.length)
   }
@@ -134,7 +136,6 @@ const loadText = async () => {
     })
   }
 }
-
 const updateFakeProgress = () => {
   if (loadedNum === allNum.value && progress === 99) {
     loadEnd()
@@ -152,9 +153,13 @@ const updateFakeProgress = () => {
 
 const updateRealProgress = (name, num = 1) => {
   loadedNum += num
-  console.log(`[load.vue][${name}] progress = ${loadedNum}/${allNum.value}`)
+  zkit.log.info(
+    `[load.vue][${name}] progress = ${loadedNum}/${allNum.value} ${
+      new Date().getTime() - startTime
+    }ms`
+  )
   if (loadedNum === allNum.value) {
-    console.log(
+    zkit.log.info(
       `[load.vue][loaded] loadedTime = ${new Date().getTime() - startTime}ms`
     )
   }
@@ -164,6 +169,7 @@ const updateRealProgress = (name, num = 1) => {
 }
 
 const loadEnd = () => {
+  if (isUnmount) return
   if (!isEnd) {
     emits('end')
     isEnd = true

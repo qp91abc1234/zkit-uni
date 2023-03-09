@@ -1,11 +1,7 @@
 export default class Schedule {
   private scheduleArr: ZKit.ScheduleObj[] = []
 
-  add(
-    cb: (val: number) => void,
-    interval: number = 0,
-    loop: number = -1
-  ): ZKit.ScheduleRet {
+  add(cb: (val: number) => void, interval = 0, loop = -1): ZKit.ScheduleRet {
     const obj = {
       cb,
       interval,

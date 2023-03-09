@@ -1,15 +1,16 @@
 import Entity, { RENDER_CB_TYPE } from '@lib/components/render/entity/entity'
 // #ifdef USE-SPINE
-import spine from '@lib/common/lib/spine-canvas.js'
+import spine from '@lib/common/lib/js/spine-canvas.js'
 // #endif
 
 export default class Spine extends Entity {
+  name
   skeletonRenderer
   assetManager
   skeleton
   state
   bounds
-  cache = { anim: '', loop: true, skin: '' }
+  cache = { anim: '', loop: true, skin: 'default' }
 
   constructor(cvs, src) {
     super(cvs)
@@ -18,45 +19,57 @@ export default class Spine extends Entity {
     // #endif
   }
 
-  async init(src) {
-    const name = src.split('/').pop()
-    this.skeletonRenderer = new spine.SkeletonRenderer(this.context)
-
-    // Load the assets.
-    this.assetManager = new spine.AssetManager(this.canvas)
+  init(src) {
+    this.name = src.split('/').pop()
+    this.skeletonRenderer = new spine.canvas.SkeletonRenderer(this.context)
+    this.assetManager = new spine.canvas.AssetManager(this.canvas)
     this.assetManager.loadText(`${src}.json`)
-    this.assetManager.loadTextureAtlas(`${src}.atlas`)
-    await this.assetManager.loadAll()
+    this.assetManager.loadText(`${src}.atlas`)
+    this.assetManager.loadTexture(`${src}.png`)
+  }
 
-    // Create the texture atlas and skeleton data.
-    const atlas = this.assetManager.require(`${name}.atlas`)
+  calculateBounds(skeleton) {
+    skeleton.setToSetupPose()
+    skeleton.updateWorldTransform()
+    const offset = new spine.Vector2()
+    const size = new spine.Vector2()
+    skeleton.getBounds(offset, size, [])
+    return { offset, size }
+  }
+
+  load() {
+    const con = !this.ready && this.assetManager.isLoadingComplete()
+    if (!con) {
+      return
+    }
+
+    this.ready = true
+    const atlas = new spine.TextureAtlas(
+      this.assetManager.get(`${this.name}.atlas`),
+      (path) => {
+        return this.assetManager.get(path)
+      }
+    )
     const atlasLoader = new spine.AtlasAttachmentLoader(atlas)
     const skeletonJson = new spine.SkeletonJson(atlasLoader)
     const skeletonData = skeletonJson.readSkeletonData(
-      this.assetManager.require(`${name}.json`)
+      this.assetManager.get(`${this.name}.json`)
     )
 
-    // Instantiate a new skeleton based on the atlas and skeleton data.
     this.skeleton = new spine.Skeleton(skeletonData)
     this.skeleton.scaleY = -1
     this.w = this.w === 0 ? this.skeleton.data.width : this.w
     this.h = this.h === 0 ? this.skeleton.data.height : this.h
-    this.skeleton.setToSetupPose()
-    this.skeleton.updateWorldTransform()
-    this.bounds = this.skeleton.getBoundsRect()
 
-    // Setup an animation state with a default mix of 0.2 seconds.
-    const animationStateData = new spine.AnimationStateData(this.skeleton.data)
-    animationStateData.defaultMix = 0.2
-    this.state = new spine.AnimationState(animationStateData)
-
+    this.state = new spine.AnimationState(
+      new spine.AnimationStateData(this.skeleton.data)
+    )
     this.state.addListener({
       complete: () => {
         this.triggerCb(RENDER_CB_TYPE.ANIM_END)
       }
     })
 
-    this.ready = true
     this.setSkin(this.cache.skin)
     this.play(this.cache.anim, this.cache.loop)
   }
@@ -64,8 +77,8 @@ export default class Spine extends Entity {
   render(delta) {
     const scaleX = (this.scale * this.w) / this.skeleton.data.width
     const scaleY = (this.scale * this.h) / this.skeleton.data.height
-    const centerX = this.bounds.x + this.bounds.width * this.anchor.x
-    const centerY = this.bounds.y + this.bounds.height * this.anchor.y
+    const centerX = this.bounds.offset.x + this.bounds.size.x * this.anchor.x
+    const centerY = this.bounds.offset.y + this.bounds.size.y * this.anchor.y
 
     this.context.translate(-centerX * scaleX, -centerY * scaleY)
     this.context.translate(zkit.utils.rpx2px(this.x), zkit.utils.rpx2px(this.y))
@@ -83,6 +96,7 @@ export default class Spine extends Entity {
   setSkin(skin) {
     if (this.ready) {
       skin && this.skeleton.setSkinByName(skin)
+      this.bounds = this.calculateBounds(this.skeleton)
     } else {
       this.cache.skin = skin
     }
@@ -98,7 +112,10 @@ export default class Spine extends Entity {
     }
   }
 
-  draw(delta) {
+  draw(delta: number) {
+    // #ifdef USE-SPINE
+    this.load()
+    // #endif
     if (!this.ready || !this.visible) return
     this.context.save()
     this.render(delta)

@@ -1,19 +1,19 @@
 <template>
   <!-- #ifdef H5 -->
-  <view class="lottie-canvas" id="lottie-canvas"></view>
+  <view id="lottie-canvas" class="lottie-canvas"></view>
   <!-- #endif -->
   <!-- #ifdef MP-WEIXIN -->
-  <canvas class="lottie-canvas" id="lottie-canvas" type="2d"></canvas>
+  <canvas id="lottie-canvas" class="lottie-canvas" type="2d"></canvas>
   <!-- #endif -->
 </template>
 
 <script setup lang="ts">
 import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useCanvas } from '@lib/common/utils/useCanvas'
 // #ifdef H5
 import lottieWeb from 'lottie-web'
 // #endif
 import lottieWx from 'lottie-miniprogram'
+import { useCanvas } from '@lib/common/utils/use-canvas'
 
 export type AnimationEventName =
   | 'enterFrame'

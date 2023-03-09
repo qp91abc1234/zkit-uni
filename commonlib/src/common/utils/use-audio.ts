@@ -1,7 +1,7 @@
 const musicContext: UniApp.InnerAudioContext = uni.createInnerAudioContext()
 let isMusicMute = false
 export const useMusic = () => {
-  const play = (path: string = '', loop: boolean = true) => {
+  const play = (path = '', loop = true) => {
     if (isMusicMute) return
     if (path !== musicContext.src) {
       // 兼容 android 机，避免 onShow 时重新播放

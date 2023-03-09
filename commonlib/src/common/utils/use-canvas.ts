@@ -158,6 +158,10 @@ export const useCanvas = () => {
     }
   }
 
+  function clearScreen() {
+    context.value.clearRect(0, 0, canvasW.value, canvasH.value)
+  }
+
   function render(
     renderCore?: (delta: number) => void,
     pause = { value: false },
@@ -177,7 +181,7 @@ export const useCanvas = () => {
     loopId = nextFrame(renderLoop)
   }
 
-  function drawImg(data: ZKit.ImgData) {
+  function baseDraw(data: ZKit.BaseData) {
     context.value.translate(
       zkit.utils.rpx2px(data.x),
       zkit.utils.rpx2px(data.y)
@@ -185,7 +189,17 @@ export const useCanvas = () => {
     context.value.rotate((data.rotate * Math.PI) / 180)
     context.value.scale(data.scale, data.scale)
     context.value.globalAlpha = data.alpha
+  }
 
+  function drawText(data: ZKit.TextData) {
+    baseDraw(data)
+    context.value.fillStyle = data.color
+    context.value.font = `${zkit.utils.rpx2px(data.size)}px ${data.font}`
+    context.value.fillText(data.content, 0, 0)
+  }
+
+  function drawImg(data: ZKit.ImgData) {
+    baseDraw(data)
     const res = resObj[data.src]
     data.w = data.w === 0 ? res.w : data.w
     data.h = data.h === 0 ? res.h : data.h
@@ -208,12 +222,14 @@ export const useCanvas = () => {
   return {
     canvasW,
     canvasH,
-    canvas,
     context,
+    canvas,
     setup,
     preloadRes,
     clearRes,
+    clearScreen,
     render,
+    drawText,
     drawImg,
     destroy
   }

@@ -72,15 +72,17 @@ init()
 
 <style lang="scss" scoped>
 .audio {
+  width: 100%;
+  height: 100%;
   .btn {
-    width: 105rpx;
-    height: 105rpx;
+    width: 100%;
+    height: 100%;
     background-size: 100%;
     &.play {
-      background-image: url('@lib/assets/play.png');
+      background-image: url('@/assets/play.png');
     }
     &.mute {
-      background-image: url('@lib/assets/mute.png');
+      background-image: url('@/assets/mute.png');
     }
   }
 }

@@ -7,6 +7,7 @@ export default class Entity {
   protected cvs: ZKit.Canvas
   protected canvas: any
   protected context: any
+
   private cb = {}
   ready = false
   x = 0
@@ -23,8 +24,8 @@ export default class Entity {
   children: Entity[][] = []
   extraData: any
 
-  constructor(cvs) {
-    this.cvs = cvs
+  constructor(canvas) {
+    this.cvs = canvas
     this.canvas = this.cvs.canvas.value
     this.context = this.cvs.context.value
   }
@@ -91,11 +92,12 @@ export default class Entity {
   }
 
   protected triggerCb(key: RENDER_CB_TYPE) {
+    const self = this
     const cbArr = this.cb[key]
     cbArr &&
       cbArr.forEach((func) => {
         try {
-          func(this)
+          func(self)
         } catch (error) {
           console.error(`[entity.ts][triggerCb] key = ${key}; error = `, error)
         }
@@ -113,7 +115,7 @@ export default class Entity {
     child.parent = undefined
     this.children[child.zIndexVal] = this.children[child.zIndexVal] || []
     const index = this.children[child.zIndexVal].indexOf(child)
-    if (index >= 0) {
+    if (index > -1) {
       this.children[child.zIndexVal].splice(index, 1)
     }
     return child

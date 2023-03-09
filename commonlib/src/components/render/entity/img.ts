@@ -1,10 +1,10 @@
 import Entity from '@lib/components/render/entity/entity'
 
 export default class Img extends Entity {
-  private src: string = ''
+  private src = ''
 
-  constructor(cvs, src: string) {
-    super(cvs)
+  constructor(canvas, src: string) {
+    super(canvas)
     this.src = src
 
     Promise.resolve(this.cvs.preloadRes([src])).then((val) => {

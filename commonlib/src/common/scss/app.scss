@@ -4,16 +4,7 @@ page {
 }
 view {
   display: flex;
-  flex: none;
   flex-direction: column;
-}
-button {
-  flex: none;
-  &::after {
-    width: 100% !important;
-    height: 100% !important;
-    transform: scale(1) !important;
-  }
 }
 .page {
   display: flex;

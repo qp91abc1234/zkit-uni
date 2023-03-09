@@ -17,6 +17,7 @@ module.exports = {
   },
   plugins: ['vue', '@typescript-eslint'],
   rules: {
+    'no-lonely-if': 'off',
     'lines-between-class-members': 'off',
     'no-undef': 'off',
     'import/no-unresolved': 'off',

@@ -1,16 +1,26 @@
-import { useCanvas, CANVAS_LOAD_STATUS } from '@lib/common/utils/useCanvas'
+import { useCanvas, CANVAS_LOAD_STATUS } from '@lib/common/utils/use-canvas'
 
 declare global {
   namespace ZKit {
-    interface ImgData {
-      src: string
+    interface BaseData {
       x: number
       y: number
       rotate: number
       scale: number
+      alpha: number
+    }
+
+    interface TextData extends BaseData {
+      content: string
+      color: string
+      font: string
+      size: number
+    }
+
+    interface ImgData extends BaseData {
+      src: string
       w: number
       h: number
-      alpha: number
       anchor: { x: number; y: number }
     }
 

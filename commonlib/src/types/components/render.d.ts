@@ -1,4 +1,5 @@
 import IEntity from '@lib/components/render/entity/entity'
+import IText from '@lib/components/render/entity/text'
 import IImg from '@lib/components/render/entity/img'
 import IAnim from '@lib/components/render/entity/anim'
 import ISpine from '@lib/components/render/entity/spine'
@@ -6,6 +7,7 @@ import ISpine from '@lib/components/render/entity/spine'
 declare global {
   namespace ZKit {
     type Entity = IEntity
+    type Text = IText
     type Img = IImg
     type Anim = IAnim
     type Spine = ISpine
@@ -83,8 +85,10 @@ declare global {
       clearRes: (res?: string[]) => void
       schedule: ScheduleAdd
       tween: TweenFunc
+      drawPoster(cb: () => void): Promise<any>
       addChild(val: Entity): Entity
       removeChild(val: Entity): Entity
+      createText(val: string): Text
       createImg(src: string): Img
       createAnim(src: string[]): Anim
       createSpine(src: string): Spine

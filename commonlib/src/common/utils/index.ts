@@ -6,11 +6,25 @@ export function CORSPathRewrite(val: string) {
 }
 
 export function rpx2px(val: number) {
-  const libStore = useLibStore()
-  return (libStore.windowW / 750) * val
+  const libtore = useLibStore()
+  return (libtore.windowW / 750) * val
 }
 
 export function px2rpx(val: number) {
-  const libStore = useLibStore()
-  return (val * 750) / libStore.windowW
+  const libtore = useLibStore()
+  return (val * 750) / libtore.windowW
+}
+
+export function toPromiseStyle(cb, params = {}) {
+  return new Promise((resolve, reject) => {
+    cb({
+      ...params,
+      success: (res) => {
+        resolve(res)
+      },
+      fail: (err) => {
+        reject(err)
+      }
+    })
+  })
 }

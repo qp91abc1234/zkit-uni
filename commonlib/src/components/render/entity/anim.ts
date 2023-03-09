@@ -7,8 +7,8 @@ export default class Anim extends Entity {
   count = -1
   pause = false
 
-  constructor(cvs, src: string[]) {
-    super(cvs)
+  constructor(canvas, src: string[]) {
+    super(canvas)
     this.src = src
     this.total = src.length
 
@@ -60,7 +60,7 @@ export default class Anim extends Entity {
   }
 
   changeAnim(newSrc: string[]) {
-    Promise.resolve(this.cvs.preloadRes(newSrc)).then((val) => {
+    Promise.resolve(this.cvs.preloadRes(newSrc)).then(() => {
       this.resetAnim(newSrc)
       this.triggerCb(RENDER_CB_TYPE.CHANGE_ANIM)
     })

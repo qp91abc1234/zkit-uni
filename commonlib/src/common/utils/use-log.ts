@@ -1,19 +1,25 @@
 export const useLog = () => {
   const log = wx.getRealtimeLogManager ? wx.getRealtimeLogManager() : null
+  const infoDev = (...args) => {
+    import.meta.env.MODE !== 'production' && info(...args)
+  }
+  const warnDev = (...args) => {
+    import.meta.env.MODE !== 'production' && warn(...args)
+  }
+  const errorDev = (...args) => {
+    import.meta.env.MODE !== 'production' && error(...args)
+  }
   const info = (...args) => {
-    if (!log) return
     console.log(...args)
-    log.info(...args)
+    log && log.info(...args)
   }
   const warn = (...args) => {
-    if (!log) return
     console.warn(...args)
-    log.warn(...args)
+    log && log.warn(...args)
   }
   const error = (...args) => {
-    if (!log) return
     console.error(...args)
-    log.error(...args)
+    log && log.error(...args)
   }
   const setFilterMsg = (msg) => {
     if (!log || !log.setFilterMsg) return
@@ -26,6 +32,9 @@ export const useLog = () => {
     log.addFilterMsg(msg)
   }
   return {
+    infoDev,
+    warnDev,
+    errorDev,
     info,
     warn,
     error,
